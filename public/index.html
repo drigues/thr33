@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thr33 Labs — Digital Product Studio</title>
+  <meta name="description" content="Thr33 Labs is a digital product studio building digital products that people use.">
+  <meta name="theme-color" content="#0a0a0a">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --accent: #E8873A;
+      --bg-top: #232327;
+      --bg-mid: #1c1c20;
+      --bg-bottom: #000000;
+      --text: #f4f4f2;
+      --text-dim: #9a9a9e;
+      --text-faint: #55555a;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { height: 100%; }
+
+    body {
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(120% 90% at 50% 0%, var(--bg-top) 0%, var(--bg-mid) 42%, var(--bg-bottom) 100%),
+        #000;
+      color: var(--text);
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Textura — grid de pontos discreto */
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 26px 26px;
+      opacity: 1;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Vinheta suave para focar o centro */
+    body::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(70% 60% at 50% 45%, transparent 40%, rgba(0,0,0,0.55) 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 2rem 1.5rem;
+      max-width: 62rem;
+    }
+
+    .wordmark {
+      font-weight: 700;
+      font-size: clamp(3.25rem, 13vw, 9rem);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+    }
+
+    .wordmark .three {
+      color: var(--accent);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: clamp(0.62rem, 1.4vw, 0.75rem);
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: var(--text-dim);
+      padding: 0.55rem 1.1rem;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.02);
+      margin-bottom: clamp(2rem, 5vw, 3rem);
+    }
+
+    .badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px 1px rgba(232,135,58,0.55);
+      flex: none;
+    }
+
+    .headline {
+      font-weight: 500;
+      font-size: clamp(1.5rem, 5.2vw, 3.4rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      max-width: 18ch;
+      color: var(--text);
+    }
+
+    .headline .accent { color: var(--accent); }
+
+    footer {
+      position: absolute;
+      bottom: clamp(1.25rem, 4vh, 2.25rem);
+      left: 0;
+      right: 0;
+      z-index: 1;
+      text-align: center;
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 400;
+      font-size: clamp(0.58rem, 1.3vw, 0.7rem);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--text-faint);
+      padding: 0 1rem;
+    }
+
+    @media (max-width: 480px) {
+      .badge { letter-spacing: 0.16em; }
+      footer { letter-spacing: 0.14em; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1 class="wordmark">Thr<span class="three">33</span> Labs</h1>
+
+    <p class="badge">
+      <span class="dot" aria-hidden="true"></span>
+      Digital Product Studio
+    </p>
+
+    <p class="headline">
+      Building digital products that <span class="accent">people</span> use.
+    </p>
+  </main>
+
+  <footer>
+    Thr33 — Tecnologia e Soluções Digitais · PT
+  </footer>
+</body>
+</html>
