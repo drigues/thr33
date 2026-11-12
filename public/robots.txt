@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://thr33.xyz/sitemap.xml

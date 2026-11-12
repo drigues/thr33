@@ -1,171 +1,167 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-PT">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thr33 Labs — Digital Product Studio</title>
-  <meta name="description" content="Thr33 Labs is a digital product studio building digital products that people use.">
+  <title>Thr33 Labs · Estúdio de produto digital em Óbidos</title>
+  <meta name="description" content="A Thr33 Labs desenha e desenvolve sites, aplicações e experiências em realidade aumentada para empresas, a partir de Óbidos, Portugal.">
   <meta name="theme-color" content="#0a0a0a">
+  <link rel="canonical" href="https://thr33.xyz/">
+  <link rel="alternate" hreflang="pt-PT" href="https://thr33.xyz/">
+  <link rel="alternate" hreflang="en" href="https://thr33.xyz/en/">
+  <link rel="alternate" hreflang="x-default" href="https://thr33.xyz/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/fonts/space-grotesk.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="/assets/site.css">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --accent: #E8873A;
-      --bg-top: #232327;
-      --bg-mid: #1c1c20;
-      --bg-bottom: #000000;
-      --text: #f4f4f2;
-      --text-dim: #9a9a9e;
-      --text-faint: #55555a;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html, body { height: 100%; }
-
-    body {
-      min-height: 100dvh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background:
-        radial-gradient(120% 90% at 50% 0%, var(--bg-top) 0%, var(--bg-mid) 42%, var(--bg-bottom) 100%),
-        #000;
-      color: var(--text);
-      font-family: "Space Grotesk", system-ui, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Textura — grid de pontos discreto */
-    body::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
-      background-size: 26px 26px;
-      opacity: 1;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* Vinheta suave para focar o centro */
-    body::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(70% 60% at 50% 45%, transparent 40%, rgba(0,0,0,0.55) 100%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    main {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 2rem 1.5rem;
-      max-width: 62rem;
-    }
-
-    .wordmark {
-      font-weight: 700;
-      font-size: clamp(2rem, 10vw, 7rem);
-      line-height: 0.95;
-      letter-spacing: -0.03em;
-      color: var(--text);
-      margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
-    }
-
-    .wordmark .three {
-      color: var(--accent);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      font-family: "JetBrains Mono", monospace;
-      font-weight: 500;
-      font-size: clamp(0.62rem, 1.4vw, 0.75rem);
-      text-transform: uppercase;
-      letter-spacing: 0.22em;
-      color: var(--text-dim);
-      padding: 0.55rem 1.1rem;
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 999px;
-      background: rgba(255,255,255,0.02);
-      margin-bottom: clamp(2rem, 5vw, 3rem);
-    }
-
-    .badge .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 10px 1px rgba(232,135,58,0.55);
-      flex: none;
-    }
-
-    .headline {
-      font-weight: 500;
-      font-size: clamp(1rem, 4vw, 2rem);
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-      max-width: 18ch;
-      color: var(--text);
-    }
-
-    .headline .accent { color: var(--accent); }
-
-    footer {
-      position: absolute;
-      bottom: clamp(1.25rem, 4vh, 2.25rem);
-      left: 0;
-      right: 0;
-      z-index: 1;
-      text-align: center;
-      font-family: "JetBrains Mono", monospace;
-      font-weight: 400;
-      font-size: clamp(0.58rem, 1.3vw, 0.7rem);
-      letter-spacing: 0.2em;
-      color: var(--text-faint);
-      padding: 0 1rem;
-    }
-
-    @media (max-width: 480px) {
-      .badge { letter-spacing: 0.16em; }
-      footer { letter-spacing: 0.14em; }
-    }
-  </style>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Thr33 Labs">
+  <meta property="og:title" content="Thr33 Labs · Estúdio de produto digital em Óbidos">
+  <meta property="og:description" content="A Thr33 Labs desenha e desenvolve sites, aplicações e experiências em realidade aumentada para empresas, a partir de Óbidos, Portugal.">
+  <meta property="og:url" content="https://thr33.xyz/">
+  <meta property="og:locale" content="pt_PT">
+  <meta property="og:locale:alternate" content="en_GB">
+  <meta property="og:image" content="https://thr33.xyz/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Thr33 Labs, estúdio de produto digital">
+  <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
-  <main>
-    <h1 class="wordmark">Thr33<span class="three"></span> Labs</h1>
+  <a class="skip" href="#conteudo">Saltar para o conteúdo</a>
 
-    <p class="badge">
-      <span class="dot" aria-hidden="true"></span>
-      Digital Product Studio
-    </p>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="wordmark" href="/">Thr33 Labs</a>
+      <nav aria-label="Navegação principal">
+        <ul>
+          <li><a href="/servicos/">Serviços</a></li>
+          <li><a href="/produtos/">Produtos</a></li>
+          <li><a href="/sobre/">Sobre</a></li>
+          <li><a href="/contacto/">Contacto</a></li>
+        </ul>
+      </nav>
+      <a class="lang" href="/en/" hreflang="en" lang="en" aria-label="English">EN</a>
+    </div>
+  </header>
 
-    <p class="headline">
-      Building digital products that people<span class="accent"></span> use.
-    </p>
+  <main id="conteudo">
+    <section class="hero">
+      <div class="wrap">
+        <p class="badge">Digital Product Studio</p>
+        <h1>Produtos digitais que as pessoas <span class="accent">usam</span></h1>
+        <p class="lead">A Thr33 Labs é um estúdio de produto digital em Óbidos. Desenhamos e desenvolvemos sites, aplicações e experiências em realidade aumentada para empresas, da primeira conversa ao lançamento.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="/contacto/">Pedir uma proposta</a>
+          <a class="btn btn-ghost" href="/servicos/">Ver serviços</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="o-que-fazemos">
+      <div class="wrap">
+        <h2 id="o-que-fazemos">O que fazemos</h2>
+        <ul class="grid grid-4">
+          <li class="card">
+            <h3>Consultoria em informática</h3>
+            <p>Escolha de tecnologia, auditorias técnicas e planos de migração, antes de investir em código.</p>
+            <a class="more" href="/servicos/#consultoria">Consultoria em detalhe</a>
+          </li>
+          <li class="card">
+            <h3>Web e aplicações</h3>
+            <p>Sites, plataformas e aplicações iOS e Android, do protótipo à publicação.</p>
+            <a class="more" href="/servicos/#desenvolvimento">Desenvolvimento em detalhe</a>
+          </li>
+          <li class="card">
+            <h3>UX e UI</h3>
+            <p>Interfaces claras e acessíveis, testadas com quem as vai usar.</p>
+            <a class="more" href="/servicos/#design">Design em detalhe</a>
+          </li>
+          <li class="card">
+            <h3>Realidade aumentada</h3>
+            <p>Modelos 3D no espaço real, à escala, a partir do telemóvel ou do tablet.</p>
+            <a class="more" href="/servicos/#realidade-aumentada">Realidade aumentada em detalhe</a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="para-quem">
+      <div class="wrap">
+        <h2 id="para-quem">Para quem trabalhamos</h2>
+        <ul class="ticks">
+          <li>PME e startups que querem lançar ou renovar um produto digital.</li>
+          <li>Equipas que precisam de reforço técnico ou de uma segunda opinião sobre um projeto.</li>
+          <li>Arquitetos, decoradores e organizadores de eventos que querem mostrar projetos em realidade aumentada.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="produto">
+      <div class="wrap product">
+        <div>
+          <p class="examples-title">Produto próprio</p>
+          <h2 id="produto" class="product-name">vizia</h2>
+          <p class="dim">Projetos de arquitetura, decoração e eventos em realidade aumentada, à escala real e no local.</p>
+        </div>
+        <div class="actions">
+          <a class="btn btn-ghost" href="/produtos/">Ver produtos e projetos</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="como">
+      <div class="wrap">
+        <h2 id="como">Como trabalhamos</h2>
+        <ol class="grid grid-4" role="list">
+          <li class="card"><span class="num">01</span><h3>Conversa</h3><p>Percebemos o problema, o público e o que já existe.</p></li>
+          <li class="card"><span class="num">02</span><h3>Proposta</h3><p>Âmbito, prazos e custos por escrito, antes de começar.</p></li>
+          <li class="card"><span class="num">03</span><h3>Desenho e desenvolvimento</h3><p>Ciclos curtos, com versões para rever a cada etapa.</p></li>
+          <li class="card"><span class="num">04</span><h3>Lançamento</h3><p>Publicação, medição e acompanhamento depois de sair.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="falar">
+      <div class="wrap">
+        <h2 id="falar">Tem um projeto em mente?</h2>
+        <p class="band-intro">Conte-nos o que precisa, por email ou por telefone. Respondemos com os próximos passos e, se fizer sentido, com uma proposta.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="/contacto/">Contactar a Thr33 Labs</a>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <footer>
-    <p>519573021 - THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA · PT</p>
-    <br>
-    <p>hello [ at ] thr33.xyz - +351 936 466 845</p>
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <p class="footer-brand">Thr33 Labs</p>
+          <p class="dim">Estúdio de produto digital em Óbidos, Portugal.</p>
+        </div>
+        <nav aria-label="Ligações do rodapé">
+          <p class="footer-heading">Páginas</p>
+          <ul>
+            <li><a href="/servicos/">Serviços</a></li>
+            <li><a href="/produtos/">Produtos</a></li>
+            <li><a href="/sobre/">Sobre</a></li>
+            <li><a href="/contacto/">Contacto</a></li>
+            <li><a href="/privacidade/">Privacidade</a></li>
+            <li><a href="/termos/">Termos de utilização</a></li>
+          </ul>
+        </nav>
+        <div>
+          <p class="footer-heading">Contacto</p>
+          <ul>
+            <li><a href="mailto:hello@thr33.xyz">hello@thr33.xyz</a></li>
+            <li><a href="tel:+351936466845">+351 936 466 845</a></li>
+          </ul>
+        </div>
+      </div>
+      <p class="legal">THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA · Sociedade unipessoal por quotas · Sede: Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos · Conservatória do Registo Comercial (RNPC) · Matrícula e NIPC 519573021 · Capital social 7.660,00 €</p>
+      <p class="legal">© 2026 Thr33 Labs</p>
+    </div>
   </footer>
 </body>
 </html>
