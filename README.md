@@ -16,3 +16,5 @@ python3 tests/check_site.py
 ```
 
 O `build.py` regenera as páginas, o `sitemap.xml` e o `robots.txt` em `public/`. O `check_site.py` confirma o rodapé legal, as meta tags, o hreflang e os links internos, e garante que não há pedidos a terceiros. Não se faz commit com a verificação a falhar.
+
+A imagem de partilha (`public/assets/og-image.png`) gera-se com `swift scripts/og-image.swift`. A configuração do Forge e do Cloudflare está em [docs/deploy.md](docs/deploy.md).

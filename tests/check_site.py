@@ -131,6 +131,13 @@ def main():
             for og in ("og:title", "og:description", "og:url", "og:type", "og:locale", "og:site_name"):
                 check(p.meta.get(og), f"{url}: {og} em falta")
             check(p.meta.get("og:url") == SITE + url, f"{url}: og:url deve ser {SITE + url}")
+            og_image = p.meta.get("og:image", "")
+            check(og_image.startswith(SITE + "/") and file_for(og_image[len(SITE):]).exists(),
+                  f"{url}: og:image em falta ou ficheiro inexistente ({og_image})")
+            check(p.meta.get("og:image:width") == "1200" and p.meta.get("og:image:height") == "630",
+                  f"{url}: og:image deve declarar 1200x630")
+            check(p.meta.get("og:image:alt"), f"{url}: og:image:alt em falta")
+            check(p.meta.get("twitter:card") == "summary_large_image", f"{url}: twitter:card em falta")
             links = {(rel, hl): href for rel, href, hl in p.links}
             check(links.get(("canonical", None)) == SITE + url, f"{url}: canonical deve ser {SITE + url}")
             check(links.get(("alternate", "pt-PT")) == SITE + pt, f"{url}: hreflang pt-PT em falta")
@@ -197,6 +204,9 @@ def main():
         html = f.read_text(encoding="utf-8")
         for host in ("fonts.googleapis.com", "fonts.gstatic.com", "googletagmanager", "google-analytics", "facebook.net"):
             check(host not in html, f"{f.relative_to(ROOT)}: pedido a terceiros ({host})")
+        # A CSP em docs/deploy.md não permite estilos nem scripts inline.
+        for pattern in (r"\sstyle=", r"<style", r"<script", r"\son[a-z]+="):
+            check(not re.search(pattern, html), f"{f.relative_to(ROOT)}: inline proibido pela CSP ({pattern})")
 
     # robots.txt e sitemap.xml
     robots = ROOT / "robots.txt"

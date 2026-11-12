@@ -36,6 +36,7 @@ LANGS = {
     "pt": {
         "html_lang": "pt-PT",
         "og_locale": "pt_PT",
+        "og_image_alt": "Thr33 Labs, estúdio de produto digital",
         "other_label": "EN",
         "other_name": "English",
         "nav_label": "Navegação principal",
@@ -53,6 +54,7 @@ LANGS = {
     "en": {
         "html_lang": "en",
         "og_locale": "en_GB",
+        "og_image_alt": "Thr33 Labs, digital product studio",
         "other_label": "PT",
         "other_name": "Português",
         "nav_label": "Main navigation",
@@ -112,6 +114,7 @@ def render(lang, name, layout):
         "alt_en": SITE + en_url,
         "og_locale": t["og_locale"],
         "og_locale_alt": LANGS[other]["og_locale"],
+        "og_image_alt": t["og_image_alt"],
         "skip": t["skip"],
         "home": url_for(lang, "inicio"),
         "nav_label": t["nav_label"],
