@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="{{html_lang}}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="canonical" href="{{canonical}}">
+  <link rel="alternate" hreflang="pt-PT" href="{{alt_pt}}">
+  <link rel="alternate" hreflang="en" href="{{alt_en}}">
+  <link rel="alternate" hreflang="x-default" href="{{alt_pt}}">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/fonts/space-grotesk.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="/assets/site.css">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Thr33 Labs">
+  <meta property="og:title" content="{{title}}">
+  <meta property="og:description" content="{{description}}">
+  <meta property="og:url" content="{{canonical}}">
+  <meta property="og:locale" content="{{og_locale}}">
+  <meta property="og:locale:alternate" content="{{og_locale_alt}}">
+</head>
+<body>
+  <a class="skip" href="#conteudo">{{skip}}</a>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="wordmark" href="{{home}}">Thr33 Labs</a>
+      <nav aria-label="{{nav_label}}">
+        <ul>
+          {{nav}}
+        </ul>
+      </nav>
+      <a class="lang" href="{{other_url}}" hreflang="{{other_lang}}" lang="{{other_lang}}" aria-label="{{other_name}}">{{other_label}}</a>
+    </div>
+  </header>
+
+  <main id="conteudo">
+{{main}}
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <p class="footer-brand">Thr33 Labs</p>
+          <p class="dim">{{tagline}}</p>
+        </div>
+        <nav aria-label="{{footer_nav}}">
+          <p class="footer-heading">{{pages_heading}}</p>
+          <ul>
+            {{footer_links}}
+          </ul>
+        </nav>
+        <div>
+          <p class="footer-heading">{{contact_heading}}</p>
+          <ul>
+            <li><a href="mailto:hello@thr33.xyz">hello@thr33.xyz</a></li>
+            <li><a href="tel:+351936466845">+351 936 466 845</a></li>
+          </ul>
+        </div>
+      </div>
+      <p class="legal">{{legal}}</p>
+      <p class="legal">© {{year}} Thr33 Labs</p>
+    </div>
+  </footer>
+</body>
+</html>
