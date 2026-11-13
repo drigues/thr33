@@ -156,6 +156,22 @@ html.menu-open { overflow: hidden; }
 @keyframes drift-b { to { transform: translate3d(-10vmax, -8vmax, 0) scale(0.9); } }
 @keyframes drift-c { to { transform: translate3d(12vmax, -10vmax, 0) scale(1.15); } }
 
+/* Marquee de competências: duas listas iguais lado a lado; a pista anda metade da largura e repete.
+   Só CSS chega para o loop; o site.js ajusta a velocidade e o sentido ao scroll. */
+.marquee {
+  overflow: hidden; border-block: 1px solid var(--line); padding-block: clamp(1rem, 3vw, 1.75rem);
+}
+.marquee-track { display: flex; width: max-content; animation: marquee 40s linear infinite; }
+.marquee-list {
+  display: flex; flex: none; list-style: none; margin: 0; padding: 0;
+  font-size: clamp(1.5rem, 4vw, 3rem); font-weight: 500; letter-spacing: -0.02em; line-height: 1.1; white-space: nowrap;
+}
+.marquee-list li { display: flex; align-items: center; }
+.marquee-list li::after {
+  content: "·" / ""; padding-inline: clamp(1rem, 3vw, 2rem); color: var(--accent);
+}
+@keyframes marquee { to { transform: translate3d(-50%, 0, 0); } }
+
 /* Reveal por linhas: o site.js parte o <h1 data-split> em palavras com máscara e marca a linha.
    Sem JS o título aparece como está; se o JS falhar a meio, a salvaguarda mostra-o ao fim de 1 s. */
 .js [data-split]:not(.split) { opacity: 0; animation: split-fallback 0s linear 1s forwards; }
@@ -252,4 +268,5 @@ address { font-style: normal; }
   .split .wi { transform: none; }
   .js [data-split]:not(.split) { opacity: 1; animation: none; }
   .hero .wrap > :not(h1), .page-head .wrap > :not(h1) { animation: none; }
+  .marquee-track { animation: none; }
 }

@@ -50,6 +50,18 @@
         ],
         "scroll_hint": "↓ scroll"
       },
+      "marquee": {
+        "label": "Competências",
+        "items": [
+          "Consultoria",
+          "Web",
+          "Apps",
+          "UX/UI",
+          "Realidade aumentada",
+          "Laravel",
+          "3D"
+        ]
+      },
       "sections": [
         {
           "type": "cards",

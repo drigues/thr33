@@ -55,6 +55,11 @@ SITE_JS = "/assets/js/site.js"
 # Hero (#27): etiqueta, gradiente-assinatura decorativo e títulos com reveal por linhas.
 HERO_LABEL = "(Thr33 Labs / ©2026) Óbidos, PT"
 HERO_BLOBS = 3
+# Marquee (#28): competências em loop na página inicial; a cópia para o loop não é lida duas vezes.
+MARQUEE = {
+    "pt-PT": ["Consultoria", "Web", "Apps", "UX/UI", "Realidade aumentada", "Laravel", "3D"],
+    "en": ["Consulting", "Web", "Apps", "UX/UI", "Augmented reality", "Laravel", "3D"],
+}
 SITE_JS_MAX_BYTES = 8192  # orçamento total de JS da spec: 70 KB gzip; o site.js fica muito abaixo
 
 FONTS = {"Space Grotesk": "space-grotesk.woff2", "JetBrains Mono": "jetbrains-mono-regular.woff2"}
@@ -96,6 +101,9 @@ class Page(HTMLParser):
         self.hero_labels = []    # texto de .label dentro de .hero
         self.scroll_hints = []   # atributos de .hero-scroll
         self._in_hero = 0
+        self.marquees = 0
+        self.marquee_lists = []  # (aria-hidden, [itens])
+        self._in_marquee_list = False
         self.header_hrefs = []
         self._in_main = 0
         self._in_header = 0
@@ -146,6 +154,14 @@ class Page(HTMLParser):
             self.hero_gradient.append(a)
         if "blob" in classes:
             self.blobs += 1
+        if "marquee" in classes:
+            self.marquees += 1
+        if "marquee-list" in classes:
+            self.marquee_lists.append((a.get("aria-hidden"), []))
+            self._in_marquee_list = True
+        if tag == "li" and self._in_marquee_list:
+            self._capture = self.marquee_lists[-1][1]
+            self._capture.append("")
         if "hero-scroll" in classes:
             self.scroll_hints.append(a)
         if "label" in classes and self._in_hero:
@@ -159,8 +175,10 @@ class Page(HTMLParser):
             self.nav_nums.append("")
 
     def handle_endtag(self, tag):
-        if tag in ("span", "p"):
+        if tag in ("span", "p", "li"):
             self._capture = None
+        if tag == "ul":
+            self._in_marquee_list = False
         if tag == "section":
             self._in_hero = 0
         if tag == "main":
@@ -329,12 +347,27 @@ def check_motion_css(check):
     reduced = re.search(r"@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{(.*?)\n\}", css, re.S)
     check(reduced is not None, "site.css: bloco prefers-reduced-motion em falta")
     if reduced:
-        for needle in (".blob", ".wi"):
+        for needle in (".blob", ".wi", ".marquee-track"):
             check(needle in reduced.group(1), f"site.css: prefers-reduced-motion não trata {needle}")
     # Se o JS falhar depois de pôr .js, o título não pode ficar invisível para sempre.
+    marquee = re.search(r"\.marquee\s*\{([^}]*)\}", css)
+    check(marquee is not None and "overflow: hidden" in marquee.group(1), "site.css: .marquee sem overflow: hidden")
     guard = re.search(r"\.js \[data-split\]:not\(\.split\)\s*\{([^}]*)\}", css)
     check(guard is not None and "animation" in guard.group(1),
           "site.css: falta a salvaguarda .js [data-split]:not(.split) com animation")
+
+
+def check_marquee(check, url, p, lang, is_home):
+    if not is_home:
+        check(p.marquees == 0, f"{url}: o marquee é só da página inicial")
+        return
+    check(p.marquees == 1, f"{url}: falta o .marquee")
+    check(len(p.marquee_lists) == 2, f"{url}: o marquee deve ter 2 listas (original e cópia), tem {len(p.marquee_lists)}")
+    if len(p.marquee_lists) == 2:
+        (hidden_a, items_a), (hidden_b, items_b) = p.marquee_lists
+        check(hidden_a is None, f"{url}: a primeira lista do marquee tem de ser lida")
+        check(hidden_b == "true", f"{url}: a cópia do marquee tem de ter aria-hidden=true")
+        check(items_a == MARQUEE[lang] and items_b == MARQUEE[lang], f"{url}: itens do marquee {items_a}")
 
 
 def check_labels(check, url, p):
@@ -412,6 +445,7 @@ def main():
             check_header(check, url, p)
             check_labels(check, url, p)
             check_hero(check, url, p, url in ("/", "/en/"))
+            check_marquee(check, url, p, lang, url in ("/", "/en/"))
             check(any(h == other for h, _, _ in p.hrefs), f"{url}: sem link para a outra língua ({other})")
             footer = " ".join(" ".join(p.footer_text).split())
             for needle in LEGAL_FOOTER[lang]:
