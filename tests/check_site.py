@@ -32,6 +32,10 @@ LEGAL_FOOTER = {
            "519573021", "Share capital €7,660.00"],
 }
 
+# DL 74/2017: acesso ao Livro de Reclamações Eletrónico visível em todas as páginas.
+COMPLAINTS_URL = "https://www.livroreclamacoes.pt/Inicio/"
+COMPLAINTS_LABEL = {"pt-PT": "Livro de Reclamações", "en": "Complaints Book (Livro de Reclamações)"}
+
 FORBIDDEN = re.compile(r"em breve|brevemente|coming soon|lorem ipsum|TODO", re.I)
 
 
@@ -50,6 +54,7 @@ class Page(HTMLParser):
         self._in_title = False
         self._in_footer = 0
         self.footer_text = []
+        self.footer_hrefs = []   # (href, target, rel) dentro de <footer>
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
@@ -67,6 +72,8 @@ class Page(HTMLParser):
             self.links.append((a.get("rel", ""), a.get("href", ""), a.get("hreflang")))
         elif tag == "a":
             self.hrefs.append((a.get("href", ""), a.get("target"), a.get("rel", "")))
+            if self._in_footer:
+                self.footer_hrefs.append((a.get("href", ""), a.get("target"), a.get("rel", "")))
         elif tag in ("img", "script"):
             if a.get("src"):
                 self.srcs.append(a["src"])
@@ -149,6 +156,9 @@ def main():
             footer = " ".join(" ".join(p.footer_text).split())
             for needle in LEGAL_FOOTER[lang]:
                 check(needle in footer, f"{url}: rodapé sem '{needle}'")
+            check(any(h == COMPLAINTS_URL for h, _, _ in p.footer_hrefs),
+                  f"{url}: rodapé sem link para o Livro de Reclamações ({COMPLAINTS_URL})")
+            check(COMPLAINTS_LABEL[lang] in footer, f"{url}: rodapé sem '{COMPLAINTS_LABEL[lang]}'")
             privacy, terms = ("/privacidade/", "/termos/") if lang == "pt-PT" else ("/en/privacy/", "/en/terms/")
             check(any(h == privacy for h, _, _ in p.hrefs), f"{url}: sem link para {privacy}")
             check(any(h == terms for h, _, _ in p.hrefs), f"{url}: sem link para {terms}")
@@ -170,6 +180,8 @@ def main():
         p = parse(f404)
         check("noindex" in p.meta.get("robots", ""), "404.html: deve ter robots noindex")
         check(any(h == "/" for h, _, _ in p.hrefs), "404.html: sem link para o início")
+        check(any(h == COMPLAINTS_URL for h, _, _ in p.footer_hrefs),
+              "404.html: rodapé sem link para o Livro de Reclamações")
         pages["/404.html"] = p
 
     # Links internos e externos em todas as páginas
