@@ -229,9 +229,22 @@ def counter_from(start=1):
         n += 1
 
 
+def marquee(data):
+    """Competências em loop. A segunda lista só existe para o loop: aria-hidden, não é lida."""
+    lis = "".join(f"<li>{i}</li>" for i in data["items"])
+    return (f'    <div class="marquee" data-marquee>\n'
+            f'      <div class="marquee-track">\n'
+            f'        <ul class="marquee-list" aria-label="{attr(data["label"])}">{lis}</ul>\n'
+            f'        <ul class="marquee-list" aria-hidden="true">{lis}</ul>\n'
+            f'      </div>\n    </div>')
+
+
 def main_html(page):
     counter = counter_from()
-    blocks = [page_head(page["head"])] + [section_html(s, counter) for s in page["sections"]]
+    blocks = [page_head(page["head"])]
+    if "marquee" in page:
+        blocks.append(marquee(page["marquee"]))
+    blocks += [section_html(s, counter) for s in page["sections"]]
     return "\n\n".join(blocks)
 
 

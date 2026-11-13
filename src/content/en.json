@@ -50,6 +50,18 @@
         ],
         "scroll_hint": "↓ scroll"
       },
+      "marquee": {
+        "label": "Skills",
+        "items": [
+          "Consulting",
+          "Web",
+          "Apps",
+          "UX/UI",
+          "Augmented reality",
+          "Laravel",
+          "3D"
+        ]
+      },
       "sections": [
         {
           "type": "cards",

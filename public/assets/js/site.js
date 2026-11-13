@@ -50,8 +50,57 @@ function followPointer(hero) {
   });
 }
 
+/* Marquee: a velocidade sobe com a velocidade do scroll e o sentido segue o do scroll;
+   depois volta devagar à velocidade base. O loop em si é a animação CSS. */
+function marqueeScroll(el) {
+  var track = el.querySelector(".marquee-track");
+  var anim = track && track.getAnimations ? track.getAnimations()[0] : null;
+  if (!anim || reducedMotion) return;
+  var lastY = window.scrollY, lastT = performance.now(), dir = 1, rate = 1, target = 1, frame = 0;
+  function tick() {
+    rate += (target - rate) * 0.1;
+    target += (dir - target) * 0.05;
+    anim.playbackRate = rate;
+    frame = Math.abs(rate - dir) > 0.01 || Math.abs(target - dir) > 0.01 ? requestAnimationFrame(tick) : 0;
+  }
+  window.addEventListener("scroll", function () {
+    var y = window.scrollY, t = performance.now(), dy = y - lastY, dt = Math.max(t - lastT, 16);
+    lastY = y; lastT = t;
+    if (!dy) return;
+    dir = dy > 0 ? 1 : -1;
+    target = dir * (1 + Math.min(Math.abs(dy) / dt * 2, 4));
+    if (!frame) frame = requestAnimationFrame(tick);
+  }, { passive: true });
+}
+
+/* Etiquetas (01): abaixo da dobra, o número conta de 00 até ao valor quando entra no ecrã. */
+function countLabels() {
+  if (reducedMotion || !("IntersectionObserver" in window)) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      io.unobserve(e.target);
+      var el = e.target, to = Number(el.dataset.to), start = performance.now();
+      (function step(now) {
+        var k = Math.min((now - start) / 400, 1);
+        el.textContent = "(" + String(Math.round(to * k)).padStart(2, "0") + ")";
+        if (k < 1) requestAnimationFrame(step);
+      })(start);
+    });
+  }, { threshold: 1 });
+  Array.prototype.forEach.call(document.querySelectorAll(".label-num"), function (el) {
+    var to = parseInt(el.textContent.replace(/\D/g, ""), 10);
+    if (!to || el.getBoundingClientRect().top < window.innerHeight) return;
+    el.dataset.to = String(to);
+    el.textContent = "(00)";
+    io.observe(el);
+  });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   if (!reducedMotion) Array.prototype.forEach.call(document.querySelectorAll("[data-split]"), splitLines);
+  Array.prototype.forEach.call(document.querySelectorAll("[data-marquee]"), marqueeScroll);
+  countLabels();
   var hero = document.querySelector(".hero");
   if (hero) followPointer(hero);
 
