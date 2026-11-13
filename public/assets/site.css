@@ -7,8 +7,9 @@ body {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  background: var(--paper);
+  background-color: var(--paper);
   color: var(--ink);
+  transition: background-color var(--dur-1) var(--ease-ui), color var(--dur-1) var(--ease-ui);
   font-family: var(--font-sans);
   font-size: var(--text-body);
   line-height: var(--leading-body);
@@ -105,7 +106,10 @@ html:not(.js) .menu-toggle { display: none; }
 html.menu-open { overflow: hidden; }
 
 /* Com JS o cabeçalho fica colado ao topo, esconde-se ao descer e volta ao subir. */
-.js .site-header { position: sticky; top: 0; z-index: 20; transition: transform var(--dur-1) var(--ease-ui); }
+.js .site-header {
+  position: sticky; top: 0; z-index: 20;
+  transition: transform var(--dur-1) var(--ease-ui), background-color var(--dur-1) var(--ease-ui);
+}
 .js .site-header.is-hidden { transform: translateY(-100%); }
 
 /* Etiquetas em mono: (Serviços) na cabeça da página, (01) Serviços nas secções. */
@@ -225,6 +229,24 @@ html.menu-open { overflow: hidden; }
 .icon { width: 1.5rem; height: 1.5rem; }
 .service-head { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
 .service-head .card-icon, .service-head .label { margin-bottom: 0; }
+
+/* Links soltos (ver mais, menu, rodapé): sublinhado que cresce da esquerda. Links no meio do texto
+   mantêm o sublinhado normal, para se distinguirem sem depender da cor. */
+.more, .menu a:not(.lang), .site-footer ul a {
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0 1px; background-position: 0 100%; background-repeat: no-repeat;
+  transition: background-size var(--dur-1) var(--ease-ui), color var(--dur-1) var(--ease-ui);
+}
+.more:hover, .more:focus-visible,
+.menu a:not(.lang):hover, .menu a:not(.lang):focus-visible,
+.site-footer ul a:hover, .site-footer ul a:focus-visible { background-size: 100% 1px; }
+
+/* Botão principal "magnético" (só desktop com rato): o site.js define --tx e --ty. */
+.btn-primary {
+  transform: translate(var(--tx, 0), var(--ty, 0));
+  transition: background-color 150ms ease, transform var(--dur-1) var(--ease-ui);
+}
 
 /* Setas: → nos links internos de "ver mais", ↗ nos que abrem noutro separador. */
 .more::after { content: "→" / ""; display: inline-block; margin-left: 0.35em; transition: transform var(--dur-1) var(--ease-ui); }

@@ -61,12 +61,15 @@ ICONS_LICENCE = ROOT / "assets" / "icons-LICENSE.txt"
 HOME_LABELS = {"pt-PT": ["Serviços", "Projetos", "Processo", "Sobre"], "en": ["Services", "Projects", "Process", "About"]}
 HOME_ICONS = {"service": 4, "step": 4}
 SERVICES_PAGE_ICONS = 4
+# Cores por secção (#31): Projetos veste Tinta e o CTA final veste Telha.
+SCENES = {"/": ["ink", "telha"], "/servicos/": ["telha"], "/produtos/": ["ink"]}
 # Marquee (#28): competências em loop na página inicial; a cópia para o loop não é lida duas vezes.
 MARQUEE = {
     "pt-PT": ["Consultoria", "Web", "Apps", "UX/UI", "Realidade aumentada", "Laravel", "3D"],
     "en": ["Consulting", "Web", "Apps", "UX/UI", "Augmented reality", "Laravel", "3D"],
 }
-SITE_JS_MAX_BYTES = 8192  # orçamento total de JS da spec: 70 KB gzip; o site.js fica muito abaixo
+SITE_JS_MAX_GZIP = 8 * 1024    # o site.js comprimido
+JS_TOTAL_MAX_GZIP = 70 * 1024  # orçamento total de JS da spec (gzip)
 
 FONTS = {"Space Grotesk": "space-grotesk.woff2", "JetBrains Mono": "jetbrains-mono-regular.woff2"}
 FONT_LICENCES = ["OFL.txt", "OFL-JetBrainsMono.txt"]
@@ -108,6 +111,7 @@ class Page(HTMLParser):
         self.scroll_hints = []   # atributos de .hero-scroll
         self._in_hero = 0
         self.marquees = 0
+        self.scenes = []         # (data-scene, classes) de cada <section> com cena
         self.icon_uses = []      # (href, aria-hidden do <svg>, focusable)
         self._svg = None
         self.marquee_lists = []  # (aria-hidden, [itens])
@@ -156,6 +160,8 @@ class Page(HTMLParser):
         if tag == "a" and self._in_header:
             self.header_hrefs.append(a.get("href", ""))
         classes = a.get("class", "").split()
+        if tag == "section" and a.get("data-scene"):
+            self.scenes.append((a["data-scene"], classes))
         if tag == "section" and "hero" in classes:
             self._in_hero = 1
         if "hero-gradient" in classes:
@@ -234,7 +240,7 @@ def css_vars(block):
 
 def css_block(css, selector_re):
     """Devolve o corpo do primeiro bloco cujo seletor bate com selector_re (sem chavetas aninhadas)."""
-    m = re.search(selector_re + r"\s*\{([^{}]*)\}", css)
+    m = re.search(selector_re + r"\s*(?:,[^{}]*)?\{([^{}]*)\}", css)
     return m.group(1) if m else None
 
 
@@ -278,11 +284,20 @@ def check_tokens(check):
     ink_section = css_block(css, r"\.theme-ink")
     check(ink_section is not None, "tokens.css: classe .theme-ink (secção em Tinta) em falta")
 
+    for scene in ("ink", "telha"):
+        check(re.search(rf'html:not\(\.scenes\) \.scene-{scene}\b', css),
+              f"tokens.css: falta html:not(.scenes) .scene-{scene} (cor final sem JS e com reduced motion)")
+
     schemes = {"claro": light}
     if dark_media:
         schemes["escuro"] = {**light, **css_vars(dark_media.group(1))}
     if ink_section is not None:
         schemes[".theme-ink"] = {**light, **css_vars(ink_section)}
+    for scene in ("ink", "telha"):
+        block = css_block(css, rf'html\.scenes\[data-scene="{scene}"\]')
+        check(block is not None, f'tokens.css: falta html.scenes[data-scene="{scene}"]')
+        if block is not None:
+            schemes[f"cena {scene}"] = {**light, **css_vars(block)}
     for scheme, scope in schemes.items():
         for fg, bg, minimum in CONTRAST_PAIRS:
             a, b = resolve(fg, scope), resolve(bg, scope)
@@ -364,6 +379,11 @@ def check_motion_css(check):
         for needle in (".blob", ".wi", ".marquee-track", ".reveal"):
             check(needle in reduced.group(1), f"site.css: prefers-reduced-motion não trata {needle}")
     # Se o JS falhar depois de pôr .js, o título não pode ficar invisível para sempre.
+    body = re.search(r"\nbody\s*\{([^}]*)\}", css)
+    check(body is not None and "background-color" in body.group(1) and "transition" in body.group(1),
+          "site.css: o body precisa de transition em background-color (mudança de cena)")
+    grow = re.search(r"\.more:hover[^{]*\{([^}]*)\}", css)
+    check(grow is not None and "background-size: 100%" in grow.group(1), "site.css: falta o sublinhado que cresce em .more:hover")
     check('content: "→"' in css and 'content: "↗"' in css, "site.css: faltam as setas → (links internos) e ↗ (externos)")
     marquee = re.search(r"\.marquee\s*\{([^}]*)\}", css)
     check(marquee is not None and "overflow: hidden" in marquee.group(1), "site.css: .marquee sem overflow: hidden")
@@ -424,6 +444,16 @@ def section_labels(html):
     return re.findall(r'<p class="label"><span class="label-num">\(\d+\)</span> ([^<]+)</p>', html)
 
 
+def check_scenes(check, url, p):
+    base = url.replace("/en", "", 1) if url.startswith("/en/") else url
+    base = {"/about/": "/sobre/", "/services/": "/servicos/", "/products/": "/produtos/", "/contact/": "/contacto/",
+            "/privacy/": "/privacidade/", "/terms/": "/termos/"}.get(base, base)
+    expected = SCENES.get(base, [])
+    check([sc for sc, _ in p.scenes] == expected, f"{url}: cenas {[sc for sc, _ in p.scenes]}, esperado {expected}")
+    for scene, classes in p.scenes:
+        check(f"scene-{scene}" in classes, f"{url}: secção data-scene={scene} sem a classe scene-{scene}")
+
+
 def check_labels(check, url, p):
     expected = [f"({i:02d})" for i in range(1, len(p.label_nums) + 1)]
     check(p.label_nums == expected, f"{url}: etiquetas fora de ordem {p.label_nums}")
@@ -441,7 +471,11 @@ def check_no_js_hiding(check):
     js = ROOT / SITE_JS.lstrip("/")
     check(js.exists(), f"{SITE_JS} em falta")
     if js.exists():
-        check(js.stat().st_size <= SITE_JS_MAX_BYTES, f"{SITE_JS} tem {js.stat().st_size} bytes (máx. {SITE_JS_MAX_BYTES})")
+        import gzip
+        size = len(gzip.compress(js.read_bytes()))
+        check(size <= SITE_JS_MAX_GZIP, f"{SITE_JS} tem {size} bytes gzip (máx. {SITE_JS_MAX_GZIP})")
+        total = sum(len(gzip.compress(f.read_bytes())) for f in ROOT.rglob("*.js"))
+        check(total <= JS_TOTAL_MAX_GZIP, f"JS total {total} bytes gzip (máx. {JS_TOTAL_MAX_GZIP})")
 
 
 def main():
@@ -501,6 +535,7 @@ def main():
             check_labels(check, url, p)
             check_hero(check, url, p, url in ("/", "/en/"))
             check_marquee(check, url, p, lang, url in ("/", "/en/"))
+            check_scenes(check, url, p)
             raw = file_for(url).read_text(encoding="utf-8")
             check_page_icons(check, url, p, raw, url in ("/", "/en/"), url in ("/servicos/", "/en/services/"))
             if url in ("/", "/en/"):

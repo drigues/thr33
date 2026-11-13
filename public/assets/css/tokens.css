@@ -81,8 +81,12 @@
   }
 }
 
-/* Secção que "veste" Tinta (Projetos), em qualquer modo. */
-.theme-ink {
+/* Cenas de cor (#31). Sem JS ou com reduced motion, cada secção tem a sua cor (.scene-*).
+   Com JS, o site.js põe .scenes e data-scene no <html> quando a secção passa o meio do ecrã,
+   e é a página inteira que muda de cor (o body tem transition). */
+.theme-ink,
+html:not(.scenes) .scene-ink,
+html.scenes[data-scene="ink"] {
   --paper: var(--tinta);
   --ink: var(--cal);
   --muted: var(--pedra-clara);
@@ -92,6 +96,23 @@
   /* Os derivados têm de ser redeclarados aqui, senão herdam os valores do :root. */
   --line: color-mix(in srgb, var(--ink) 14%, transparent);
   --surface: color-mix(in srgb, var(--ink) 4%, var(--paper));
+  background-color: var(--paper);
+  color: var(--ink);
+}
+
+/* Telha: texto, links e botões passam a Tinta (5.15:1); o botão principal fica Tinta com texto Cal. */
+html:not(.scenes) .scene-telha,
+html.scenes[data-scene="telha"] {
+  --paper: var(--telha);
+  --ink: var(--tinta);
+  --muted: var(--tinta);
+  --link: var(--tinta);
+  --focus: var(--tinta);
+  --secondary: var(--tinta);
+  --accent: var(--tinta);
+  --on-accent: var(--cal);
+  --line: color-mix(in srgb, var(--ink) 20%, transparent);
+  --surface: color-mix(in srgb, var(--ink) 6%, var(--paper));
   background-color: var(--paper);
   color: var(--ink);
 }
