@@ -75,7 +75,8 @@
               "link": {
                 "text": "Consultoria em detalhe",
                 "href": "/servicos/#consultoria"
-              }
+              },
+              "icon": "compass"
             },
             {
               "title": "Web e aplicações",
@@ -83,7 +84,8 @@
               "link": {
                 "text": "Desenvolvimento em detalhe",
                 "href": "/servicos/#desenvolvimento"
-              }
+              },
+              "icon": "code"
             },
             {
               "title": "UX e UI",
@@ -91,7 +93,8 @@
               "link": {
                 "text": "Design em detalhe",
                 "href": "/servicos/#design"
-              }
+              },
+              "icon": "pen-tool"
             },
             {
               "title": "Realidade aumentada",
@@ -99,7 +102,8 @@
               "link": {
                 "text": "Realidade aumentada em detalhe",
                 "href": "/servicos/#realidade-aumentada"
-              }
+              },
+              "icon": "box"
             }
           ],
           "label": "Serviços"
@@ -112,8 +116,7 @@
             "PME e startups que querem lançar ou renovar um produto digital.",
             "Equipas que precisam de reforço técnico ou de uma segunda opinião sobre um projeto.",
             "Arquitetos, decoradores e organizadores de eventos que querem mostrar projetos em realidade aumentada."
-          ],
-          "label": "Clientes"
+          ]
         },
         {
           "type": "project",
@@ -137,22 +140,40 @@
           "items": [
             {
               "title": "Conversa",
-              "text": "Percebemos o problema, o público e o que já existe."
+              "text": "Percebemos o problema, o público e o que já existe.",
+              "icon": "message-circle"
             },
             {
               "title": "Proposta",
-              "text": "Âmbito, prazos e custos por escrito, antes de começar."
+              "text": "Âmbito, prazos e custos por escrito, antes de começar.",
+              "icon": "file-text"
             },
             {
               "title": "Desenho e desenvolvimento",
-              "text": "Ciclos curtos, com versões para rever a cada etapa."
+              "text": "Ciclos curtos, com versões para rever a cada etapa.",
+              "icon": "layers"
             },
             {
               "title": "Lançamento",
-              "text": "Publicação, medição e acompanhamento depois de sair."
+              "text": "Publicação, medição e acompanhamento depois de sair.",
+              "icon": "rocket"
             }
           ],
           "label": "Processo"
+        },
+        {
+          "type": "text",
+          "id": "sobre-nos",
+          "label": "Sobre",
+          "h2": "Quem somos",
+          "text": "Um estúdio independente de produto digital em Óbidos. Quem fundou a empresa acompanha cada projeto do início ao fim, sem intermediários.",
+          "actions": [
+            {
+              "text": "Conhecer a Thr33 Labs",
+              "href": "/sobre/",
+              "style": "ghost"
+            }
+          ]
         },
         {
           "type": "cta",
@@ -285,7 +306,8 @@
                 "Escolha de tecnologia, alojamento e fornecedores.",
                 "Plano de migração de sistemas antigos.",
                 "Revisão de segurança e de RGPD em produtos digitais."
-              ]
+              ],
+              "icon": "compass"
             },
             {
               "id": "desenvolvimento",
@@ -298,7 +320,8 @@
                 "Plataformas web com área de cliente e painel de gestão.",
                 "Aplicações iOS e Android.",
                 "Integrações com pagamentos, email e APIs de terceiros."
-              ]
+              ],
+              "icon": "code"
             },
             {
               "id": "design",
@@ -311,7 +334,8 @@
                 "Wireframes e protótipos navegáveis.",
                 "Sistemas de design e bibliotecas de componentes.",
                 "Revisão de acessibilidade segundo as WCAG 2.1 AA."
-              ]
+              ],
+              "icon": "pen-tool"
             },
             {
               "id": "realidade-aumentada",
@@ -324,7 +348,8 @@
                 "Decoração e mobiliário à escala real.",
                 "Montagens de eventos antes do dia.",
                 "<a href=\"/produtos/\">vizia</a>, o nosso produto de realidade aumentada."
-              ]
+              ],
+              "icon": "box"
             }
           ]
         },
