@@ -4,18 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About Thr33 Labs · Digital product studio</title>
-  <meta name="description" content="About us: Thr33 Labs is an independent digital product studio, incorporated in 2026, with its registered office in Óbidos, Portugal.">
   <meta name="theme-color" content="#F3F0E8" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
-  <link rel="canonical" href="https://thr33.xyz/en/about/">
-  <link rel="alternate" hreflang="pt-PT" href="https://thr33.xyz/sobre/">
-  <link rel="alternate" hreflang="en" href="https://thr33.xyz/en/about/">
-  <link rel="alternate" hreflang="x-default" href="https://thr33.xyz/sobre/">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="/assets/fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/css/tokens.css">
   <link rel="stylesheet" href="/assets/site.css">
-
+  <!-- Sem defer: põe a classe .js no html antes de pintar; o resto corre no DOMContentLoaded. -->
+  <script src="/assets/js/site.js"></script>
+  <meta name="description" content="About us: Thr33 Labs is an independent digital product studio, incorporated in 2026, with its registered office in Óbidos, Portugal.">
+  <link rel="canonical" href="https://thr33.xyz/en/about/">
+  <link rel="alternate" hreflang="pt-PT" href="https://thr33.xyz/sobre/">
+  <link rel="alternate" hreflang="en" href="https://thr33.xyz/en/about/">
+  <link rel="alternate" hreflang="x-default" href="https://thr33.xyz/sobre/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Thr33 Labs">
   <meta property="og:title" content="About Thr33 Labs · Digital product studio">
@@ -32,54 +33,72 @@
 <body>
   <a class="skip" href="#conteudo">Skip to content</a>
 
-  <header class="site-header">
+  <header class="site-header" data-header>
     <div class="wrap header-inner">
       <a class="wordmark" href="/en/">Thr33 Labs</a>
-      <nav aria-label="Main navigation">
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu">
+        <span class="menu-toggle-icon" aria-hidden="true"></span>
+        <span class="menu-toggle-text">Menu</span>
+      </button>
+      <nav class="menu" id="menu" aria-label="Main navigation">
         <ul>
-          <li><a href="/en/services/">Services</a></li>
-          <li><a href="/en/products/">Products</a></li>
-          <li><a href="/en/about/" aria-current="page">About</a></li>
-          <li><a href="/en/contact/">Contact</a></li>
+          <li><a href="/en/services/"><span class="nav-num" aria-hidden="true">01</span>Services</a></li>
+          <li><a href="/en/products/"><span class="nav-num" aria-hidden="true">02</span>Projects</a></li>
+          <li><a href="/en/about/" aria-current="page"><span class="nav-num" aria-hidden="true">03</span>About</a></li>
+          <li><a href="/en/contact/"><span class="nav-num" aria-hidden="true">04</span>Contact</a></li>
+          <li><a class="lang" href="/sobre/" hreflang="pt-PT" lang="pt-PT" aria-label="Português"><span class="nav-num" aria-hidden="true">05</span>PT</a></li>
         </ul>
       </nav>
-      <a class="lang" href="/sobre/" hreflang="pt-PT" lang="pt-PT" aria-label="Português">PT</a>
     </div>
   </header>
 
   <main id="conteudo">
     <section class="page-head">
       <div class="wrap">
-        <p class="badge">About</p>
+        <p class="label">(About)</p>
         <h1>A small studio, close to the people who use what we build</h1>
         <p class="lead">Thr33 Labs is the brand of THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA, a company incorporated in 2026 with its registered office in Óbidos, Portugal.</p>
       </div>
     </section>
 
     <section class="band" aria-labelledby="who-we-are">
-      <div class="wrap service-grid">
-        <h2 id="who-we-are">Who we are</h2>
-        <div class="prose">
-          <p>We are an independent digital product studio. The company is managed by its founder, who follows every project from start to finish, with no middlemen.</p>
-          <p>When a project calls for it, we bring in trusted partners in design, development and 3D, always with a single point of contact at Thr33 Labs.</p>
-          <p>Besides client work, we build our own products, such as <a href="/en/products/">vizia</a>, an augmented reality product.</p>
+      <div class="wrap">
+        <p class="label"><span class="label-num">(01)</span> Studio</p>
+        <div class="service-grid">
+          <h2 id="who-we-are">Who we are</h2>
+          <div class="prose">
+            <p>We are an independent digital product studio. The company is managed by its founder, who follows every project from start to finish, with no middlemen.</p>
+            <p>When a project calls for it, we bring in trusted partners in design, development and 3D, always with a single point of contact at Thr33 Labs.</p>
+            <p>Besides client work, we build our own products, such as <a href="/en/products/">vizia</a>, an augmented reality product.</p>
+          </div>
         </div>
       </div>
     </section>
 
     <section class="band" aria-labelledby="principles">
       <div class="wrap">
+        <p class="label"><span class="label-num">(02)</span> Principles</p>
         <h2 id="principles">What guides us</h2>
         <ul class="grid grid-3">
-          <li class="card"><h3>Real use</h3><p>A product counts when people use it. That is what we measure, not the number of features.</p></li>
-          <li class="card"><h3>Clarity</h3><p>Scope, timeline and cost in writing before we start, and early warnings when something changes.</p></li>
-          <li class="card"><h3>Responsibility</h3><p>Security, GDPR and accessibility from day one, not at the end.</p></li>
+          <li class="card">
+            <h3>Real use</h3>
+            <p>A product counts when people use it. That is what we measure, not the number of features.</p>
+          </li>
+          <li class="card">
+            <h3>Clarity</h3>
+            <p>Scope, timeline and cost in writing before we start, and early warnings when something changes.</p>
+          </li>
+          <li class="card">
+            <h3>Responsibility</h3>
+            <p>Security, GDPR and accessibility from day one, not at the end.</p>
+          </li>
         </ul>
       </div>
     </section>
 
     <section class="band" aria-labelledby="company">
       <div class="wrap">
+        <p class="label"><span class="label-num">(03)</span> Fact sheet</p>
         <h2 id="company">Company details</h2>
         <dl class="facts">
           <div><dt>Legal name</dt><dd>THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA</dd></div>
@@ -108,7 +127,7 @@
           <p class="footer-heading">Pages</p>
           <ul>
             <li><a href="/en/services/">Services</a></li>
-            <li><a href="/en/products/">Products</a></li>
+            <li><a href="/en/products/">Projects</a></li>
             <li><a href="/en/about/">About</a></li>
             <li><a href="/en/contact/">Contact</a></li>
             <li><a href="/en/privacy/">Privacy</a></li>

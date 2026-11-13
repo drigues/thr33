@@ -4,18 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Privacy policy · Thr33 Labs</title>
-  <meta name="description" content="How Thr33 Labs handles personal data on thr33.xyz and in email and phone contacts, under the GDPR.">
   <meta name="theme-color" content="#F3F0E8" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
-  <link rel="canonical" href="https://thr33.xyz/en/privacy/">
-  <link rel="alternate" hreflang="pt-PT" href="https://thr33.xyz/privacidade/">
-  <link rel="alternate" hreflang="en" href="https://thr33.xyz/en/privacy/">
-  <link rel="alternate" hreflang="x-default" href="https://thr33.xyz/privacidade/">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="/assets/fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/css/tokens.css">
   <link rel="stylesheet" href="/assets/site.css">
-
+  <!-- Sem defer: põe a classe .js no html antes de pintar; o resto corre no DOMContentLoaded. -->
+  <script src="/assets/js/site.js"></script>
+  <meta name="description" content="How Thr33 Labs handles personal data on thr33.xyz and in email and phone contacts, under the GDPR.">
+  <link rel="canonical" href="https://thr33.xyz/en/privacy/">
+  <link rel="alternate" hreflang="pt-PT" href="https://thr33.xyz/privacidade/">
+  <link rel="alternate" hreflang="en" href="https://thr33.xyz/en/privacy/">
+  <link rel="alternate" hreflang="x-default" href="https://thr33.xyz/privacidade/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Thr33 Labs">
   <meta property="og:title" content="Privacy policy · Thr33 Labs">
@@ -32,25 +33,29 @@
 <body>
   <a class="skip" href="#conteudo">Skip to content</a>
 
-  <header class="site-header">
+  <header class="site-header" data-header>
     <div class="wrap header-inner">
       <a class="wordmark" href="/en/">Thr33 Labs</a>
-      <nav aria-label="Main navigation">
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu">
+        <span class="menu-toggle-icon" aria-hidden="true"></span>
+        <span class="menu-toggle-text">Menu</span>
+      </button>
+      <nav class="menu" id="menu" aria-label="Main navigation">
         <ul>
-          <li><a href="/en/services/">Services</a></li>
-          <li><a href="/en/products/">Products</a></li>
-          <li><a href="/en/about/">About</a></li>
-          <li><a href="/en/contact/">Contact</a></li>
+          <li><a href="/en/services/"><span class="nav-num" aria-hidden="true">01</span>Services</a></li>
+          <li><a href="/en/products/"><span class="nav-num" aria-hidden="true">02</span>Projects</a></li>
+          <li><a href="/en/about/"><span class="nav-num" aria-hidden="true">03</span>About</a></li>
+          <li><a href="/en/contact/"><span class="nav-num" aria-hidden="true">04</span>Contact</a></li>
+          <li><a class="lang" href="/privacidade/" hreflang="pt-PT" lang="pt-PT" aria-label="Português"><span class="nav-num" aria-hidden="true">05</span>PT</a></li>
         </ul>
       </nav>
-      <a class="lang" href="/privacidade/" hreflang="pt-PT" lang="pt-PT" aria-label="Português">PT</a>
     </div>
   </header>
 
   <main id="conteudo">
     <section class="page-head">
       <div class="wrap">
-        <p class="badge">GDPR</p>
+        <p class="label">(GDPR)</p>
         <h1>Privacy policy</h1>
         <p class="lead">The thr33.xyz website has no forms, sets no cookies and uses no analytics or advertising tools. This page explains the little data we handle and why.</p>
       </div>
@@ -60,9 +65,11 @@
       <p class="updated">Last updated: 12 November 2026</p>
 
       <h2 id="controller">Data controller</h2>
+
       <p>THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA, tax number (NIPC) 519573021, registered office at Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos, Portugal. Privacy contact: <a href="mailto:hello@thr33.xyz">hello@thr33.xyz</a>, with the subject "Privacy".</p>
 
       <h2 id="data">What data we handle</h2>
+
       <ul>
         <li><strong>Website visits.</strong> Like any website, the server logs technical requests: IP address, date and time, requested page, browser and operating system. We do not use this data to identify visitors or build profiles.</li>
         <li><strong>Email or phone contacts.</strong> If you contact us, we handle your name, email address or phone number, your company and the content of your message.</li>
@@ -70,25 +77,31 @@
       </ul>
 
       <h2 id="purposes">Purposes and legal bases</h2>
+
       <ul>
         <li>Keeping the website available and secure, and detecting abuse: legitimate interest (Article 6(1)(f) GDPR).</li>
         <li>Answering enquiries and preparing proposals: steps taken at your request before a contract (Article 6(1)(b)).</li>
         <li>Performing client contracts: performance of a contract (Article 6(1)(b)).</li>
         <li>Meeting tax and accounting obligations: legal obligation (Article 6(1)(c)).</li>
       </ul>
+
       <p>We do not sell personal data or use it for advertising or automated decision-making.</p>
 
       <h2 id="processors">Who has access</h2>
+
       <p>We use service providers that process data on our behalf, under contracts that require them to protect it:</p>
+
       <ul>
         <li>Hetzner Online (Germany): website hosting.</li>
         <li>Cloudflare: content delivery and protection against attacks. It may process data outside the European Union, under the EU-US Data Privacy Framework and the European Commission's standard contractual clauses.</li>
         <li>Zoho (European Union data centre): email.</li>
         <li>Certified accountant: client invoicing data.</li>
       </ul>
+
       <p>The website's fonts are served by the website itself, with no third-party requests.</p>
 
       <h2 id="retention">How long we keep data</h2>
+
       <ul>
         <li>Server technical logs: up to 30 days.</li>
         <li>Enquiries that do not lead to a project: up to 2 years after the last contact.</li>
@@ -96,16 +109,21 @@
       </ul>
 
       <h2 id="rights">Your rights</h2>
+
       <p>You can ask to access, correct, erase, restrict or port your data, and object to processing based on legitimate interest. Send your request to <a href="mailto:hello@thr33.xyz">hello@thr33.xyz</a>. We reply within one month.</p>
+
       <p>You can also complain to the Portuguese data protection authority, Comissão Nacional de Proteção de Dados (<a href="https://www.cnpd.pt" target="_blank" rel="noopener noreferrer">cnpd.pt</a>).</p>
 
       <h2 id="cookies">Cookies</h2>
+
       <p>The thr33.xyz website sets no cookies and uses no similar technologies, so it shows no consent banner. Cloudflare may use strictly necessary cookies to protect the website against malicious traffic; these do not require consent.</p>
 
       <h2 id="other-sites">Other websites</h2>
+
       <p>The website links to other websites, such as <a href="https://vizia.thr33.xyz" target="_blank" rel="noopener noreferrer">vizia</a>, which have their own privacy policies.</p>
 
       <h2 id="changes">Changes</h2>
+
       <p>If this policy changes, we publish the new version here with its update date.</p>
     </div>
   </main>
@@ -121,7 +139,7 @@
           <p class="footer-heading">Pages</p>
           <ul>
             <li><a href="/en/services/">Services</a></li>
-            <li><a href="/en/products/">Products</a></li>
+            <li><a href="/en/products/">Projects</a></li>
             <li><a href="/en/about/">About</a></li>
             <li><a href="/en/contact/">Contact</a></li>
             <li><a href="/en/privacy/">Privacy</a></li>

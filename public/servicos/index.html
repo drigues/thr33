@@ -4,18 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Serviços · Consultoria, web, aplicações, UX e realidade aumentada</title>
-  <meta name="description" content="Consultoria em informática, desenvolvimento web e de aplicações, design UX/UI e realidade aumentada. Serviços da Thr33 Labs, com exemplos.">
   <meta name="theme-color" content="#F3F0E8" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
-  <link rel="canonical" href="https://thr33.xyz/servicos/">
-  <link rel="alternate" hreflang="pt-PT" href="https://thr33.xyz/servicos/">
-  <link rel="alternate" hreflang="en" href="https://thr33.xyz/en/services/">
-  <link rel="alternate" hreflang="x-default" href="https://thr33.xyz/servicos/">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="/assets/fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/css/tokens.css">
   <link rel="stylesheet" href="/assets/site.css">
-
+  <!-- Sem defer: põe a classe .js no html antes de pintar; o resto corre no DOMContentLoaded. -->
+  <script src="/assets/js/site.js"></script>
+  <meta name="description" content="Consultoria em informática, desenvolvimento web e de aplicações, design UX/UI e realidade aumentada. Serviços da Thr33 Labs, com exemplos.">
+  <link rel="canonical" href="https://thr33.xyz/servicos/">
+  <link rel="alternate" hreflang="pt-PT" href="https://thr33.xyz/servicos/">
+  <link rel="alternate" hreflang="en" href="https://thr33.xyz/en/services/">
+  <link rel="alternate" hreflang="x-default" href="https://thr33.xyz/servicos/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Thr33 Labs">
   <meta property="og:title" content="Serviços · Consultoria, web, aplicações, UX e realidade aumentada">
@@ -32,25 +33,29 @@
 <body>
   <a class="skip" href="#conteudo">Saltar para o conteúdo</a>
 
-  <header class="site-header">
+  <header class="site-header" data-header>
     <div class="wrap header-inner">
       <a class="wordmark" href="/">Thr33 Labs</a>
-      <nav aria-label="Navegação principal">
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Abrir menu" data-label-open="Abrir menu" data-label-close="Fechar menu">
+        <span class="menu-toggle-icon" aria-hidden="true"></span>
+        <span class="menu-toggle-text">Menu</span>
+      </button>
+      <nav class="menu" id="menu" aria-label="Navegação principal">
         <ul>
-          <li><a href="/servicos/" aria-current="page">Serviços</a></li>
-          <li><a href="/produtos/">Produtos</a></li>
-          <li><a href="/sobre/">Sobre</a></li>
-          <li><a href="/contacto/">Contacto</a></li>
+          <li><a href="/servicos/" aria-current="page"><span class="nav-num" aria-hidden="true">01</span>Serviços</a></li>
+          <li><a href="/produtos/"><span class="nav-num" aria-hidden="true">02</span>Projetos</a></li>
+          <li><a href="/sobre/"><span class="nav-num" aria-hidden="true">03</span>Sobre</a></li>
+          <li><a href="/contacto/"><span class="nav-num" aria-hidden="true">04</span>Contacto</a></li>
+          <li><a class="lang" href="/en/services/" hreflang="en" lang="en" aria-label="English"><span class="nav-num" aria-hidden="true">05</span>EN</a></li>
         </ul>
       </nav>
-      <a class="lang" href="/en/services/" hreflang="en" lang="en" aria-label="English">EN</a>
     </div>
   </header>
 
   <main id="conteudo">
     <section class="page-head">
       <div class="wrap">
-        <p class="badge">Serviços</p>
+        <p class="label">(Serviços)</p>
         <h1>Da ideia ao produto publicado</h1>
         <p class="lead">Quatro áreas que se combinam conforme o projeto. Pode contratar só uma, ou o percurso completo.</p>
       </div>
@@ -58,6 +63,7 @@
 
     <div class="wrap">
       <section class="service" id="consultoria" aria-labelledby="consultoria-titulo">
+        <p class="label"><span class="label-num">(01)</span></p>
         <div class="service-grid">
           <div>
             <h2 id="consultoria-titulo">Consultoria em informática</h2>
@@ -66,16 +72,17 @@
           <div>
             <p class="examples-title">Exemplos</p>
             <ul class="ticks">
-              <li>Auditoria técnica de um site ou de uma aplicação existente.</li>
-              <li>Escolha de tecnologia, alojamento e fornecedores.</li>
-              <li>Plano de migração de sistemas antigos.</li>
-              <li>Revisão de segurança e de RGPD em produtos digitais.</li>
-            </ul>
+          <li>Auditoria técnica de um site ou de uma aplicação existente.</li>
+          <li>Escolha de tecnologia, alojamento e fornecedores.</li>
+          <li>Plano de migração de sistemas antigos.</li>
+          <li>Revisão de segurança e de RGPD em produtos digitais.</li>
+        </ul>
           </div>
         </div>
       </section>
 
       <section class="service" id="desenvolvimento" aria-labelledby="desenvolvimento-titulo">
+        <p class="label"><span class="label-num">(02)</span></p>
         <div class="service-grid">
           <div>
             <h2 id="desenvolvimento-titulo">Desenvolvimento web e de aplicações</h2>
@@ -84,16 +91,17 @@
           <div>
             <p class="examples-title">Exemplos</p>
             <ul class="ticks">
-              <li>Sites institucionais e páginas de produto.</li>
-              <li>Plataformas web com área de cliente e painel de gestão.</li>
-              <li>Aplicações iOS e Android.</li>
-              <li>Integrações com pagamentos, email e APIs de terceiros.</li>
-            </ul>
+          <li>Sites institucionais e páginas de produto.</li>
+          <li>Plataformas web com área de cliente e painel de gestão.</li>
+          <li>Aplicações iOS e Android.</li>
+          <li>Integrações com pagamentos, email e APIs de terceiros.</li>
+        </ul>
           </div>
         </div>
       </section>
 
       <section class="service" id="design" aria-labelledby="design-titulo">
+        <p class="label"><span class="label-num">(03)</span></p>
         <div class="service-grid">
           <div>
             <h2 id="design-titulo">Design de produto, UX e UI</h2>
@@ -102,16 +110,17 @@
           <div>
             <p class="examples-title">Exemplos</p>
             <ul class="ticks">
-              <li>Entrevistas com utilizadores e mapas de fluxos.</li>
-              <li>Wireframes e protótipos navegáveis.</li>
-              <li>Sistemas de design e bibliotecas de componentes.</li>
-              <li>Revisão de acessibilidade segundo as WCAG 2.1 AA.</li>
-            </ul>
+          <li>Entrevistas com utilizadores e mapas de fluxos.</li>
+          <li>Wireframes e protótipos navegáveis.</li>
+          <li>Sistemas de design e bibliotecas de componentes.</li>
+          <li>Revisão de acessibilidade segundo as WCAG 2.1 AA.</li>
+        </ul>
           </div>
         </div>
       </section>
 
       <section class="service" id="realidade-aumentada" aria-labelledby="ra-titulo">
+        <p class="label"><span class="label-num">(04)</span></p>
         <div class="service-grid">
           <div>
             <h2 id="ra-titulo">Realidade aumentada</h2>
@@ -120,11 +129,11 @@
           <div>
             <p class="examples-title">Exemplos</p>
             <ul class="ticks">
-              <li>Projetos de arquitetura vistos no terreno.</li>
-              <li>Decoração e mobiliário à escala real.</li>
-              <li>Montagens de eventos antes do dia.</li>
-              <li><a href="/produtos/">vizia</a>, o nosso produto de realidade aumentada.</li>
-            </ul>
+          <li>Projetos de arquitetura vistos no terreno.</li>
+          <li>Decoração e mobiliário à escala real.</li>
+          <li>Montagens de eventos antes do dia.</li>
+          <li><a href="/produtos/">vizia</a>, o nosso produto de realidade aumentada.</li>
+        </ul>
           </div>
         </div>
       </section>
@@ -152,7 +161,7 @@
           <p class="footer-heading">Páginas</p>
           <ul>
             <li><a href="/servicos/">Serviços</a></li>
-            <li><a href="/produtos/">Produtos</a></li>
+            <li><a href="/produtos/">Projetos</a></li>
             <li><a href="/sobre/">Sobre</a></li>
             <li><a href="/contacto/">Contacto</a></li>
             <li><a href="/privacidade/">Privacidade</a></li>

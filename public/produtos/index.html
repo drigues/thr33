@@ -4,18 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Produtos e projetos · Thr33 Labs</title>
-  <meta name="description" content="O vizia, produto de realidade aumentada da Thr33 Labs para arquitetura, decoração e eventos, e os projetos que desenvolvemos para clientes.">
   <meta name="theme-color" content="#F3F0E8" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
-  <link rel="canonical" href="https://thr33.xyz/produtos/">
-  <link rel="alternate" hreflang="pt-PT" href="https://thr33.xyz/produtos/">
-  <link rel="alternate" hreflang="en" href="https://thr33.xyz/en/products/">
-  <link rel="alternate" hreflang="x-default" href="https://thr33.xyz/produtos/">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="/assets/fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/css/tokens.css">
   <link rel="stylesheet" href="/assets/site.css">
-
+  <!-- Sem defer: põe a classe .js no html antes de pintar; o resto corre no DOMContentLoaded. -->
+  <script src="/assets/js/site.js"></script>
+  <meta name="description" content="O vizia, produto de realidade aumentada da Thr33 Labs para arquitetura, decoração e eventos, e os projetos que desenvolvemos para clientes.">
+  <link rel="canonical" href="https://thr33.xyz/produtos/">
+  <link rel="alternate" hreflang="pt-PT" href="https://thr33.xyz/produtos/">
+  <link rel="alternate" hreflang="en" href="https://thr33.xyz/en/products/">
+  <link rel="alternate" hreflang="x-default" href="https://thr33.xyz/produtos/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Thr33 Labs">
   <meta property="og:title" content="Produtos e projetos · Thr33 Labs">
@@ -32,39 +33,45 @@
 <body>
   <a class="skip" href="#conteudo">Saltar para o conteúdo</a>
 
-  <header class="site-header">
+  <header class="site-header" data-header>
     <div class="wrap header-inner">
       <a class="wordmark" href="/">Thr33 Labs</a>
-      <nav aria-label="Navegação principal">
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Abrir menu" data-label-open="Abrir menu" data-label-close="Fechar menu">
+        <span class="menu-toggle-icon" aria-hidden="true"></span>
+        <span class="menu-toggle-text">Menu</span>
+      </button>
+      <nav class="menu" id="menu" aria-label="Navegação principal">
         <ul>
-          <li><a href="/servicos/">Serviços</a></li>
-          <li><a href="/produtos/" aria-current="page">Produtos</a></li>
-          <li><a href="/sobre/">Sobre</a></li>
-          <li><a href="/contacto/">Contacto</a></li>
+          <li><a href="/servicos/"><span class="nav-num" aria-hidden="true">01</span>Serviços</a></li>
+          <li><a href="/produtos/" aria-current="page"><span class="nav-num" aria-hidden="true">02</span>Projetos</a></li>
+          <li><a href="/sobre/"><span class="nav-num" aria-hidden="true">03</span>Sobre</a></li>
+          <li><a href="/contacto/"><span class="nav-num" aria-hidden="true">04</span>Contacto</a></li>
+          <li><a class="lang" href="/en/products/" hreflang="en" lang="en" aria-label="English"><span class="nav-num" aria-hidden="true">05</span>EN</a></li>
         </ul>
       </nav>
-      <a class="lang" href="/en/products/" hreflang="en" lang="en" aria-label="English">EN</a>
     </div>
   </header>
 
   <main id="conteudo">
     <section class="page-head">
       <div class="wrap">
-        <p class="badge">Produtos e projetos</p>
+        <p class="label">(Produtos e projetos)</p>
         <h1>O que já construímos</h1>
         <p class="lead">Produtos próprios que desenvolvemos e mantemos, e projetos feitos à medida para outras empresas.</p>
       </div>
     </section>
 
     <section class="band" aria-labelledby="vizia">
-      <div class="wrap product">
+      <div class="wrap">
+        <p class="label"><span class="label-num">(01)</span> Produto</p>
+        <div class="product">
         <div>
           <p class="examples-title">Produto próprio · Realidade aumentada</p>
           <h2 id="vizia" class="product-name">vizia</h2>
           <p class="dim">Projetos de arquitetura, decoração e eventos em realidade aumentada, à escala real e no local. Para arquitetos, decoradores e organizadores de eventos que querem que o cliente veja o resultado antes de avançar.</p>
           <div class="actions">
-            <a class="btn btn-primary" href="https://vizia.thr33.xyz" target="_blank" rel="noopener noreferrer">Visitar vizia.thr33.xyz</a>
-          </div>
+          <a class="btn btn-primary" href="https://vizia.thr33.xyz" target="_blank" rel="noopener noreferrer">Visitar vizia.thr33.xyz</a>
+        </div>
         </div>
         <ul class="ticks">
           <li>Modelos 3D colocados no espaço real, à escala.</li>
@@ -72,10 +79,12 @@
           <li>Pensado para apresentar no local, com o cliente.</li>
         </ul>
       </div>
+      </div>
     </section>
 
     <section class="band" aria-labelledby="clientes">
       <div class="wrap">
+        <p class="label"><span class="label-num">(02)</span> Clientes</p>
         <h2 id="clientes">Projetos para clientes</h2>
         <p class="band-intro">Desenvolvemos sites, plataformas e aplicações para outras empresas. Só mostramos publicamente projetos com autorização do cliente, por isso partilhamos exemplos relevantes para o seu caso numa conversa.</p>
         <div class="actions">
@@ -96,7 +105,7 @@
           <p class="footer-heading">Páginas</p>
           <ul>
             <li><a href="/servicos/">Serviços</a></li>
-            <li><a href="/produtos/">Produtos</a></li>
+            <li><a href="/produtos/">Projetos</a></li>
             <li><a href="/sobre/">Sobre</a></li>
             <li><a href="/contacto/">Contacto</a></li>
             <li><a href="/privacidade/">Privacidade</a></li>

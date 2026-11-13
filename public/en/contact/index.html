@@ -4,18 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact · Thr33 Labs</title>
-  <meta name="description" content="Contact Thr33 Labs by email or phone. Registered office in Óbidos, Portugal. Email hello@thr33.xyz, phone +351 936 466 845.">
   <meta name="theme-color" content="#F3F0E8" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
-  <link rel="canonical" href="https://thr33.xyz/en/contact/">
-  <link rel="alternate" hreflang="pt-PT" href="https://thr33.xyz/contacto/">
-  <link rel="alternate" hreflang="en" href="https://thr33.xyz/en/contact/">
-  <link rel="alternate" hreflang="x-default" href="https://thr33.xyz/contacto/">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="/assets/fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/css/tokens.css">
   <link rel="stylesheet" href="/assets/site.css">
-
+  <!-- Sem defer: põe a classe .js no html antes de pintar; o resto corre no DOMContentLoaded. -->
+  <script src="/assets/js/site.js"></script>
+  <meta name="description" content="Contact Thr33 Labs by email or phone. Registered office in Óbidos, Portugal. Email hello@thr33.xyz, phone +351 936 466 845.">
+  <link rel="canonical" href="https://thr33.xyz/en/contact/">
+  <link rel="alternate" hreflang="pt-PT" href="https://thr33.xyz/contacto/">
+  <link rel="alternate" hreflang="en" href="https://thr33.xyz/en/contact/">
+  <link rel="alternate" hreflang="x-default" href="https://thr33.xyz/contacto/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Thr33 Labs">
   <meta property="og:title" content="Contact · Thr33 Labs">
@@ -32,25 +33,29 @@
 <body>
   <a class="skip" href="#conteudo">Skip to content</a>
 
-  <header class="site-header">
+  <header class="site-header" data-header>
     <div class="wrap header-inner">
       <a class="wordmark" href="/en/">Thr33 Labs</a>
-      <nav aria-label="Main navigation">
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu">
+        <span class="menu-toggle-icon" aria-hidden="true"></span>
+        <span class="menu-toggle-text">Menu</span>
+      </button>
+      <nav class="menu" id="menu" aria-label="Main navigation">
         <ul>
-          <li><a href="/en/services/">Services</a></li>
-          <li><a href="/en/products/">Products</a></li>
-          <li><a href="/en/about/">About</a></li>
-          <li><a href="/en/contact/" aria-current="page">Contact</a></li>
+          <li><a href="/en/services/"><span class="nav-num" aria-hidden="true">01</span>Services</a></li>
+          <li><a href="/en/products/"><span class="nav-num" aria-hidden="true">02</span>Projects</a></li>
+          <li><a href="/en/about/"><span class="nav-num" aria-hidden="true">03</span>About</a></li>
+          <li><a href="/en/contact/" aria-current="page"><span class="nav-num" aria-hidden="true">04</span>Contact</a></li>
+          <li><a class="lang" href="/contacto/" hreflang="pt-PT" lang="pt-PT" aria-label="Português"><span class="nav-num" aria-hidden="true">05</span>PT</a></li>
         </ul>
       </nav>
-      <a class="lang" href="/contacto/" hreflang="pt-PT" lang="pt-PT" aria-label="Português">PT</a>
     </div>
   </header>
 
   <main id="conteudo">
     <section class="page-head">
       <div class="wrap">
-        <p class="badge">Contact</p>
+        <p class="label">(Contact)</p>
         <h1>Get in touch</h1>
         <p class="lead">For proposals, questions or partnerships, email or call us. Let us know what you need and the timeline you have in mind.</p>
       </div>
@@ -58,6 +63,7 @@
 
     <section class="band" aria-labelledby="channels">
       <div class="wrap">
+        <p class="label"><span class="label-num">(01)</span> Channels</p>
         <h2 id="channels">How to reach us</h2>
         <ul class="grid grid-3">
           <li class="card">
@@ -80,6 +86,7 @@
 
     <section class="band" aria-labelledby="billing">
       <div class="wrap">
+        <p class="label"><span class="label-num">(02)</span> Billing</p>
         <h2 id="billing">Billing details</h2>
         <dl class="facts">
           <div><dt>Legal name</dt><dd>THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA</dd></div>
@@ -102,7 +109,7 @@
           <p class="footer-heading">Pages</p>
           <ul>
             <li><a href="/en/services/">Services</a></li>
-            <li><a href="/en/products/">Products</a></li>
+            <li><a href="/en/products/">Projects</a></li>
             <li><a href="/en/about/">About</a></li>
             <li><a href="/en/contact/">Contact</a></li>
             <li><a href="/en/privacy/">Privacy</a></li>
