@@ -4,6 +4,7 @@ Corre com: python3 tests/check_site.py
 Sai com código 1 se alguma regra falhar.
 """
 import re
+from datetime import date
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
@@ -63,6 +64,11 @@ HOME_ICONS = {"service": 4, "step": 4}
 SERVICES_PAGE_ICONS = 4
 # Cores por secção (#31): Projetos veste Tinta e o CTA final veste Telha.
 SCENES = {"/": ["ink", "telha"], "/servicos/": ["telha"], "/produtos/": ["ink"]}
+# CTA final e rodapé (#32): "Vamos falar?" em tamanho de hero, email grande e rodapé em duas linhas.
+CTA_TITLE = {"pt-PT": "Vamos falar?", "en": "Shall we talk?"}
+EMAIL = "hello@thr33.xyz"
+PHONE_HREF = "tel:+351936466845"
+FOOTER_LINE1 = {"pt-PT": ["/privacidade/", "/termos/"], "en": ["/en/privacy/", "/en/terms/"]}
 # Marquee (#28): competências em loop na página inicial; a cópia para o loop não é lida duas vezes.
 MARQUEE = {
     "pt-PT": ["Consultoria", "Web", "Apps", "UX/UI", "Realidade aumentada", "Laravel", "3D"],
@@ -454,6 +460,66 @@ def check_scenes(check, url, p):
         check(f"scene-{scene}" in classes, f"{url}: secção data-scene={scene} sem a classe scene-{scene}")
 
 
+def check_cta(check, url, html, lang, has_cta):
+    """CTA final: título em tamanho de hero com escala no scroll e email grande e clicável."""
+    m = re.search(r'<section class="band scene-telha"[^>]*>(.*?)</section>', html, re.S)
+    if not has_cta:
+        return
+    check(m is not None, f"{url}: falta o CTA final (secção scene-telha)")
+    if m is None:
+        return
+    cta = m.group(1)
+    title = re.search(r'<h2 class="cta-title"[^>]*>(.*?)</h2>', cta, re.S)
+    check(title is not None and title.group(1).strip() == CTA_TITLE[lang],
+          f"{url}: o CTA final deve ter <h2 class=\"cta-title\">{CTA_TITLE[lang]}</h2>")
+    check(title is not None and "data-cta-scale" in title.group(0), f"{url}: o título do CTA precisa de data-cta-scale")
+    check(re.search(rf'<a class="cta-email" href="mailto:{EMAIL}">{EMAIL}</a>', cta),
+          f"{url}: o CTA final precisa do email {EMAIL} grande e clicável (a.cta-email)")
+
+
+def check_footer(check, url, html, lang):
+    """Rodapé legal sucinto em duas linhas (art. 171.º CSC), sem nada escondido."""
+    m = re.search(r'<footer class="site-footer">(.*?)</footer>', html, re.S)
+    check(m is not None, f"{url}: rodapé em falta")
+    if m is None:
+        return
+    footer = m.group(1)
+    line1 = re.search(r'<ul class="footer-line">(.*?)</ul>', footer, re.S)
+    legal = re.findall(r'<p class="legal">(.*?)</p>', footer, re.S)
+    check(line1 is not None, f"{url}: falta a linha 1 do rodapé (ul.footer-line)")
+    check(len(legal) == 1, f"{url}: o rodapé deve ter uma só linha legal (p.legal), tem {len(legal)}")
+    check("footer-grid" not in footer, f"{url}: o rodapé passa a duas linhas, sem .footer-grid")
+    if line1 is None or len(legal) != 1:
+        return
+    check(footer.index('class="footer-line"') < footer.index('class="legal"'), f"{url}: a linha 1 vem antes da linha legal")
+    hrefs = re.findall(r'href="([^"]+)"', line1.group(1))
+    expected = [f"mailto:{EMAIL}", PHONE_HREF] + FOOTER_LINE1[lang] + [COMPLAINTS_URL]
+    check(hrefs == expected, f"{url}: linha 1 do rodapé com {hrefs}, esperado {expected}")
+    check(f"© {date.today().year} Thr33 Labs" in line1.group(1), f"{url}: linha 1 sem '© {date.today().year} Thr33 Labs'")
+    check(len(re.findall(r'href="', footer)) == len(expected), f"{url}: o rodapé só leva as ligações da linha 1")
+    text = " ".join(re.sub(r"<[^>]+>", " ", legal[0]).split())
+    for needle in LEGAL_FOOTER[lang]:
+        check(needle in text, f"{url}: linha legal sem '{needle}'")
+
+
+def check_footer_css(check):
+    css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
+    legal = re.search(r"\n\.legal\s*\{([^}]*)\}", css)
+    check(legal is not None, "site.css: regra .legal em falta")
+    if legal:
+        body = legal.group(1)
+        check("var(--font-mono)" in body, "site.css: .legal em JetBrains Mono (var(--font-mono))")
+        check("color: var(--muted)" in body, "site.css: .legal em Pedra (var(--muted)), contraste AA verificado nos tokens")
+        size = re.search(r"font-size:\s*([\d.]+)rem", body)
+        check(size is not None and 0.6875 <= float(size.group(1)) <= 0.75, "site.css: .legal entre 11 e 12 px")
+    line1 = re.search(r"\n\.footer-line\s*\{([^}]*)\}", css)
+    check(line1 is not None and "--font-mono" not in line1.group(1), "site.css: .footer-line em Space Grotesk")
+    title = re.search(r"\n\.cta-title\s*\{([^}]*)\}", css)
+    check(title is not None and "var(--text-hero)" in title.group(1), "site.css: .cta-title em tamanho de hero")
+    js = (ROOT / SITE_JS.lstrip("/")).read_text(encoding="utf-8")
+    check("data-cta-scale" in js, "site.js: falta a escala do CTA final (data-cta-scale)")
+
+
 def check_labels(check, url, p):
     expected = [f"({i:02d})" for i in range(1, len(p.label_nums) + 1)]
     check(p.label_nums == expected, f"{url}: etiquetas fora de ordem {p.label_nums}")
@@ -490,6 +556,7 @@ def main():
     check_no_js_hiding(check)
     check_motion_css(check)
     check_icons(check)
+    check_footer_css(check)
 
     titles, descriptions = {}, {}
     pages = {}
@@ -537,6 +604,8 @@ def main():
             check_marquee(check, url, p, lang, url in ("/", "/en/"))
             check_scenes(check, url, p)
             raw = file_for(url).read_text(encoding="utf-8")
+            check_cta(check, url, raw, lang, "telha" in [sc for sc, _ in p.scenes])
+            check_footer(check, url, raw, lang)
             check_page_icons(check, url, p, raw, url in ("/", "/en/"), url in ("/servicos/", "/en/services/"))
             if url in ("/", "/en/"):
                 check(section_labels(raw) == HOME_LABELS[lang], f"{url}: etiquetas {section_labels(raw)}, esperado {HOME_LABELS[lang]}")
@@ -581,6 +650,7 @@ def main():
         check(sheets[:2] == ["/assets/css/tokens.css", "/assets/site.css"],
               f"404.html: tokens.css tem de vir antes do site.css ({sheets})")
         check_header(check, "404.html", p)
+        check_footer(check, "404.html", f404.read_text(encoding="utf-8"), "pt-PT")
         pages["/404.html"] = p
 
     # Links internos e externos em todas as páginas

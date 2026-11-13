@@ -132,6 +132,22 @@ function colourScenes() {
   root.classList.add("scenes");
 }
 
+/* CTA final: o título cresce de 0.8 para 1 enquanto a secção sobe do fundo até ao meio do ecrã.
+   Só transform (sem saltos de layout); sem JS ou com reduced motion fica a 1. */
+function ctaScale(el) {
+  if (reducedMotion) return;
+  var frame = 0;
+  function update() {
+    frame = 0;
+    var vh = window.innerHeight, top = el.getBoundingClientRect().top;
+    var k = Math.min(Math.max((vh - top) / (vh * 0.5), 0), 1);
+    el.style.setProperty("--cta-scale", (0.8 + 0.2 * k).toFixed(3));
+  }
+  window.addEventListener("scroll", function () { if (!frame) frame = requestAnimationFrame(update); }, { passive: true });
+  window.addEventListener("resize", update);
+  update();
+}
+
 /* Botão principal magnético: segue um pouco o rato, só em desktop com rato. */
 function magneticButtons() {
   if (reducedMotion || !window.matchMedia("(pointer: fine) and (min-width: 48rem)").matches) return;
@@ -153,6 +169,7 @@ document.addEventListener("DOMContentLoaded", function () {
   revealGroups();
   colourScenes();
   magneticButtons();
+  Array.prototype.forEach.call(document.querySelectorAll("[data-cta-scale]"), ctaScale);
   Array.prototype.forEach.call(document.querySelectorAll("[data-marquee]"), marqueeScroll);
   countLabels();
   var hero = document.querySelector(".hero");

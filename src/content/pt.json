@@ -16,11 +16,7 @@
       "termos": "Termos de utilização",
       "inicio": "Início"
     },
-    "tagline": "Estúdio de produto digital em Óbidos, Portugal.",
-    "footer_nav": "Ligações do rodapé",
-    "contact_heading": "Contacto",
     "complaints": "Livro de Reclamações",
-    "pages_heading": "Páginas",
     "legal": "THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA · Sociedade unipessoal por quotas · Sede: Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos · Conservatória do Registo Comercial (RNPC) · Matrícula e NIPC 519573021 · Capital social 7.660,00 €",
     "menu_open": "Abrir menu",
     "menu_close": "Fechar menu",
@@ -178,7 +174,7 @@
         {
           "type": "cta",
           "id": "falar",
-          "h2": "Tem um projeto em mente?",
+          "h2": "Vamos falar?",
           "text": "Conte-nos o que precisa, por email ou por telefone. Respondemos com os próximos passos e, se fizer sentido, com uma proposta.",
           "actions": [
             {
@@ -356,7 +352,7 @@
         {
           "type": "cta",
           "id": "proposta",
-          "h2": "Vamos falar sobre o seu projeto",
+          "h2": "Vamos falar?",
           "text": "Diga-nos o que precisa e em que prazo. Respondemos com perguntas, próximos passos e, se fizer sentido, uma proposta.",
           "actions": [
             {
