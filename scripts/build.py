@@ -197,12 +197,29 @@ def intro(section):
     return f'<p class="band-intro">{section["text"]}</p>' if section.get("text") else ""
 
 
+HERO_GRADIENT = ('<div class="hero-gradient" aria-hidden="true">'
+                 '<span class="blob blob-telha"></span><span class="blob blob-lagoa"></span>'
+                 '<span class="blob blob-atlantico"></span></div>')
+
+
 def page_head(head):
-    cls = "hero" if head["kind"] == "hero" else "page-head"
-    parts = [label(head["label"], page=True), f'<h1>{head["h1"]}</h1>', f'<p class="lead">{head["lead"]}</p>']
+    """Cabeça da página. O hero (página inicial) leva o gradiente-assinatura e a indicação de scroll.
+
+    O <h1> leva data-split: o site.js parte-o em linhas para o reveal; sem JS fica como está.
+    """
+    is_hero = head["kind"] == "hero"
+    lab = label(head["label"], page=True)
+    if head.get("label_after"):
+        lab = lab.replace("</p>", f' {head["label_after"]}</p>')
+    parts = [lab, f'<h1 data-split>{head["h1"]}</h1>', f'<p class="lead">{head["lead"]}</p>']
     if head.get("actions"):
         parts.append(actions(head["actions"]))
-    return f'    <section class="{cls}">\n      <div class="wrap">\n        ' + "\n        ".join(parts) + "\n      </div>\n    </section>"
+    if head.get("scroll_hint"):
+        parts.append(f'<p class="hero-scroll" aria-hidden="true">{head["scroll_hint"]}</p>')
+    cls = "hero" if is_hero else "page-head"
+    gradient = f"\n      {HERO_GRADIENT}" if is_hero else ""
+    return (f'    <section class="{cls}">{gradient}\n      <div class="wrap">\n        '
+            + "\n        ".join(parts) + "\n      </div>\n    </section>")
 
 
 def counter_from(start=1):

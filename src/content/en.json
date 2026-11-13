@@ -32,7 +32,8 @@
       "description": "Thr33 Labs designs and builds websites, apps and augmented reality experiences for businesses, from Óbidos, Portugal.",
       "head": {
         "kind": "hero",
-        "label": "Digital Product Studio",
+        "label": "Thr33 Labs / ©2026",
+        "label_after": "Óbidos, PT",
         "h1": "Digital products that people <span class=\"accent\">use</span>",
         "lead": "Thr33 Labs is a digital product studio in Óbidos, Portugal. We design and build websites, apps and augmented reality experiences for businesses, from the first conversation to launch.",
         "actions": [
@@ -46,7 +47,8 @@
             "href": "/en/services/",
             "style": "ghost"
           }
-        ]
+        ],
+        "scroll_hint": "↓ scroll"
       },
       "sections": [
         {

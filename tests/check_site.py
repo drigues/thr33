@@ -52,7 +52,10 @@ REQUIRED_TOKENS = [
 BASE = ROOT.parent
 CONTENT = {"pt": BASE / "src" / "content" / "pt.json", "en": BASE / "src" / "content" / "en.json"}
 SITE_JS = "/assets/js/site.js"
-SITE_JS_MAX_BYTES = 4096
+# Hero (#27): etiqueta, gradiente-assinatura decorativo e títulos com reveal por linhas.
+HERO_LABEL = "(Thr33 Labs / ©2026) Óbidos, PT"
+HERO_BLOBS = 3
+SITE_JS_MAX_BYTES = 8192  # orçamento total de JS da spec: 70 KB gzip; o site.js fica muito abaixo
 
 FONTS = {"Space Grotesk": "space-grotesk.woff2", "JetBrains Mono": "jetbrains-mono-regular.woff2"}
 FONT_LICENCES = ["OFL.txt", "OFL-JetBrainsMono.txt"]
@@ -87,6 +90,12 @@ class Page(HTMLParser):
         self.buttons = []        # atributos de cada <button>
         self.scripts = []        # atributos de cada <script>
         self.nav_nums = []       # texto de .nav-num no cabeçalho
+        self.h1_attrs = []
+        self.hero_gradient = []  # atributos de .hero-gradient
+        self.blobs = 0
+        self.hero_labels = []    # texto de .label dentro de .hero
+        self.scroll_hints = []   # atributos de .hero-scroll
+        self._in_hero = 0
         self.header_hrefs = []
         self._in_main = 0
         self._in_header = 0
@@ -119,6 +128,7 @@ class Page(HTMLParser):
             self.buttons.append(a)
         elif tag == "h1":
             self.h1 += 1
+            self.h1_attrs.append(a)
         elif tag == "footer":
             self._in_footer += 1
         elif tag == "main":
@@ -130,7 +140,18 @@ class Page(HTMLParser):
         if tag == "a" and self._in_header:
             self.header_hrefs.append(a.get("href", ""))
         classes = a.get("class", "").split()
-        if "label-num" in classes:
+        if tag == "section" and "hero" in classes:
+            self._in_hero = 1
+        if "hero-gradient" in classes:
+            self.hero_gradient.append(a)
+        if "blob" in classes:
+            self.blobs += 1
+        if "hero-scroll" in classes:
+            self.scroll_hints.append(a)
+        if "label" in classes and self._in_hero:
+            self._capture = self.hero_labels
+            self.hero_labels.append("")
+        elif "label-num" in classes:
             self._capture = self.label_nums
             self.label_nums.append("")
         elif "nav-num" in classes and self._in_header:
@@ -138,8 +159,10 @@ class Page(HTMLParser):
             self.nav_nums.append("")
 
     def handle_endtag(self, tag):
-        if tag == "span":
+        if tag in ("span", "p"):
             self._capture = None
+        if tag == "section":
+            self._in_hero = 0
         if tag == "main":
             self._in_main -= 1
         elif tag == "header":
@@ -151,7 +174,7 @@ class Page(HTMLParser):
 
     def handle_data(self, data):
         if self._capture is not None:
-            self._capture[-1] += data.strip()
+            self._capture[-1] = " ".join((self._capture[-1] + data).split())
         if self._in_title:
             self.title += data
         self.text.append(data)
@@ -289,6 +312,31 @@ def check_header(check, url, p):
     check(sum(1 for s in p.scripts if s.get("src") == SITE_JS) == 1, f"{url}: sem {SITE_JS}")
 
 
+def check_hero(check, url, p, is_home):
+    check(all("data-split" in a for a in p.h1_attrs), f"{url}: o <h1> deve ter data-split (reveal por linhas)")
+    if not is_home:
+        check(not p.hero_gradient, f"{url}: o gradiente-assinatura é só da página inicial")
+        return
+    check(p.hero_labels == [HERO_LABEL], f"{url}: etiqueta do hero deve ser '{HERO_LABEL}', é {p.hero_labels}")
+    check(len(p.hero_gradient) == 1 and p.hero_gradient[0].get("aria-hidden") == "true",
+          f"{url}: falta o .hero-gradient com aria-hidden=true")
+    check(p.blobs == HERO_BLOBS, f"{url}: o gradiente deve ter {HERO_BLOBS} manchas, tem {p.blobs}")
+    check(len(p.scroll_hints) == 1, f"{url}: falta a indicação ↓ scroll (.hero-scroll)")
+
+
+def check_motion_css(check):
+    css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
+    reduced = re.search(r"@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{(.*?)\n\}", css, re.S)
+    check(reduced is not None, "site.css: bloco prefers-reduced-motion em falta")
+    if reduced:
+        for needle in (".blob", ".wi"):
+            check(needle in reduced.group(1), f"site.css: prefers-reduced-motion não trata {needle}")
+    # Se o JS falhar depois de pôr .js, o título não pode ficar invisível para sempre.
+    guard = re.search(r"\.js \[data-split\]:not\(\.split\)\s*\{([^}]*)\}", css)
+    check(guard is not None and "animation" in guard.group(1),
+          "site.css: falta a salvaguarda .js [data-split]:not(.split) com animation")
+
+
 def check_labels(check, url, p):
     expected = [f"({i:02d})" for i in range(1, len(p.label_nums) + 1)]
     check(p.label_nums == expected, f"{url}: etiquetas fora de ordem {p.label_nums}")
@@ -319,6 +367,7 @@ def main():
     check_tokens(check)
     check_content(check)
     check_no_js_hiding(check)
+    check_motion_css(check)
 
     titles, descriptions = {}, {}
     pages = {}
@@ -362,6 +411,7 @@ def main():
                   f"{url}: sem preload de {FONT_PRELOAD}")
             check_header(check, url, p)
             check_labels(check, url, p)
+            check_hero(check, url, p, url in ("/", "/en/"))
             check(any(h == other for h, _, _ in p.hrefs), f"{url}: sem link para a outra língua ({other})")
             footer = " ".join(" ".join(p.footer_text).split())
             for needle in LEGAL_FOOTER[lang]:
