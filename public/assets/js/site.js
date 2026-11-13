@@ -116,9 +116,43 @@ function revealGroups() {
   });
 }
 
+/* Cenas de cor: quando uma secção passa o meio do ecrã, a página inteira veste a cor dela
+   (data-scene no <html>). Sem esta função, cada secção já tem a sua cor fixa (.scene-*). */
+function colourScenes() {
+  if (reducedMotion || !("IntersectionObserver" in window)) return;
+  var root = document.documentElement;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      var scene = e.target.getAttribute("data-scene");
+      if (scene) root.setAttribute("data-scene", scene); else root.removeAttribute("data-scene");
+    });
+  }, { rootMargin: "-49% 0px -49% 0px" });
+  Array.prototype.forEach.call(document.querySelectorAll("main > *, .site-footer"), function (el) { io.observe(el); });
+  root.classList.add("scenes");
+}
+
+/* Botão principal magnético: segue um pouco o rato, só em desktop com rato. */
+function magneticButtons() {
+  if (reducedMotion || !window.matchMedia("(pointer: fine) and (min-width: 48rem)").matches) return;
+  Array.prototype.forEach.call(document.querySelectorAll(".btn-primary"), function (btn) {
+    btn.addEventListener("pointermove", function (e) {
+      var r = btn.getBoundingClientRect();
+      btn.style.setProperty("--tx", ((e.clientX - r.left - r.width / 2) * 0.15).toFixed(1) + "px");
+      btn.style.setProperty("--ty", ((e.clientY - r.top - r.height / 2) * 0.25).toFixed(1) + "px");
+    });
+    btn.addEventListener("pointerleave", function () {
+      btn.style.setProperty("--tx", "0px");
+      btn.style.setProperty("--ty", "0px");
+    });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   if (!reducedMotion) Array.prototype.forEach.call(document.querySelectorAll("[data-split]"), splitLines);
   revealGroups();
+  colourScenes();
+  magneticButtons();
   Array.prototype.forEach.call(document.querySelectorAll("[data-marquee]"), marqueeScroll);
   countLabels();
   var hero = document.querySelector(".hero");

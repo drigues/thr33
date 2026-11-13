@@ -159,11 +159,20 @@ def heading(section):
     return f'<h2 id="{section["id"]}">{section["h2"]}</h2>'
 
 
+SCENES = {"project": "ink", "cta": "telha"}
+
+
 def band(section, num, body):
-    """Secção padrão: etiqueta numerada (se houver), título e corpo."""
+    """Secção padrão: etiqueta numerada (se houver), título e corpo.
+
+    Projetos veste Tinta e o CTA veste Telha (#31): classe scene-* para a cor sem JS e
+    data-scene para o site.js mudar a cor da página inteira.
+    """
     lab = label(section["label"], num) if num else ""
     inner = "\n        ".join(x for x in (lab, body) if x)
-    return (f'    <section class="band" aria-labelledby="{section["id"]}">\n'
+    scene = SCENES.get(section["type"])
+    attrs = f'class="band scene-{scene}" data-scene="{scene}"' if scene else 'class="band"'
+    return (f'    <section {attrs} aria-labelledby="{section["id"]}">\n'
             f'      <div class="wrap">\n        {inner}\n      </div>\n    </section>')
 
 
