@@ -46,6 +46,7 @@ LANGS = {
         "tagline": "Estúdio de produto digital em Óbidos, Portugal.",
         "footer_nav": "Ligações do rodapé",
         "contact_heading": "Contacto",
+        "complaints": "Livro de Reclamações",
         "pages_heading": "Páginas",
         "legal": ("THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA · Sociedade unipessoal por quotas · "
                   "Sede: Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos · Conservatória do Registo Comercial (RNPC) · "
@@ -64,6 +65,7 @@ LANGS = {
         "tagline": "Digital product studio in Óbidos, Portugal.",
         "footer_nav": "Footer links",
         "contact_heading": "Contact",
+        "complaints": "Complaints Book (Livro de Reclamações)",
         "pages_heading": "Pages",
         "legal": ("THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA · A single-member private limited company "
                   "(sociedade unipessoal por quotas) · Registered office: Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos, Portugal · "
@@ -129,6 +131,7 @@ def render(lang, name, layout):
         "pages_heading": t["pages_heading"],
         "footer_links": footer_links,
         "contact_heading": t["contact_heading"],
+        "complaints": t["complaints"],
         "legal": t["legal"],
         "year": str(date.today().year),
     }
