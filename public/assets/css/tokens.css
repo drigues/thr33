@@ -1,0 +1,97 @@
+/*
+ * Tokens de design do thr33.xyz (redesign, #24 e #25).
+ * O site.css só usa estes tokens: nada de cores soltas.
+ * O tests/check_site.py confirma a paleta e o contraste (AA) nos três esquemas:
+ * claro, escuro e secção em Tinta (.theme-ink).
+ */
+
+/* Fontes servidas pelo site (OFL, licenças em /assets/fonts/), subset latino + setas. */
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("/assets/fonts/space-grotesk.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/assets/fonts/jetbrains-mono-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Paleta (nomes de Óbidos) */
+  --cal: #F3F0E8;
+  --tinta: #121212;
+  --telha: #E8552D;
+  --lagoa: #2C7564;
+  --atlantico: #3A3FD9;
+  --pedra: #6B675F;
+  /* Variantes para fundos escuros */
+  --atlantico-claro: #7679E5;
+  --pedra-clara: #89847A;
+  --lagoa-clara: #36907B;
+
+  /* Papéis (claro). Telha sobre Cal só em texto ≥ 24px ou formas. */
+  --paper: var(--cal);
+  --ink: var(--tinta);
+  --muted: var(--pedra);
+  --link: var(--atlantico);
+  --focus: var(--atlantico);
+  --accent: var(--telha);
+  --on-accent: var(--tinta);
+  --secondary: var(--lagoa);
+  --line: color-mix(in srgb, var(--ink) 14%, transparent);
+  --surface: color-mix(in srgb, var(--ink) 4%, var(--paper));
+
+  /* Tipografia */
+  --font-sans: "Space Grotesk", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --text-hero: clamp(3.5rem, 12vw, 11rem);
+  --text-h2: clamp(2rem, 5vw, 4.5rem);
+  --text-body: 1.125rem;
+  --leading-body: 1.5;
+  --text-label: 0.75rem;
+  --text-label-lg: 0.875rem;
+  --tracking-hero: -0.04em;
+  --tracking-label: 0.06em;
+
+  /* Movimento: animar só transform e opacity */
+  --dur-1: 0.4s;
+  --dur-2: 0.8s;
+  --dur-3: 1.2s;
+  --ease-ui: cubic-bezier(0.215, 0.61, 0.355, 1);     /* power3.out */
+  --ease-reveal: cubic-bezier(0.19, 1, 0.22, 1);      /* expo.out */
+
+  color-scheme: light dark;
+}
+
+/* Modo escuro: Tinta passa a fundo, Cal a texto, acentos em versão clara. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: var(--tinta);
+    --ink: var(--cal);
+    --muted: var(--pedra-clara);
+    --link: var(--atlantico-claro);
+    --focus: var(--atlantico-claro);
+    --secondary: var(--lagoa-clara);
+  }
+}
+
+/* Secção que "veste" Tinta (Projetos), em qualquer modo. */
+.theme-ink {
+  --paper: var(--tinta);
+  --ink: var(--cal);
+  --muted: var(--pedra-clara);
+  --link: var(--atlantico-claro);
+  --focus: var(--atlantico-claro);
+  --secondary: var(--lagoa-clara);
+  /* Os derivados têm de ser redeclarados aqui, senão herdam os valores do :root. */
+  --line: color-mix(in srgb, var(--ink) 14%, transparent);
+  --surface: color-mix(in srgb, var(--ink) 4%, var(--paper));
+  background-color: var(--paper);
+  color: var(--ink);
+}

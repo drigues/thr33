@@ -4,7 +4,7 @@ import AppKit
 import CoreText
 
 let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
-let fontURL = root.appendingPathComponent("public/assets/fonts/space-grotesk.ttf")
+let fontURL = root.appendingPathComponent("scripts/fonts/space-grotesk.ttf")
 let outURL = root.appendingPathComponent("public/assets/og-image.png")
 
 CTFontManagerRegisterFontsForURL(fontURL as CFURL, .process, nil)

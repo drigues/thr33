@@ -36,6 +36,27 @@ LEGAL_FOOTER = {
 COMPLAINTS_URL = "https://www.livroreclamacoes.pt/Inicio/"
 COMPLAINTS_LABEL = {"pt-PT": "Livro de Reclamações", "en": "Complaints Book (Livro de Reclamações)"}
 
+# Redesign (#24, #25): paleta aprovada e papéis que o site.css usa.
+TOKENS_CSS = ROOT / "assets" / "css" / "tokens.css"
+PALETTE = {
+    "--cal": "#F3F0E8", "--tinta": "#121212", "--telha": "#E8552D", "--lagoa": "#2C7564",
+    "--atlantico": "#3A3FD9", "--pedra": "#6B675F",
+    "--atlantico-claro": "#7679E5", "--pedra-clara": "#89847A", "--lagoa-clara": "#36907B",
+}
+REQUIRED_TOKENS = [
+    "--paper", "--ink", "--muted", "--link", "--focus", "--accent", "--on-accent", "--secondary", "--line", "--surface",
+    "--font-sans", "--font-mono", "--text-hero", "--text-h2", "--text-body", "--leading-body", "--text-label",
+    "--tracking-hero", "--tracking-label", "--dur-1", "--dur-2", "--dur-3", "--ease-ui", "--ease-reveal",
+]
+FONTS = {"Space Grotesk": "space-grotesk.woff2", "JetBrains Mono": "jetbrains-mono-regular.woff2"}
+FONT_LICENCES = ["OFL.txt", "OFL-JetBrainsMono.txt"]
+FONT_PRELOAD = "/assets/fonts/space-grotesk.woff2"
+# (frente, fundo, mínimo) avaliados em cada esquema: claro, escuro e secção em Tinta.
+CONTRAST_PAIRS = [
+    ("--ink", "--paper", 4.5), ("--muted", "--paper", 4.5), ("--link", "--paper", 4.5),
+    ("--focus", "--paper", 3), ("--secondary", "--paper", 4.5), ("--on-accent", "--accent", 4.5),
+]
+
 FORBIDDEN = re.compile(r"em breve|brevemente|coming soon|lorem ipsum|TODO", re.I)
 
 
@@ -110,12 +131,96 @@ def parse(path):
     return p
 
 
+def css_vars(block):
+    return dict(re.findall(r"(--[\w-]+)\s*:\s*([^;]+);", block))
+
+
+def css_block(css, selector_re):
+    """Devolve o corpo do primeiro bloco cujo seletor bate com selector_re (sem chavetas aninhadas)."""
+    m = re.search(selector_re + r"\s*\{([^{}]*)\}", css)
+    return m.group(1) if m else None
+
+
+def luminance(hex_color):
+    h = hex_color.lstrip("#")
+    c = [int(h[i:i + 2], 16) / 255 for i in (0, 2, 4)]
+    c = [x / 12.92 if x <= 0.03928 else ((x + 0.055) / 1.055) ** 2.4 for x in c]
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+
+
+def contrast(a, b):
+    la, lb = sorted((luminance(a), luminance(b)), reverse=True)
+    return (la + 0.05) / (lb + 0.05)
+
+
+def resolve(name, scope, depth=0):
+    value = scope.get(name, "").strip()
+    m = re.fullmatch(r"var\((--[\w-]+)\)", value)
+    if m and depth < 10:
+        return resolve(m.group(1), scope, depth + 1)
+    return value
+
+
+def check_tokens(check):
+    check(TOKENS_CSS.exists(), "assets/css/tokens.css em falta")
+    if not TOKENS_CSS.exists():
+        return
+    css = TOKENS_CSS.read_text(encoding="utf-8")
+    root = css_block(css, r"(?<![\w-]):root")
+    check(root is not None, "tokens.css: bloco :root em falta")
+    if root is None:
+        return
+    light = css_vars(root)
+    for name, hex_color in PALETTE.items():
+        check(light.get(name, "").upper() == hex_color, f"tokens.css: {name} deve ser {hex_color}")
+    for name in REQUIRED_TOKENS:
+        check(name in light, f"tokens.css: token {name} em falta")
+
+    dark_media = re.search(r"@media\s*\(prefers-color-scheme:\s*dark\)\s*\{\s*:root\s*\{([^{}]*)\}", css)
+    check(dark_media is not None, "tokens.css: modo escuro (prefers-color-scheme: dark) em falta")
+    ink_section = css_block(css, r"\.theme-ink")
+    check(ink_section is not None, "tokens.css: classe .theme-ink (secção em Tinta) em falta")
+
+    schemes = {"claro": light}
+    if dark_media:
+        schemes["escuro"] = {**light, **css_vars(dark_media.group(1))}
+    if ink_section is not None:
+        schemes[".theme-ink"] = {**light, **css_vars(ink_section)}
+    for scheme, scope in schemes.items():
+        for fg, bg, minimum in CONTRAST_PAIRS:
+            a, b = resolve(fg, scope), resolve(bg, scope)
+            if not (re.fullmatch(r"#[0-9A-Fa-f]{6}", a) and re.fullmatch(r"#[0-9A-Fa-f]{6}", b)):
+                check(False, f"tokens.css ({scheme}): {fg}/{bg} não resolvem para cores hex ({a!r}, {b!r})")
+                continue
+            ratio = contrast(a, b)
+            check(ratio >= minimum, f"tokens.css ({scheme}): {fg} sobre {bg} tem {ratio:.2f}, mínimo {minimum}")
+
+    # Fontes servidas pelo site em WOFF2, com font-display: swap e licença ao lado.
+    faces = re.findall(r"@font-face\s*\{([^{}]*)\}", css)
+    for family, file in FONTS.items():
+        face = next((f for f in faces if re.search(rf"font-family:\s*\"{family}\"", f)), None)
+        check(face is not None, f"tokens.css: @font-face de {family} em falta")
+        if face:
+            check(f'url("/assets/fonts/{file}") format("woff2")' in face, f"tokens.css: {family} deve usar /assets/fonts/{file}")
+            check(re.search(r"font-display:\s*swap", face), f"tokens.css: {family} sem font-display: swap")
+        check((ROOT / "assets" / "fonts" / file).exists(), f"assets/fonts/{file} em falta")
+    for licence in FONT_LICENCES:
+        check((ROOT / "assets" / "fonts" / licence).exists(), f"assets/fonts/{licence} em falta (licença OFL)")
+
+    site_css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
+    check(not re.search(r"\.ttf\b|@font-face", site_css), "site.css: as fontes ficam no tokens.css, em WOFF2")
+    loose = re.findall(r"#[0-9A-Fa-f]{3,8}\b|\b(?:rgba?|hsla?)\(", site_css)
+    check(not loose, f"site.css: cores soltas {sorted(set(loose))} (usar os tokens)")
+
+
 def main():
     errors = []
 
     def check(cond, msg):
         if not cond:
             errors.append(msg)
+
+    check_tokens(check)
 
     titles, descriptions = {}, {}
     pages = {}
@@ -152,6 +257,11 @@ def main():
             check(links.get(("alternate", "x-default")) == SITE + pt, f"{url}: hreflang x-default em falta")
             check(any(rel == "icon" and (ROOT / h.lstrip("/")).exists() for rel, h, _ in p.links),
                   f"{url}: favicon em falta")
+            sheets = [h for rel, h, _ in p.links if rel == "stylesheet"]
+            check(sheets[:2] == ["/assets/css/tokens.css", "/assets/site.css"],
+                  f"{url}: tokens.css tem de vir antes do site.css ({sheets})")
+            check(any(rel == "preload" and h == FONT_PRELOAD for rel, h, _ in p.links),
+                  f"{url}: sem preload de {FONT_PRELOAD}")
             check(any(h == other for h, _, _ in p.hrefs), f"{url}: sem link para a outra língua ({other})")
             footer = " ".join(" ".join(p.footer_text).split())
             for needle in LEGAL_FOOTER[lang]:
@@ -182,6 +292,9 @@ def main():
         check(any(h == "/" for h, _, _ in p.hrefs), "404.html: sem link para o início")
         check(any(h == COMPLAINTS_URL for h, _, _ in p.footer_hrefs),
               "404.html: rodapé sem link para o Livro de Reclamações")
+        sheets = [h for rel, h, _ in p.links if rel == "stylesheet"]
+        check(sheets[:2] == ["/assets/css/tokens.css", "/assets/site.css"],
+              f"404.html: tokens.css tem de vir antes do site.css ({sheets})")
         pages["/404.html"] = p
 
     # Links internos e externos em todas as páginas
