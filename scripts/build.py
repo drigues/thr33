@@ -34,6 +34,7 @@ ROUTES = {
 
 NAV = ["servicos", "produtos", "sobre", "contacto"]
 COMPLAINTS_URL = "https://www.livroreclamacoes.pt/Inicio/"
+EMAIL = "hello@thr33.xyz"
 
 
 # O <use> não herda os atributos do <svg> raiz do sprite: vão em cada <symbol>.
@@ -230,9 +231,16 @@ def section_html(section, counter):
         "ticks": lambda s: heading(s) + "\n        " + ticks(s["items"]),
         "facts": lambda s: heading(s) + "\n        " + facts(s),
         "text": lambda s: "\n        ".join(x for x in (heading(s), intro(s), actions(s["actions"])) if x),
-        "cta": lambda s: "\n        ".join(x for x in (heading(s), intro(s), actions(s["actions"])) if x),
+        "cta": cta,
     }[kind](section)
     return band(section, num, body)
+
+
+def cta(section):
+    """CTA final (#32): título em tamanho de hero (o site.js escala-o de 0.8 a 1 no scroll) e email grande."""
+    title = f'<h2 class="cta-title" id="{section["id"]}" data-cta-scale>{section["h2"]}</h2>'
+    email = f'<p class="cta-mail"><a class="cta-email" href="mailto:{EMAIL}">{EMAIL}</a></p>'
+    return "\n        ".join(x for x in (title, intro(section), email, actions(section["actions"])) if x)
 
 
 def intro(section):
@@ -318,33 +326,23 @@ def site_header(site, lang, current, other_url, other_lang):
 
 
 def site_footer(site, lang):
-    links = "\n            ".join(
-        f'<li><a href="{url_for(lang, n)}">{site["nav"][n]}</a></li>' for n in NAV + ["privacidade", "termos"]
-    )
+    """Rodapé legal sucinto em duas linhas (#32). O art. 171.º do CSC pede os dados indicados
+    claramente: baixa-se o peso visual da linha 2, não se esconde nada."""
+    items = [
+        f"© {date.today().year} Thr33 Labs",
+        f'<a href="mailto:{EMAIL}">{EMAIL}</a>',
+        '<a href="tel:+351936466845">+351 936 466 845</a>',
+        f'<a href="{url_for(lang, "privacidade")}">{site["nav"]["privacidade"]}</a>',
+        f'<a href="{url_for(lang, "termos")}">{site["nav"]["termos"]}</a>',
+        f'<a href="{COMPLAINTS_URL}" target="_blank" rel="noopener noreferrer">{site["complaints"]}</a>',
+    ]
+    line1 = "\n        ".join(f"<li>{i}</li>" for i in items)
     return f'''  <footer class="site-footer">
     <div class="wrap">
-      <div class="footer-grid">
-        <div>
-          <p class="footer-brand">Thr33 Labs</p>
-          <p class="dim">{site["tagline"]}</p>
-        </div>
-        <nav aria-label="{site["footer_nav"]}">
-          <p class="footer-heading">{site["pages_heading"]}</p>
-          <ul>
-            {links}
-          </ul>
-        </nav>
-        <div>
-          <p class="footer-heading">{site["contact_heading"]}</p>
-          <ul>
-            <li><a href="mailto:hello@thr33.xyz">hello@thr33.xyz</a></li>
-            <li><a href="tel:+351936466845">+351 936 466 845</a></li>
-            <li><a href="{COMPLAINTS_URL}" target="_blank" rel="noopener noreferrer">{site["complaints"]}</a></li>
-          </ul>
-        </div>
-      </div>
+      <ul class="footer-line">
+        {line1}
+      </ul>
       <p class="legal">{site["legal"]}</p>
-      <p class="legal">© {date.today().year} Thr33 Labs</p>
     </div>
   </footer>'''
 

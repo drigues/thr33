@@ -232,7 +232,7 @@ html.menu-open { overflow: hidden; }
 
 /* Links soltos (ver mais, menu, rodapé): sublinhado que cresce da esquerda. Links no meio do texto
    mantêm o sublinhado normal, para se distinguirem sem depender da cor. */
-.more, .menu a:not(.lang), .site-footer ul a {
+.more, .menu a:not(.lang), .footer-line a {
   text-decoration: none;
   background-image: linear-gradient(currentColor, currentColor);
   background-size: 0 1px; background-position: 0 100%; background-repeat: no-repeat;
@@ -240,7 +240,7 @@ html.menu-open { overflow: hidden; }
 }
 .more:hover, .more:focus-visible,
 .menu a:not(.lang):hover, .menu a:not(.lang):focus-visible,
-.site-footer ul a:hover, .site-footer ul a:focus-visible { background-size: 100% 1px; }
+.footer-line a:hover, .footer-line a:focus-visible { background-size: 100% 1px; }
 
 /* Botão principal "magnético" (só desktop com rato): o site.js define --tx e --ty. */
 .btn-primary {
@@ -296,17 +296,39 @@ address { font-style: normal; }
 .prose li { margin-bottom: 0.4rem; }
 .prose .updated { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); }
 
-/* Rodapé */
-.site-footer { border-top: 1px solid var(--line); padding-block: 3rem 2rem; margin-top: 2rem; font-size: 0.95rem; }
-.footer-grid { display: grid; gap: 2rem; margin-bottom: 2.5rem; }
-@media (min-width: 48rem) { .footer-grid { grid-template-columns: 2fr 1fr 1fr; } }
-.footer-brand { font-weight: 700; font-size: 1.1rem; margin-bottom: 0.35rem; }
-.footer-heading { font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--muted); margin-bottom: 0.75rem; }
-.site-footer ul { list-style: none; display: grid; gap: 0.15rem; }
-.site-footer ul a { display: inline-flex; min-height: 2rem; align-items: center; color: var(--ink); text-decoration: none; }
-.site-footer ul a:hover { color: var(--link); }
-.legal { font-family: var(--font-mono); font-size: 0.72rem; line-height: 1.7; letter-spacing: 0.03em; color: var(--muted); max-width: 60rem; }
-.legal + .legal { margin-top: 0.5rem; }
+/* CTA final (#32): título em tamanho de hero; o site.js escala-o de 0.8 a 1 com o scroll (--cta-scale).
+   A escala é só transform: não mexe no layout. Sem JS ou com reduced motion fica a 1. */
+.cta-title {
+  font-size: var(--text-hero); font-weight: 500; letter-spacing: var(--tracking-hero);
+  line-height: 0.95; max-width: none; margin-bottom: 2rem;
+  transform: scale(var(--cta-scale, 1)); transform-origin: 0 100%;
+}
+.cta-mail { margin-bottom: 2rem; }
+.cta-email {
+  font-size: var(--text-h2); font-weight: 500; letter-spacing: -0.02em; line-height: 1.1;
+  color: var(--ink); overflow-wrap: anywhere;
+  text-decoration: underline; text-decoration-thickness: 0.06em; text-underline-offset: 0.15em;
+}
+.cta-email:hover { text-decoration-thickness: 0.12em; }
+
+/* Rodapé legal em duas linhas (#32): linha 1 em Space Grotesk, linha 2 em mono e Pedra. */
+.site-footer { border-top: 1px solid var(--line); padding-block: 2rem; }
+.footer-line {
+  list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: 0 1.25rem;
+  font-family: var(--font-sans); font-size: 1rem; margin-bottom: 0.75rem;
+}
+/* Pontos entre itens só a partir de 48rem e depois de cada item: se a linha quebrar, o ponto
+   fica no fim da linha e nunca solto no início. "/ ''" tira-o da leitura por leitores de ecrã. */
+@media (min-width: 48rem) {
+  .footer-line { column-gap: 0.6rem; }
+  .footer-line li:not(:last-child)::after { content: "·"; content: "·" / ""; margin-left: 0.6rem; color: var(--muted); }
+}
+.footer-line a { display: inline-flex; min-height: 2rem; align-items: center; color: var(--ink); }
+.footer-line a:hover { color: var(--link); }
+.legal {
+  font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.7; letter-spacing: 0.03em;
+  color: var(--muted); max-width: 60rem;
+}
 
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
@@ -318,4 +340,5 @@ address { font-style: normal; }
   .marquee-track { animation: none; }
   .reveal > * { opacity: 1; transform: none; }
   .reveal .icon { stroke-dashoffset: 0; }
+  .cta-title { transform: none; }
 }
