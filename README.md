@@ -7,6 +7,7 @@ Site institucional da Thr33 Labs em [thr33.xyz](https://thr33.xyz). É HTML est�
 - O conteúdo das páginas está em `src/pages/pt/` e `src/pages/en/`, um ficheiro por página, com o mesmo nome nas duas línguas.
 - O cabeçalho, o rodapé e as meta tags estão em `src/layout.html`. Os textos partilhados (menu, rodapé legal) estão em `scripts/build.py`.
 - `public/assets/site.css`, `public/404.html` e `public/favicon.svg` editam-se diretamente.
+- Cores, fontes e movimento estão em `public/assets/css/tokens.css`. O `site.css` só usa esses tokens, e o `check_site.py` confirma a paleta e o contraste AA em claro, escuro e `.theme-ink`.
 
 ## Gerar e verificar
 
