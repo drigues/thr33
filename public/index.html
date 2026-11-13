@@ -4,18 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thr33 Labs · Estúdio de produto digital em Óbidos</title>
-  <meta name="description" content="A Thr33 Labs desenha e desenvolve sites, aplicações e experiências em realidade aumentada para empresas, a partir de Óbidos, Portugal.">
   <meta name="theme-color" content="#F3F0E8" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
-  <link rel="canonical" href="https://thr33.xyz/">
-  <link rel="alternate" hreflang="pt-PT" href="https://thr33.xyz/">
-  <link rel="alternate" hreflang="en" href="https://thr33.xyz/en/">
-  <link rel="alternate" hreflang="x-default" href="https://thr33.xyz/">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="/assets/fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/css/tokens.css">
   <link rel="stylesheet" href="/assets/site.css">
-
+  <!-- Sem defer: põe a classe .js no html antes de pintar; o resto corre no DOMContentLoaded. -->
+  <script src="/assets/js/site.js"></script>
+  <meta name="description" content="A Thr33 Labs desenha e desenvolve sites, aplicações e experiências em realidade aumentada para empresas, a partir de Óbidos, Portugal.">
+  <link rel="canonical" href="https://thr33.xyz/">
+  <link rel="alternate" hreflang="pt-PT" href="https://thr33.xyz/">
+  <link rel="alternate" hreflang="en" href="https://thr33.xyz/en/">
+  <link rel="alternate" hreflang="x-default" href="https://thr33.xyz/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Thr33 Labs">
   <meta property="og:title" content="Thr33 Labs · Estúdio de produto digital em Óbidos">
@@ -32,25 +33,29 @@
 <body>
   <a class="skip" href="#conteudo">Saltar para o conteúdo</a>
 
-  <header class="site-header">
+  <header class="site-header" data-header>
     <div class="wrap header-inner">
       <a class="wordmark" href="/">Thr33 Labs</a>
-      <nav aria-label="Navegação principal">
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Abrir menu" data-label-open="Abrir menu" data-label-close="Fechar menu">
+        <span class="menu-toggle-icon" aria-hidden="true"></span>
+        <span class="menu-toggle-text">Menu</span>
+      </button>
+      <nav class="menu" id="menu" aria-label="Navegação principal">
         <ul>
-          <li><a href="/servicos/">Serviços</a></li>
-          <li><a href="/produtos/">Produtos</a></li>
-          <li><a href="/sobre/">Sobre</a></li>
-          <li><a href="/contacto/">Contacto</a></li>
+          <li><a href="/servicos/"><span class="nav-num" aria-hidden="true">01</span>Serviços</a></li>
+          <li><a href="/produtos/"><span class="nav-num" aria-hidden="true">02</span>Projetos</a></li>
+          <li><a href="/sobre/"><span class="nav-num" aria-hidden="true">03</span>Sobre</a></li>
+          <li><a href="/contacto/"><span class="nav-num" aria-hidden="true">04</span>Contacto</a></li>
+          <li><a class="lang" href="/en/" hreflang="en" lang="en" aria-label="English"><span class="nav-num" aria-hidden="true">05</span>EN</a></li>
         </ul>
       </nav>
-      <a class="lang" href="/en/" hreflang="en" lang="en" aria-label="English">EN</a>
     </div>
   </header>
 
   <main id="conteudo">
     <section class="hero">
       <div class="wrap">
-        <p class="badge">Digital Product Studio</p>
+        <p class="label">(Digital Product Studio)</p>
         <h1>Produtos digitais que as pessoas <span class="accent">usam</span></h1>
         <p class="lead">A Thr33 Labs é um estúdio de produto digital em Óbidos. Desenhamos e desenvolvemos sites, aplicações e experiências em realidade aumentada para empresas, da primeira conversa ao lançamento.</p>
         <div class="actions">
@@ -62,6 +67,7 @@
 
     <section class="band" aria-labelledby="o-que-fazemos">
       <div class="wrap">
+        <p class="label"><span class="label-num">(01)</span> Serviços</p>
         <h2 id="o-que-fazemos">O que fazemos</h2>
         <ul class="grid grid-4">
           <li class="card">
@@ -90,6 +96,7 @@
 
     <section class="band" aria-labelledby="para-quem">
       <div class="wrap">
+        <p class="label"><span class="label-num">(02)</span> Clientes</p>
         <h2 id="para-quem">Para quem trabalhamos</h2>
         <ul class="ticks">
           <li>PME e startups que querem lançar ou renovar um produto digital.</li>
@@ -100,7 +107,9 @@
     </section>
 
     <section class="band" aria-labelledby="produto">
-      <div class="wrap product">
+      <div class="wrap">
+        <p class="label"><span class="label-num">(03)</span> Projetos</p>
+        <div class="product">
         <div>
           <p class="examples-title">Produto próprio</p>
           <h2 id="produto" class="product-name">vizia</h2>
@@ -110,10 +119,12 @@
           <a class="btn btn-ghost" href="/produtos/">Ver produtos e projetos</a>
         </div>
       </div>
+      </div>
     </section>
 
     <section class="band" aria-labelledby="como">
       <div class="wrap">
+        <p class="label"><span class="label-num">(04)</span> Processo</p>
         <h2 id="como">Como trabalhamos</h2>
         <ol class="grid grid-4" role="list">
           <li class="card"><span class="num">01</span><h3>Conversa</h3><p>Percebemos o problema, o público e o que já existe.</p></li>
@@ -146,7 +157,7 @@
           <p class="footer-heading">Páginas</p>
           <ul>
             <li><a href="/servicos/">Serviços</a></li>
-            <li><a href="/produtos/">Produtos</a></li>
+            <li><a href="/produtos/">Projetos</a></li>
             <li><a href="/sobre/">Sobre</a></li>
             <li><a href="/contacto/">Contacto</a></li>
             <li><a href="/privacidade/">Privacidade</a></li>

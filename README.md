@@ -4,9 +4,10 @@ Site institucional da Thr33 Labs em [thr33.xyz](https://thr33.xyz). É HTML est�
 
 ## Editar
 
-- O conteúdo das páginas está em `src/pages/pt/` e `src/pages/en/`, um ficheiro por página, com o mesmo nome nas duas línguas.
-- O cabeçalho, o rodapé e as meta tags estão em `src/layout.html`. Os textos partilhados (menu, rodapé legal) estão em `scripts/build.py`.
-- `public/assets/site.css`, `public/404.html` e `public/favicon.svg` editam-se diretamente.
+- Todos os textos estão em `src/content/pt.json` e `src/content/en.json`, um ficheiro por língua: menu, rodapé, páginas e 404. Os dois ficheiros têm a mesma estrutura, e os textos podem levar HTML simples (links, `<strong>`, `<br>`).
+- Cada página é uma cabeça seguida de secções com um `type` (`cards`, `ticks`, `project`, `steps`, `services`, `split`, `facts`, `prose`, `text`, `cta`). As secções com `label` levam uma etiqueta numerada (01), (02)… O HTML de cada tipo, o cabeçalho e o rodapé são componentes em `scripts/build.py`. O esqueleto da página está em `src/layout.html`.
+- `public/assets/site.css`, `public/assets/js/site.js` e `public/favicon.svg` editam-se diretamente. A `404.html` é gerada.
+- O JavaScript é só melhoria progressiva: põe a classe `.js` no `<html>`, abre o menu mobile e esconde o cabeçalho ao descer. Sem JS nada fica escondido, e o `check_site.py` confirma-o.
 - Cores, fontes e movimento estão em `public/assets/css/tokens.css`. O `site.css` só usa esses tokens, e o `check_site.py` confirma a paleta e o contraste AA em claro, escuro e `.theme-ink`.
 
 ## Gerar e verificar

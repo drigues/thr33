@@ -1,0 +1,650 @@
+{
+  "site": {
+    "html_lang": "en",
+    "og_locale": "en_GB",
+    "og_image_alt": "Thr33 Labs, digital product studio",
+    "other_label": "PT",
+    "other_name": "Português",
+    "nav_label": "Main navigation",
+    "skip": "Skip to content",
+    "nav": {
+      "servicos": "Services",
+      "produtos": "Projects",
+      "sobre": "About",
+      "contacto": "Contact",
+      "privacidade": "Privacy",
+      "termos": "Terms of use",
+      "inicio": "Home"
+    },
+    "tagline": "Digital product studio in Óbidos, Portugal.",
+    "footer_nav": "Footer links",
+    "contact_heading": "Contact",
+    "complaints": "Complaints Book (Livro de Reclamações)",
+    "pages_heading": "Pages",
+    "legal": "THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA · A single-member private limited company (sociedade unipessoal por quotas) · Registered office: Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos, Portugal · Portuguese Commercial Registry (RNPC) · Registration and tax number (NIPC) 519573021 · Share capital €7,660.00",
+    "menu_open": "Open menu",
+    "menu_close": "Close menu",
+    "menu_label": "Menu"
+  },
+  "pages": {
+    "inicio": {
+      "title": "Thr33 Labs · Digital product studio in Óbidos, Portugal",
+      "description": "Thr33 Labs designs and builds websites, apps and augmented reality experiences for businesses, from Óbidos, Portugal.",
+      "head": {
+        "kind": "hero",
+        "label": "Digital Product Studio",
+        "h1": "Digital products that people <span class=\"accent\">use</span>",
+        "lead": "Thr33 Labs is a digital product studio in Óbidos, Portugal. We design and build websites, apps and augmented reality experiences for businesses, from the first conversation to launch.",
+        "actions": [
+          {
+            "text": "Request a proposal",
+            "href": "/en/contact/",
+            "style": "primary"
+          },
+          {
+            "text": "See our services",
+            "href": "/en/services/",
+            "style": "ghost"
+          }
+        ]
+      },
+      "sections": [
+        {
+          "type": "cards",
+          "id": "what-we-do",
+          "h2": "What we do",
+          "columns": 4,
+          "items": [
+            {
+              "title": "IT consulting",
+              "text": "Technology choices, technical audits and migration plans, before you invest in code.",
+              "link": {
+                "text": "Consulting in detail",
+                "href": "/en/services/#consulting"
+              }
+            },
+            {
+              "title": "Web and apps",
+              "text": "Websites, platforms and iOS and Android apps, from prototype to release.",
+              "link": {
+                "text": "Development in detail",
+                "href": "/en/services/#development"
+              }
+            },
+            {
+              "title": "UX and UI",
+              "text": "Clear, accessible interfaces, tested with the people who will use them.",
+              "link": {
+                "text": "Design in detail",
+                "href": "/en/services/#design"
+              }
+            },
+            {
+              "title": "Augmented reality",
+              "text": "3D models placed in real space, at real scale, from a phone or tablet.",
+              "link": {
+                "text": "Augmented reality in detail",
+                "href": "/en/services/#augmented-reality"
+              }
+            }
+          ],
+          "label": "Services"
+        },
+        {
+          "type": "ticks",
+          "id": "who-for",
+          "h2": "Who we work with",
+          "items": [
+            "Small businesses and startups launching or renewing a digital product.",
+            "Teams that need extra technical capacity or a second opinion on a project.",
+            "Architects, interior designers and event planners who want to show projects in augmented reality."
+          ],
+          "label": "Clients"
+        },
+        {
+          "type": "project",
+          "id": "product",
+          "eyebrow": "Our own product",
+          "h2": "vizia",
+          "text": "Architecture, interior design and event projects in augmented reality, at real scale and on site.",
+          "actions": [
+            {
+              "text": "See products and projects",
+              "href": "/en/products/",
+              "style": "ghost"
+            }
+          ],
+          "label": "Projects"
+        },
+        {
+          "type": "steps",
+          "id": "how",
+          "h2": "How we work",
+          "items": [
+            {
+              "title": "Conversation",
+              "text": "We learn about the problem, the audience and what already exists."
+            },
+            {
+              "title": "Proposal",
+              "text": "Scope, timeline and cost in writing, before any work starts."
+            },
+            {
+              "title": "Design and build",
+              "text": "Short cycles, with a version to review at every step."
+            },
+            {
+              "title": "Launch",
+              "text": "Release, measurement and support after it ships."
+            }
+          ],
+          "label": "Process"
+        },
+        {
+          "type": "cta",
+          "id": "talk",
+          "h2": "Have a project in mind?",
+          "text": "Tell us what you need, by email or phone. We reply with next steps and, where it makes sense, a proposal.",
+          "actions": [
+            {
+              "text": "Contact Thr33 Labs",
+              "href": "/en/contact/",
+              "style": "primary"
+            }
+          ]
+        }
+      ]
+    },
+    "sobre": {
+      "title": "About Thr33 Labs · Digital product studio",
+      "description": "About us: Thr33 Labs is an independent digital product studio, incorporated in 2026, with its registered office in Óbidos, Portugal.",
+      "head": {
+        "kind": "page",
+        "label": "About",
+        "h1": "A small studio, close to the people who use what we build",
+        "lead": "Thr33 Labs is the brand of THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA, a company incorporated in 2026 with its registered office in Óbidos, Portugal."
+      },
+      "sections": [
+        {
+          "type": "split",
+          "id": "who-we-are",
+          "h2": "Who we are",
+          "paragraphs": [
+            "We are an independent digital product studio. The company is managed by its founder, who follows every project from start to finish, with no middlemen.",
+            "When a project calls for it, we bring in trusted partners in design, development and 3D, always with a single point of contact at Thr33 Labs.",
+            "Besides client work, we build our own products, such as <a href=\"/en/products/\">vizia</a>, an augmented reality product."
+          ],
+          "label": "Studio"
+        },
+        {
+          "type": "cards",
+          "id": "principles",
+          "h2": "What guides us",
+          "columns": 3,
+          "items": [
+            {
+              "title": "Real use",
+              "text": "A product counts when people use it. That is what we measure, not the number of features."
+            },
+            {
+              "title": "Clarity",
+              "text": "Scope, timeline and cost in writing before we start, and early warnings when something changes."
+            },
+            {
+              "title": "Responsibility",
+              "text": "Security, GDPR and accessibility from day one, not at the end."
+            }
+          ],
+          "label": "Principles"
+        },
+        {
+          "type": "facts",
+          "id": "company",
+          "h2": "Company details",
+          "items": [
+            {
+              "term": "Legal name",
+              "value": "THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA"
+            },
+            {
+              "term": "Brand",
+              "value": "Thr33 Labs"
+            },
+            {
+              "term": "Company type",
+              "value": "Single-member private limited company (sociedade unipessoal por quotas)"
+            },
+            {
+              "term": "Tax and registration number (NIPC)",
+              "value": "519573021"
+            },
+            {
+              "term": "D-U-N-S",
+              "value": "348597205"
+            },
+            {
+              "term": "Incorporated",
+              "value": "2026"
+            },
+            {
+              "term": "Registered office",
+              "value": "Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos, Portugal"
+            },
+            {
+              "term": "Activity codes (CAE)",
+              "value": "62100, 62201 and 62900"
+            },
+            {
+              "term": "Email",
+              "value": "<a href=\"mailto:hello@thr33.xyz\">hello@thr33.xyz</a>"
+            },
+            {
+              "term": "Phone",
+              "value": "<a href=\"tel:+351936466845\">+351 936 466 845</a>"
+            }
+          ],
+          "label": "Fact sheet"
+        }
+      ]
+    },
+    "servicos": {
+      "title": "Services · Consulting, web, apps, UX and augmented reality",
+      "description": "IT consulting, web and app development, UX/UI design and augmented reality. Thr33 Labs services, with examples.",
+      "head": {
+        "kind": "page",
+        "label": "Services",
+        "h1": "From idea to a released product",
+        "lead": "Four areas that combine to fit each project. You can hire us for one of them, or for the whole journey."
+      },
+      "sections": [
+        {
+          "type": "services",
+          "items": [
+            {
+              "id": "consulting",
+              "heading_id": "consulting-title",
+              "h2": "IT consulting",
+              "text": "We help you decide before you build: which technology to use, what to buy and what to develop, and how to make systems work together.",
+              "examples_title": "Examples",
+              "examples": [
+                "Technical audit of an existing website or app.",
+                "Choosing technology, hosting and suppliers.",
+                "Migration plans for legacy systems.",
+                "Security and GDPR review of digital products."
+              ]
+            },
+            {
+              "id": "development",
+              "heading_id": "development-title",
+              "h2": "Web and app development",
+              "text": "We build websites, platforms and mobile apps, from the first prototype to release on the App Store and Google Play.",
+              "examples_title": "Examples",
+              "examples": [
+                "Company websites and product pages.",
+                "Web platforms with customer areas and admin dashboards.",
+                "iOS and Android apps.",
+                "Integrations with payments, email and third-party APIs."
+              ]
+            },
+            {
+              "id": "design",
+              "heading_id": "design-title",
+              "h2": "Product design, UX and UI",
+              "text": "We design clear, accessible interfaces that fit the brand, and we test them with the people who will use them.",
+              "examples_title": "Examples",
+              "examples": [
+                "User interviews and flow mapping.",
+                "Wireframes and clickable prototypes.",
+                "Design systems and component libraries.",
+                "Accessibility reviews against WCAG 2.1 AA."
+              ]
+            },
+            {
+              "id": "augmented-reality",
+              "heading_id": "ar-title",
+              "h2": "Augmented reality",
+              "text": "We place 3D models in real space, at real scale, from a phone or tablet, so you can decide before you build or set up.",
+              "examples_title": "Examples",
+              "examples": [
+                "Architecture projects viewed on site.",
+                "Interior design and furniture at real scale.",
+                "Event layouts before the day.",
+                "<a href=\"/en/products/\">vizia</a>, our augmented reality product."
+              ]
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "id": "proposal",
+          "h2": "Let's talk about your project",
+          "text": "Tell us what you need and your timeline. We reply with questions, next steps and, where it makes sense, a proposal.",
+          "actions": [
+            {
+              "text": "Request a proposal",
+              "href": "/en/contact/",
+              "style": "primary"
+            }
+          ]
+        }
+      ]
+    },
+    "produtos": {
+      "title": "Products and projects · Thr33 Labs",
+      "description": "vizia, the Thr33 Labs augmented reality product for architecture, interior design and events, and the projects we build for clients.",
+      "head": {
+        "kind": "page",
+        "label": "Products and projects",
+        "h1": "What we have built",
+        "lead": "Products of our own that we build and maintain, and custom projects for other businesses."
+      },
+      "sections": [
+        {
+          "type": "project",
+          "id": "vizia",
+          "eyebrow": "Our own product · Augmented reality",
+          "h2": "vizia",
+          "text": "Architecture, interior design and event projects in augmented reality, at real scale and on site. For architects, interior designers and event planners who want clients to see the result before going ahead.",
+          "actions": [
+            {
+              "text": "Visit vizia.thr33.xyz",
+              "href": "https://vizia.thr33.xyz",
+              "style": "primary",
+              "external": true
+            }
+          ],
+          "ticks": [
+            "3D models placed in real space, at real scale.",
+            "Works on phones and tablets.",
+            "Built for presenting on site, with the client."
+          ],
+          "label": "Product"
+        },
+        {
+          "type": "text",
+          "id": "clients",
+          "h2": "Client projects",
+          "text": "We build websites, platforms and apps for other businesses. We only show client projects publicly with the client's permission, so we share examples relevant to your case in a conversation.",
+          "actions": [
+            {
+              "text": "Ask for project examples",
+              "href": "/en/contact/",
+              "style": "ghost"
+            }
+          ],
+          "label": "Clients"
+        }
+      ]
+    },
+    "contacto": {
+      "title": "Contact · Thr33 Labs",
+      "description": "Contact Thr33 Labs by email or phone. Registered office in Óbidos, Portugal. Email hello@thr33.xyz, phone +351 936 466 845.",
+      "head": {
+        "kind": "page",
+        "label": "Contact",
+        "h1": "Get in touch",
+        "lead": "For proposals, questions or partnerships, email or call us. Let us know what you need and the timeline you have in mind."
+      },
+      "sections": [
+        {
+          "type": "cards",
+          "id": "channels",
+          "h2": "How to reach us",
+          "columns": 3,
+          "items": [
+            {
+              "title": "Email",
+              "text": "The fastest channel for proposals and documents.",
+              "link": {
+                "text": "hello@thr33.xyz",
+                "href": "mailto:hello@thr33.xyz"
+              }
+            },
+            {
+              "title": "Phone",
+              "text": "For a first conversation about your project.",
+              "link": {
+                "text": "+351 936 466 845",
+                "href": "tel:+351936466845"
+              }
+            },
+            {
+              "title": "Registered office",
+              "address": "Beco da Serra, 2<br>Sobral da Lagoa<br>2510-651 Óbidos<br>Portugal"
+            }
+          ],
+          "label": "Channels"
+        },
+        {
+          "type": "facts",
+          "id": "billing",
+          "h2": "Billing details",
+          "items": [
+            {
+              "term": "Legal name",
+              "value": "THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA"
+            },
+            {
+              "term": "Tax number (NIPC)",
+              "value": "519573021"
+            },
+            {
+              "term": "Address",
+              "value": "Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos, Portugal"
+            }
+          ],
+          "note": "Questions about personal data: email <a href=\"mailto:hello@thr33.xyz\">hello@thr33.xyz</a> with the subject \"Privacy\". See the <a href=\"/en/privacy/\">privacy policy</a> for details.",
+          "label": "Billing"
+        }
+      ]
+    },
+    "privacidade": {
+      "title": "Privacy policy · Thr33 Labs",
+      "description": "How Thr33 Labs handles personal data on thr33.xyz and in email and phone contacts, under the GDPR.",
+      "head": {
+        "kind": "page",
+        "label": "GDPR",
+        "h1": "Privacy policy",
+        "lead": "The thr33.xyz website has no forms, sets no cookies and uses no analytics or advertising tools. This page explains the little data we handle and why."
+      },
+      "sections": [
+        {
+          "type": "prose",
+          "blocks": [
+            {
+              "updated": "Last updated: 12 November 2026"
+            },
+            {
+              "h2": "Data controller",
+              "id": "controller"
+            },
+            {
+              "p": "THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA, tax number (NIPC) 519573021, registered office at Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos, Portugal. Privacy contact: <a href=\"mailto:hello@thr33.xyz\">hello@thr33.xyz</a>, with the subject \"Privacy\"."
+            },
+            {
+              "h2": "What data we handle",
+              "id": "data"
+            },
+            {
+              "ul": [
+                "<strong>Website visits.</strong> Like any website, the server logs technical requests: IP address, date and time, requested page, browser and operating system. We do not use this data to identify visitors or build profiles.",
+                "<strong>Email or phone contacts.</strong> If you contact us, we handle your name, email address or phone number, your company and the content of your message.",
+                "<strong>Clients.</strong> If we start a project together, we handle the data needed for the contract and invoicing."
+              ]
+            },
+            {
+              "h2": "Purposes and legal bases",
+              "id": "purposes"
+            },
+            {
+              "ul": [
+                "Keeping the website available and secure, and detecting abuse: legitimate interest (Article 6(1)(f) GDPR).",
+                "Answering enquiries and preparing proposals: steps taken at your request before a contract (Article 6(1)(b)).",
+                "Performing client contracts: performance of a contract (Article 6(1)(b)).",
+                "Meeting tax and accounting obligations: legal obligation (Article 6(1)(c))."
+              ]
+            },
+            {
+              "p": "We do not sell personal data or use it for advertising or automated decision-making."
+            },
+            {
+              "h2": "Who has access",
+              "id": "processors"
+            },
+            {
+              "p": "We use service providers that process data on our behalf, under contracts that require them to protect it:"
+            },
+            {
+              "ul": [
+                "Hetzner Online (Germany): website hosting.",
+                "Cloudflare: content delivery and protection against attacks. It may process data outside the European Union, under the EU-US Data Privacy Framework and the European Commission's standard contractual clauses.",
+                "Zoho (European Union data centre): email.",
+                "Certified accountant: client invoicing data."
+              ]
+            },
+            {
+              "p": "The website's fonts are served by the website itself, with no third-party requests."
+            },
+            {
+              "h2": "How long we keep data",
+              "id": "retention"
+            },
+            {
+              "ul": [
+                "Server technical logs: up to 30 days.",
+                "Enquiries that do not lead to a project: up to 2 years after the last contact.",
+                "Client and invoicing data: for the duration of the contract and then for the legal periods (10 years for tax documents)."
+              ]
+            },
+            {
+              "h2": "Your rights",
+              "id": "rights"
+            },
+            {
+              "p": "You can ask to access, correct, erase, restrict or port your data, and object to processing based on legitimate interest. Send your request to <a href=\"mailto:hello@thr33.xyz\">hello@thr33.xyz</a>. We reply within one month."
+            },
+            {
+              "p": "You can also complain to the Portuguese data protection authority, Comissão Nacional de Proteção de Dados (<a href=\"https://www.cnpd.pt\" target=\"_blank\" rel=\"noopener noreferrer\">cnpd.pt</a>)."
+            },
+            {
+              "h2": "Cookies",
+              "id": "cookies"
+            },
+            {
+              "p": "The thr33.xyz website sets no cookies and uses no similar technologies, so it shows no consent banner. Cloudflare may use strictly necessary cookies to protect the website against malicious traffic; these do not require consent."
+            },
+            {
+              "h2": "Other websites",
+              "id": "other-sites"
+            },
+            {
+              "p": "The website links to other websites, such as <a href=\"https://vizia.thr33.xyz\" target=\"_blank\" rel=\"noopener noreferrer\">vizia</a>, which have their own privacy policies."
+            },
+            {
+              "h2": "Changes",
+              "id": "changes"
+            },
+            {
+              "p": "If this policy changes, we publish the new version here with its update date."
+            }
+          ]
+        }
+      ]
+    },
+    "termos": {
+      "title": "Terms of use · Thr33 Labs",
+      "description": "Terms of use for thr33.xyz: company details, intellectual property, external links, liability and governing law.",
+      "head": {
+        "kind": "page",
+        "label": "Legal",
+        "h1": "Terms of use",
+        "lead": "The rules for using thr33.xyz. Services we provide to clients are governed by the proposal and contract for each project."
+      },
+      "sections": [
+        {
+          "type": "prose",
+          "blocks": [
+            {
+              "updated": "Last updated: 12 November 2026"
+            },
+            {
+              "h2": "Who we are",
+              "id": "who-we-are"
+            },
+            {
+              "p": "This website belongs to THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA, a single-member private limited company with its registered office at Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos, Portugal, registered with the Portuguese Commercial Registry under registration and tax number (NIPC) 519573021, with share capital of €7,660.00. Contact: <a href=\"mailto:hello@thr33.xyz\">hello@thr33.xyz</a>, <a href=\"tel:+351936466845\">+351 936 466 845</a>."
+            },
+            {
+              "h2": "Purpose of the website",
+              "id": "purpose"
+            },
+            {
+              "p": "The website presents the company, its services and products. It does not sell products or services online. The information published is general and is not a contractual offer."
+            },
+            {
+              "h2": "Intellectual property",
+              "id": "ip"
+            },
+            {
+              "p": "The text, the Thr33 Labs brand, the logo and the website design belong to the company unless stated otherwise. You may quote or share content with a reference to the source. For other uses, ask for permission by email."
+            },
+            {
+              "p": "The Space Grotesk font is used under the <a href=\"/assets/fonts/OFL.txt\">SIL Open Font License</a>."
+            },
+            {
+              "h2": "Acceptable use",
+              "id": "acceptable-use"
+            },
+            {
+              "p": "You may not use the website for unlawful purposes, try to access non-public areas or systems, or interfere with how it works."
+            },
+            {
+              "h2": "External links",
+              "id": "links"
+            },
+            {
+              "p": "The website links to third-party websites and to company products with their own terms. We are not responsible for the content or practices of third-party websites."
+            },
+            {
+              "h2": "Liability",
+              "id": "liability"
+            },
+            {
+              "p": "We keep the website's information up to date and the website available, but we do not guarantee it will always be free of errors or interruptions. To the extent permitted by law, the company is not liable for damages arising from use of the website."
+            },
+            {
+              "h2": "Privacy",
+              "id": "privacy"
+            },
+            {
+              "p": "How we handle personal data is described in the <a href=\"/en/privacy/\">privacy policy</a>."
+            },
+            {
+              "h2": "Governing law",
+              "id": "law"
+            },
+            {
+              "p": "These terms are governed by Portuguese law. Without prejudice to mandatory consumer protection rules, disputes are settled by the competent Portuguese courts."
+            },
+            {
+              "h2": "Changes",
+              "id": "changes"
+            },
+            {
+              "p": "We may update these terms. The version in force is always the one published on this page, with its update date."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "notfound": {
+    "h2": "Page not found",
+    "text": "The address may be wrong or the page has moved.",
+    "action": {
+      "text": "Go to the English homepage",
+      "href": "/en/",
+      "style": "ghost"
+    }
+  }
+}

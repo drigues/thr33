@@ -48,6 +48,12 @@ REQUIRED_TOKENS = [
     "--font-sans", "--font-mono", "--text-hero", "--text-h2", "--text-body", "--leading-body", "--text-label",
     "--tracking-hero", "--tracking-label", "--dur-1", "--dur-2", "--dur-3", "--ease-ui", "--ease-reveal",
 ]
+# Componentes (#26): conteúdos num ficheiro por língua, cabeçalho com menu e JS externo.
+BASE = ROOT.parent
+CONTENT = {"pt": BASE / "src" / "content" / "pt.json", "en": BASE / "src" / "content" / "en.json"}
+SITE_JS = "/assets/js/site.js"
+SITE_JS_MAX_BYTES = 4096
+
 FONTS = {"Space Grotesk": "space-grotesk.woff2", "JetBrains Mono": "jetbrains-mono-regular.woff2"}
 FONT_LICENCES = ["OFL.txt", "OFL-JetBrainsMono.txt"]
 FONT_PRELOAD = "/assets/fonts/space-grotesk.woff2"
@@ -76,6 +82,15 @@ class Page(HTMLParser):
         self._in_footer = 0
         self.footer_text = []
         self.footer_hrefs = []   # (href, target, rel) dentro de <footer>
+        self.skeleton = []       # (tag, class) dentro de <main>: igual em PT e EN
+        self.label_nums = []     # texto de .label-num, por ordem
+        self.buttons = []        # atributos de cada <button>
+        self.scripts = []        # atributos de cada <script>
+        self.nav_nums = []       # texto de .nav-num no cabeçalho
+        self.header_hrefs = []
+        self._in_main = 0
+        self._in_header = 0
+        self._capture = None
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
@@ -98,18 +113,45 @@ class Page(HTMLParser):
         elif tag in ("img", "script"):
             if a.get("src"):
                 self.srcs.append(a["src"])
+            if tag == "script":
+                self.scripts.append(a)
+        elif tag == "button":
+            self.buttons.append(a)
         elif tag == "h1":
             self.h1 += 1
         elif tag == "footer":
             self._in_footer += 1
+        elif tag == "main":
+            self._in_main += 1
+        elif tag == "header":
+            self._in_header += 1
+        if self._in_main and tag != "main":
+            self.skeleton.append((tag, a.get("class", "")))
+        if tag == "a" and self._in_header:
+            self.header_hrefs.append(a.get("href", ""))
+        classes = a.get("class", "").split()
+        if "label-num" in classes:
+            self._capture = self.label_nums
+            self.label_nums.append("")
+        elif "nav-num" in classes and self._in_header:
+            self._capture = self.nav_nums
+            self.nav_nums.append("")
 
     def handle_endtag(self, tag):
+        if tag == "span":
+            self._capture = None
+        if tag == "main":
+            self._in_main -= 1
+        elif tag == "header":
+            self._in_header -= 1
         if tag == "title":
             self._in_title = False
         elif tag == "footer":
             self._in_footer -= 1
 
     def handle_data(self, data):
+        if self._capture is not None:
+            self._capture[-1] += data.strip()
         if self._in_title:
             self.title += data
         self.text.append(data)
@@ -213,6 +255,60 @@ def check_tokens(check):
     check(not loose, f"site.css: cores soltas {sorted(set(loose))} (usar os tokens)")
 
 
+def shape(value):
+    if isinstance(value, dict):
+        return {k: shape(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [shape(v) for v in value]
+    return type(value).__name__
+
+
+def check_content(check):
+    import json
+    data = {}
+    for lang, path in CONTENT.items():
+        check(path.exists(), f"{path.relative_to(BASE)} em falta")
+        if path.exists():
+            data[lang] = json.loads(path.read_text(encoding="utf-8"))
+    if len(data) == 2:
+        check(shape(data["pt"]["pages"]) == shape(data["en"]["pages"]),
+              "src/content: pt.json e en.json têm estruturas de páginas diferentes")
+    check(not (BASE / "src" / "pages").exists(), "src/pages ainda existe: as páginas vêm de src/content")
+
+
+def check_header(check, url, p):
+    toggles = [b for b in p.buttons if "menu-toggle" in b.get("class", "")]
+    check(len(toggles) == 1, f"{url}: deve ter um botão .menu-toggle, tem {len(toggles)}")
+    if toggles:
+        t = toggles[0]
+        check(t.get("type") == "button", f"{url}: .menu-toggle sem type=button")
+        check(t.get("aria-expanded") == "false", f"{url}: .menu-toggle deve começar com aria-expanded=false")
+        check(t.get("aria-controls") in p.ids, f"{url}: aria-controls do menu não aponta para um id")
+        check(t.get("aria-label"), f"{url}: .menu-toggle sem aria-label")
+    check(p.nav_nums == ["01", "02", "03", "04", "05"], f"{url}: menu deve numerar 01–05, tem {p.nav_nums}")
+    check(sum(1 for s in p.scripts if s.get("src") == SITE_JS) == 1, f"{url}: sem {SITE_JS}")
+
+
+def check_labels(check, url, p):
+    expected = [f"({i:02d})" for i in range(1, len(p.label_nums) + 1)]
+    check(p.label_nums == expected, f"{url}: etiquetas fora de ordem {p.label_nums}")
+
+
+def check_no_js_hiding(check):
+    css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
+    css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+    for selectors, body in re.findall(r"([^{}]+)\{([^{}]*)\}", css):
+        if re.search(r"display:\s*none|visibility:\s*hidden", body):
+            for sel in selectors.split(","):
+                sel = sel.strip()
+                ok = sel.startswith(".js ") or sel.startswith("html:not(.js)") or sel.startswith("[hidden]")
+                check(ok, f"site.css: '{sel}' esconde conteúdo sem depender de .js")
+    js = ROOT / SITE_JS.lstrip("/")
+    check(js.exists(), f"{SITE_JS} em falta")
+    if js.exists():
+        check(js.stat().st_size <= SITE_JS_MAX_BYTES, f"{SITE_JS} tem {js.stat().st_size} bytes (máx. {SITE_JS_MAX_BYTES})")
+
+
 def main():
     errors = []
 
@@ -221,6 +317,8 @@ def main():
             errors.append(msg)
 
     check_tokens(check)
+    check_content(check)
+    check_no_js_hiding(check)
 
     titles, descriptions = {}, {}
     pages = {}
@@ -262,6 +360,8 @@ def main():
                   f"{url}: tokens.css tem de vir antes do site.css ({sheets})")
             check(any(rel == "preload" and h == FONT_PRELOAD for rel, h, _ in p.links),
                   f"{url}: sem preload de {FONT_PRELOAD}")
+            check_header(check, url, p)
+            check_labels(check, url, p)
             check(any(h == other for h, _, _ in p.hrefs), f"{url}: sem link para a outra língua ({other})")
             footer = " ".join(" ".join(p.footer_text).split())
             for needle in LEGAL_FOOTER[lang]:
@@ -277,6 +377,10 @@ def main():
             check(not m, f"{url}: texto proibido '{m.group(0) if m else ''}'")
             titles.setdefault(p.title.strip(), []).append(url)
             descriptions.setdefault(p.meta.get("description"), []).append(url)
+
+    for pt, en in PAGES:
+        if pt in pages and en in pages:
+            check(pages[pt].skeleton == pages[en].skeleton, f"{pt} e {en}: HTML diferente entre PT e EN")
 
     for t, urls in titles.items():
         check(len(urls) == 1, f"<title> repetido em {urls}")
@@ -295,6 +399,7 @@ def main():
         sheets = [h for rel, h, _ in p.links if rel == "stylesheet"]
         check(sheets[:2] == ["/assets/css/tokens.css", "/assets/site.css"],
               f"404.html: tokens.css tem de vir antes do site.css ({sheets})")
+        check_header(check, "404.html", p)
         pages["/404.html"] = p
 
     # Links internos e externos em todas as páginas
@@ -330,7 +435,7 @@ def main():
         for host in ("fonts.googleapis.com", "fonts.gstatic.com", "googletagmanager", "google-analytics", "facebook.net"):
             check(host not in html, f"{f.relative_to(ROOT)}: pedido a terceiros ({host})")
         # A CSP em docs/deploy.md não permite estilos nem scripts inline.
-        for pattern in (r"\sstyle=", r"<style", r"<script", r"\son[a-z]+="):
+        for pattern in (r"\sstyle=", r"<style", r"<script(?![^>]*\bsrc=)", r"\son[a-z]+="):
             check(not re.search(pattern, html), f"{f.relative_to(ROOT)}: inline proibido pela CSP ({pattern})")
 
     # robots.txt e sitemap.xml
