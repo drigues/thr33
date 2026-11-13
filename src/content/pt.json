@@ -32,7 +32,8 @@
       "description": "A Thr33 Labs desenha e desenvolve sites, aplicações e experiências em realidade aumentada para empresas, a partir de Óbidos, Portugal.",
       "head": {
         "kind": "hero",
-        "label": "Digital Product Studio",
+        "label": "Thr33 Labs / ©2026",
+        "label_after": "Óbidos, PT",
         "h1": "Produtos digitais que as pessoas <span class=\"accent\">usam</span>",
         "lead": "A Thr33 Labs é um estúdio de produto digital em Óbidos. Desenhamos e desenvolvemos sites, aplicações e experiências em realidade aumentada para empresas, da primeira conversa ao lançamento.",
         "actions": [
@@ -46,7 +47,8 @@
             "href": "/servicos/",
             "style": "ghost"
           }
-        ]
+        ],
+        "scroll_hint": "↓ scroll"
       },
       "sections": [
         {

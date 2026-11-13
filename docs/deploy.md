@@ -39,7 +39,7 @@ O site é estático: o servidor só tem de servir a pasta `public/`. Não há bu
    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
    add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-   add_header Content-Security-Policy "default-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'none'; frame-ancestors 'self'; base-uri 'self'; form-action 'none'" always;
+   add_header Content-Security-Policy "default-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'none'" always;
    ```
 
    Se houver um `location ~ \.php$`, pode sair: o site não tem PHP.

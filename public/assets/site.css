@@ -117,8 +117,59 @@ html.menu-open { overflow: hidden; }
 .hero .label, .page-head .label { margin-bottom: 1.75rem; }
 
 /* Blocos de página */
-.hero { padding-block: clamp(3rem, 10vw, 7rem) clamp(3rem, 8vw, 5rem); }
+/* Hero: título enorme, gradiente-assinatura atrás. Por cima do gradiente o texto fica sempre em --ink. */
+.hero {
+  position: relative; isolation: isolate; overflow: hidden;
+  padding-block: clamp(3rem, 10vw, 7rem) clamp(2.5rem, 6vw, 4rem);
+}
+.hero h1 {
+  font-size: var(--text-hero); font-weight: 500; letter-spacing: var(--tracking-hero);
+  line-height: 0.95; max-width: none;
+}
+.hero .label, .hero .lead { color: var(--ink); }
+.hero .lead { margin-top: 2rem; }
+/* Telha sobre o gradiente não garante 3:1: a palavra em destaque leva um traço em Telha (forma, não texto). */
+.hero .accent {
+  color: inherit; background-image: linear-gradient(var(--accent), var(--accent));
+  background-size: 100% 0.1em; background-position: 0 88%; background-repeat: no-repeat;
+}
+.hero-scroll {
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+  font-family: var(--font-mono); font-size: var(--text-label); text-transform: uppercase;
+  letter-spacing: var(--tracking-label); color: var(--ink);
+}
 .page-head { padding-block: clamp(2.5rem, 7vw, 4.5rem) 2rem; }
+.page-head h1 { font-size: var(--text-h2); font-weight: 500; letter-spacing: -0.03em; line-height: 1; max-width: 18ch; }
+
+/* Gradiente-assinatura: três manchas que derivam devagar e seguem um pouco o rato. */
+.hero-gradient {
+  position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  transform: translate3d(calc(var(--mx, 0) * 1.5rem), calc(var(--my, 0) * 1.5rem), 0);
+  transition: transform var(--dur-3) var(--ease-ui);
+}
+.blob { position: absolute; width: 60vmax; aspect-ratio: 1; border-radius: 50%; opacity: 0.35; will-change: transform; }
+.blob-telha { top: -28vmax; right: -18vmax; background: radial-gradient(circle closest-side, var(--telha), transparent); animation: drift-a 24s ease-in-out infinite alternate; }
+.blob-lagoa { top: 6vmax; right: -30vmax; background: radial-gradient(circle closest-side, var(--secondary), transparent); animation: drift-b 28s ease-in-out infinite alternate; }
+.blob-atlantico { bottom: -38vmax; right: 6vmax; background: radial-gradient(circle closest-side, var(--link), transparent); animation: drift-c 30s ease-in-out infinite alternate; }
+@media (prefers-color-scheme: dark) { .blob { opacity: 0.45; } }
+@keyframes drift-a { to { transform: translate3d(-14vmax, 10vmax, 0) scale(1.1); } }
+@keyframes drift-b { to { transform: translate3d(-10vmax, -8vmax, 0) scale(0.9); } }
+@keyframes drift-c { to { transform: translate3d(12vmax, -10vmax, 0) scale(1.15); } }
+
+/* Reveal por linhas: o site.js parte o <h1 data-split> em palavras com máscara e marca a linha.
+   Sem JS o título aparece como está; se o JS falhar a meio, a salvaguarda mostra-o ao fim de 1 s. */
+.js [data-split]:not(.split) { opacity: 0; animation: split-fallback 0s linear 1s forwards; }
+@keyframes split-fallback { to { opacity: 1; } }
+.split .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.12em; margin-bottom: -0.12em; }
+.split .wi {
+  display: inline-block; transform: translateY(110%);
+  transition: transform calc(var(--dur-2) * 0.7) var(--ease-reveal);
+  transition-delay: calc(var(--line, 0) * 80ms);
+}
+.split.is-in .wi { transform: none; }
+/* O resto da cabeça sobe e aparece (só CSS: acaba sempre visível). */
+.hero .wrap > :not(h1), .page-head .wrap > :not(h1) { animation: rise calc(var(--dur-2) * 0.7) var(--ease-reveal) 0.1s both; }
+@keyframes rise { from { opacity: 0; transform: translateY(0.75rem); } }
 .lead { font-size: clamp(1.1rem, 2vw, 1.3rem); color: var(--muted); max-width: 40rem; margin-top: 1.25rem; }
 
 .accent { color: var(--accent); }
@@ -196,4 +247,9 @@ address { font-style: normal; }
 
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
+  .blob { animation: none; }
+  .hero-gradient { transform: none; }
+  .split .wi { transform: none; }
+  .js [data-split]:not(.split) { opacity: 1; animation: none; }
+  .hero .wrap > :not(h1), .page-head .wrap > :not(h1) { animation: none; }
 }
