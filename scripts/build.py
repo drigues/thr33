@@ -7,7 +7,7 @@ Corre com: python3 scripts/build.py
 - src/layout.html: esqueleto da página; o resto sai dos componentes abaixo.
 
 Cada página é uma cabeça (hero ou page) seguida de secções. Cada secção tem um "type"
-(cards, ticks, project, steps, services, split, facts, prose, text, cta) e, se tiver
+(cards, ticks, project, steps, services, split, facts, ficha, prose, text, cta) e, se tiver
 "label", leva uma etiqueta numerada (01), (02)… pela ordem em que aparece.
 """
 import json
@@ -140,6 +140,12 @@ def facts(section):
     return html
 
 
+def ficha(section):
+    """(Ficha) no fim da página Sobre (#33): chave/valor em mono, como os créditos de um filme."""
+    rows = "\n          ".join(f'<div><dt>{i["term"]}</dt><dd>{i["value"]}</dd></div>' for i in section["items"])
+    return f'<dl class="ficha">\n          {rows}\n        </dl>'
+
+
 def project(section):
     """Linha de projeto: nome grande, descrição, ações e (opcional) lista de pontos."""
     left = [
@@ -163,13 +169,14 @@ def heading(section):
 SCENES = {"project": "ink", "cta": "telha"}
 
 
-def band(section, num, body):
+def band(section, num, body, lab=None):
     """Secção padrão: etiqueta numerada (se houver), título e corpo.
 
     Projetos veste Tinta e o CTA veste Telha (#31): classe scene-* para a cor sem JS e
     data-scene para o site.js mudar a cor da página inteira.
     """
-    lab = label(section["label"], num) if num else ""
+    if lab is None:
+        lab = label(section["label"], num) if num else ""
     inner = "\n        ".join(x for x in (lab, body) if x)
     scene = SCENES.get(section["type"])
     attrs = f'class="band scene-{scene}" data-scene="{scene}"' if scene else 'class="band"'
@@ -217,6 +224,8 @@ def section_html(section, counter):
         return services(section, counter)
     if kind == "prose":
         return prose(section)
+    if kind == "ficha":
+        return band(section, None, heading(section) + "\n        " + ficha(section), label(section["label"], page=True))
     num = next(counter) if section.get("label") else None
     if kind == "project":
         return band(section, num, project(section))

@@ -286,6 +286,21 @@ a[target="_blank"]::after { content: "↗" / ""; margin-left: 0.3em; }
 .facts dt { color: var(--muted); }
 .facts dd { margin: 0; overflow-wrap: anywhere; }
 
+/* (Ficha) na página Sobre (#33): como os créditos de um filme. Uma coluna em mobile; a partir de
+   40rem, termo à direita e valor à esquerda, com a divisão ao meio. */
+.ficha {
+  display: grid; gap: 1rem; margin: 0; font-family: var(--font-mono); font-size: var(--text-label-lg);
+  letter-spacing: 0.02em; line-height: 1.6;
+}
+.ficha div { display: grid; gap: 0.15rem; }
+.ficha dt { color: var(--muted); text-transform: uppercase; letter-spacing: var(--tracking-label); font-size: var(--text-label); }
+.ficha dd { margin: 0; overflow-wrap: anywhere; }
+@media (min-width: 40rem) {
+  .ficha { gap: 0.6rem; }
+  .ficha div { grid-template-columns: 1fr 1fr; gap: 2rem; align-items: baseline; }
+  .ficha dt { text-align: right; }
+}
+
 address { font-style: normal; }
 
 /* Textos legais */
