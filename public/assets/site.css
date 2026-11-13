@@ -217,7 +217,32 @@ html.menu-open { overflow: hidden; }
 .card .more { margin-top: auto; padding-top: 0.75rem; font-weight: 500; }
 .card .num { font-family: var(--font-mono); font-size: 0.8rem; color: var(--secondary); letter-spacing: 0.1em; }
 
-.service { padding-block: 2.5rem; border-top: 1px solid var(--line); scroll-margin-top: 1rem; }
+/* Ícones Lucide (sprite em /assets/icons.svg): traço 1.5 px, cor herdada, círculo na cor da secção. */
+.card-icon {
+  display: inline-grid; place-items: center; flex: none; width: 3rem; height: 3rem; border-radius: 50%;
+  background: var(--secondary); color: var(--paper); margin-bottom: 0.75rem;
+}
+.icon { width: 1.5rem; height: 1.5rem; }
+.service-head { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+.service-head .card-icon, .service-head .label { margin-bottom: 0; }
+
+/* Setas: → nos links internos de "ver mais", ↗ nos que abrem noutro separador. */
+.more::after { content: "→" / ""; display: inline-block; margin-left: 0.35em; transition: transform var(--dur-1) var(--ease-ui); }
+.more:hover::after { transform: translateX(0.2em); }
+a[target="_blank"]::after { content: "↗" / ""; margin-left: 0.3em; }
+
+/* Reveal em cascata: o site.js põe .reveal nos grupos abaixo da dobra e .is-in quando entram.
+   Sem JS (ou com reduced motion) a classe nunca é posta e nada fica escondido. */
+.reveal > * {
+  opacity: 0; transform: translateY(40px);
+  transition: opacity var(--dur-2) var(--ease-reveal), transform var(--dur-2) var(--ease-reveal);
+  transition-delay: calc(var(--i, 0) * 100ms);
+}
+.reveal.is-in > * { opacity: 1; transform: none; }
+.reveal .icon { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset var(--dur-3) var(--ease-reveal); transition-delay: calc(var(--i, 0) * 100ms + 200ms); }
+.reveal.is-in .icon { stroke-dashoffset: 0; }
+
+.service { padding-block: 2.5rem; border-top: 1px solid var(--line); scroll-margin-top: 5rem; }
 .service-grid { display: grid; gap: 1.5rem; }
 @media (min-width: 52rem) { .service-grid { grid-template-columns: 1fr 1fr; gap: 3rem; } }
 .service h2 { margin-bottom: 1rem; }
@@ -269,4 +294,6 @@ address { font-style: normal; }
   .js [data-split]:not(.split) { opacity: 1; animation: none; }
   .hero .wrap > :not(h1), .page-head .wrap > :not(h1) { animation: none; }
   .marquee-track { animation: none; }
+  .reveal > * { opacity: 1; transform: none; }
+  .reveal .icon { stroke-dashoffset: 0; }
 }

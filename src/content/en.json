@@ -75,7 +75,8 @@
               "link": {
                 "text": "Consulting in detail",
                 "href": "/en/services/#consulting"
-              }
+              },
+              "icon": "compass"
             },
             {
               "title": "Web and apps",
@@ -83,7 +84,8 @@
               "link": {
                 "text": "Development in detail",
                 "href": "/en/services/#development"
-              }
+              },
+              "icon": "code"
             },
             {
               "title": "UX and UI",
@@ -91,7 +93,8 @@
               "link": {
                 "text": "Design in detail",
                 "href": "/en/services/#design"
-              }
+              },
+              "icon": "pen-tool"
             },
             {
               "title": "Augmented reality",
@@ -99,7 +102,8 @@
               "link": {
                 "text": "Augmented reality in detail",
                 "href": "/en/services/#augmented-reality"
-              }
+              },
+              "icon": "box"
             }
           ],
           "label": "Services"
@@ -112,8 +116,7 @@
             "Small businesses and startups launching or renewing a digital product.",
             "Teams that need extra technical capacity or a second opinion on a project.",
             "Architects, interior designers and event planners who want to show projects in augmented reality."
-          ],
-          "label": "Clients"
+          ]
         },
         {
           "type": "project",
@@ -137,22 +140,40 @@
           "items": [
             {
               "title": "Conversation",
-              "text": "We learn about the problem, the audience and what already exists."
+              "text": "We learn about the problem, the audience and what already exists.",
+              "icon": "message-circle"
             },
             {
               "title": "Proposal",
-              "text": "Scope, timeline and cost in writing, before any work starts."
+              "text": "Scope, timeline and cost in writing, before any work starts.",
+              "icon": "file-text"
             },
             {
               "title": "Design and build",
-              "text": "Short cycles, with a version to review at every step."
+              "text": "Short cycles, with a version to review at every step.",
+              "icon": "layers"
             },
             {
               "title": "Launch",
-              "text": "Release, measurement and support after it ships."
+              "text": "Release, measurement and support after it ships.",
+              "icon": "rocket"
             }
           ],
           "label": "Process"
+        },
+        {
+          "type": "text",
+          "id": "about-us",
+          "label": "About",
+          "h2": "Who we are",
+          "text": "An independent digital product studio in Óbidos. The founder follows every project from start to finish, with no middlemen.",
+          "actions": [
+            {
+              "text": "About Thr33 Labs",
+              "href": "/en/about/",
+              "style": "ghost"
+            }
+          ]
         },
         {
           "type": "cta",
@@ -285,7 +306,8 @@
                 "Choosing technology, hosting and suppliers.",
                 "Migration plans for legacy systems.",
                 "Security and GDPR review of digital products."
-              ]
+              ],
+              "icon": "compass"
             },
             {
               "id": "development",
@@ -298,7 +320,8 @@
                 "Web platforms with customer areas and admin dashboards.",
                 "iOS and Android apps.",
                 "Integrations with payments, email and third-party APIs."
-              ]
+              ],
+              "icon": "code"
             },
             {
               "id": "design",
@@ -311,7 +334,8 @@
                 "Wireframes and clickable prototypes.",
                 "Design systems and component libraries.",
                 "Accessibility reviews against WCAG 2.1 AA."
-              ]
+              ],
+              "icon": "pen-tool"
             },
             {
               "id": "augmented-reality",
@@ -324,7 +348,8 @@
                 "Interior design and furniture at real scale.",
                 "Event layouts before the day.",
                 "<a href=\"/en/products/\">vizia</a>, our augmented reality product."
-              ]
+              ],
+              "icon": "box"
             }
           ]
         },

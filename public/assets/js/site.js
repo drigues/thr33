@@ -97,8 +97,28 @@ function countLabels() {
   });
 }
 
+/* Reveal em cascata nos grupos [data-reveal] abaixo da dobra: filhos sobem com 100 ms entre si
+   e os ícones desenham o traço. Os que já estão visíveis ao carregar não mexem. */
+function revealGroups() {
+  if (reducedMotion || !("IntersectionObserver" in window)) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      io.unobserve(e.target);
+      e.target.classList.add("is-in");
+    });
+  }, { rootMargin: "0px 0px -10% 0px" });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-reveal]"), function (group) {
+    if (group.getBoundingClientRect().top < window.innerHeight) return;
+    Array.prototype.forEach.call(group.children, function (child, i) { child.style.setProperty("--i", String(i)); });
+    group.classList.add("reveal");
+    io.observe(group);
+  });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   if (!reducedMotion) Array.prototype.forEach.call(document.querySelectorAll("[data-split]"), splitLines);
+  revealGroups();
   Array.prototype.forEach.call(document.querySelectorAll("[data-marquee]"), marqueeScroll);
   countLabels();
   var hero = document.querySelector(".hero");

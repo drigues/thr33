@@ -55,6 +55,12 @@ SITE_JS = "/assets/js/site.js"
 # Hero (#27): etiqueta, gradiente-assinatura decorativo e títulos com reveal por linhas.
 HERO_LABEL = "(Thr33 Labs / ©2026) Óbidos, PT"
 HERO_BLOBS = 3
+# Serviços e ícones (#29): sprite Lucide servido pelo site, um ícone por serviço e por passo.
+ICONS_SVG = ROOT / "assets" / "icons.svg"
+ICONS_LICENCE = ROOT / "assets" / "icons-LICENSE.txt"
+HOME_LABELS = {"pt-PT": ["Serviços", "Projetos", "Processo", "Sobre"], "en": ["Services", "Projects", "Process", "About"]}
+HOME_ICONS = {"service": 4, "step": 4}
+SERVICES_PAGE_ICONS = 4
 # Marquee (#28): competências em loop na página inicial; a cópia para o loop não é lida duas vezes.
 MARQUEE = {
     "pt-PT": ["Consultoria", "Web", "Apps", "UX/UI", "Realidade aumentada", "Laravel", "3D"],
@@ -102,6 +108,8 @@ class Page(HTMLParser):
         self.scroll_hints = []   # atributos de .hero-scroll
         self._in_hero = 0
         self.marquees = 0
+        self.icon_uses = []      # (href, aria-hidden do <svg>, focusable)
+        self._svg = None
         self.marquee_lists = []  # (aria-hidden, [itens])
         self._in_marquee_list = False
         self.header_hrefs = []
@@ -154,6 +162,10 @@ class Page(HTMLParser):
             self.hero_gradient.append(a)
         if "blob" in classes:
             self.blobs += 1
+        if tag == "svg" and "icon" in classes:
+            self._svg = a
+        if tag == "use" and self._svg is not None:
+            self.icon_uses.append((a.get("href", ""), self._svg.get("aria-hidden"), self._svg.get("focusable")))
         if "marquee" in classes:
             self.marquees += 1
         if "marquee-list" in classes:
@@ -179,6 +191,8 @@ class Page(HTMLParser):
             self._capture = None
         if tag == "ul":
             self._in_marquee_list = False
+        if tag == "svg":
+            self._svg = None
         if tag == "section":
             self._in_hero = 0
         if tag == "main":
@@ -347,9 +361,10 @@ def check_motion_css(check):
     reduced = re.search(r"@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{(.*?)\n\}", css, re.S)
     check(reduced is not None, "site.css: bloco prefers-reduced-motion em falta")
     if reduced:
-        for needle in (".blob", ".wi", ".marquee-track"):
+        for needle in (".blob", ".wi", ".marquee-track", ".reveal"):
             check(needle in reduced.group(1), f"site.css: prefers-reduced-motion não trata {needle}")
     # Se o JS falhar depois de pôr .js, o título não pode ficar invisível para sempre.
+    check('content: "→"' in css and 'content: "↗"' in css, "site.css: faltam as setas → (links internos) e ↗ (externos)")
     marquee = re.search(r"\.marquee\s*\{([^}]*)\}", css)
     check(marquee is not None and "overflow: hidden" in marquee.group(1), "site.css: .marquee sem overflow: hidden")
     guard = re.search(r"\.js \[data-split\]:not\(\.split\)\s*\{([^}]*)\}", css)
@@ -368,6 +383,45 @@ def check_marquee(check, url, p, lang, is_home):
         check(hidden_a is None, f"{url}: a primeira lista do marquee tem de ser lida")
         check(hidden_b == "true", f"{url}: a cópia do marquee tem de ter aria-hidden=true")
         check(items_a == MARQUEE[lang] and items_b == MARQUEE[lang], f"{url}: itens do marquee {items_a}")
+
+
+def icon_symbols():
+    if not ICONS_SVG.exists():
+        return {}
+    svg = ICONS_SVG.read_text(encoding="utf-8")
+    return {m.group(1): m.group(2) for m in re.finditer(r'<symbol id="([\w-]+)"[^>]*>(.*?)</symbol>', svg, re.S)}
+
+
+def check_icons(check):
+    check(ICONS_SVG.exists(), "assets/icons.svg em falta (sprite dos ícones)")
+    check(ICONS_LICENCE.exists(), "assets/icons-LICENSE.txt em falta (licença ISC do Lucide)")
+    # O <use> não herda os atributos do <svg> raiz do sprite: cada <symbol> leva os seus.
+    if ICONS_SVG.exists():
+        for m in re.finditer(r"<symbol ([^>]*)>", ICONS_SVG.read_text(encoding="utf-8")):
+            check('fill="none"' in m.group(1) and 'stroke="currentColor"' in m.group(1),
+                  f"icons.svg: <symbol {m.group(1)[:30]}…> sem fill=none e stroke=currentColor")
+    for name, body in icon_symbols().items():
+        shapes = re.findall(r"<(path|circle|rect|line|polyline|polygon|ellipse)\b([^>]*)>", body)
+        check(shapes and all('pathLength="1"' in attrs for _, attrs in shapes),
+              f"icons.svg: #{name} precisa de pathLength=\"1\" em cada forma (traço animado)")
+
+
+def check_page_icons(check, url, p, html, is_home, is_services):
+    symbols = icon_symbols()
+    for href, hidden, focusable in p.icon_uses:
+        check(href.startswith("/assets/icons.svg#") and href.split("#")[1] in symbols, f"{url}: ícone inexistente {href}")
+        check(hidden == "true" and focusable == "false", f"{url}: ícone {href} sem aria-hidden=true e focusable=false")
+    count = lambda cls: len(re.findall(rf'<li class="card {cls}">\s*<span class="card-icon"', html))
+    if is_home:
+        check(count("card-service") == HOME_ICONS["service"], f"{url}: os 4 cartões de serviço precisam de ícone")
+        check(count("card-step") == HOME_ICONS["step"], f"{url}: os 4 passos precisam de ícone")
+    if is_services:
+        n = len(re.findall(r'<section class="service"[^>]*>\s*<div class="service-head">\s*<span class="card-icon"', html))
+        check(n == SERVICES_PAGE_ICONS, f"{url}: cada serviço precisa de ícone ({n} de {SERVICES_PAGE_ICONS})")
+
+
+def section_labels(html):
+    return re.findall(r'<p class="label"><span class="label-num">\(\d+\)</span> ([^<]+)</p>', html)
 
 
 def check_labels(check, url, p):
@@ -401,6 +455,7 @@ def main():
     check_content(check)
     check_no_js_hiding(check)
     check_motion_css(check)
+    check_icons(check)
 
     titles, descriptions = {}, {}
     pages = {}
@@ -446,6 +501,13 @@ def main():
             check_labels(check, url, p)
             check_hero(check, url, p, url in ("/", "/en/"))
             check_marquee(check, url, p, lang, url in ("/", "/en/"))
+            raw = file_for(url).read_text(encoding="utf-8")
+            check_page_icons(check, url, p, raw, url in ("/", "/en/"), url in ("/servicos/", "/en/services/"))
+            if url in ("/", "/en/"):
+                check(section_labels(raw) == HOME_LABELS[lang], f"{url}: etiquetas {section_labels(raw)}, esperado {HOME_LABELS[lang]}")
+                about = "/sobre/" if lang == "pt-PT" else "/en/about/"
+                main = raw[raw.index("<main"):raw.index("</main>")]
+                check(f'href="{about}"' in main, f"{url}: a secção Sobre precisa de ligação para {about} no conteúdo")
             check(any(h == other for h, _, _ in p.hrefs), f"{url}: sem link para a outra língua ({other})")
             footer = " ".join(" ".join(p.footer_text).split())
             for needle in LEGAL_FOOTER[lang]:

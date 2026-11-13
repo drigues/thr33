@@ -36,6 +36,34 @@ NAV = ["servicos", "produtos", "sobre", "contacto"]
 COMPLAINTS_URL = "https://www.livroreclamacoes.pt/Inicio/"
 
 
+# O <use> não herda os atributos do <svg> raiz do sprite: vão em cada <symbol>.
+ICON_PAINT = 'fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"'
+ICON_SHAPES = re.compile(r"<(path|circle|rect|line|polyline|polygon|ellipse)\b([^>]*?)\s*/>")
+
+
+def write_icons():
+    """Sprite com os ícones Lucide (ISC) de src/icons/: um <symbol> por ficheiro, traço 1.5 px.
+
+    Cada forma leva pathLength="1" para o traço se poder desenhar com stroke-dashoffset.
+    """
+    symbols = []
+    for f in sorted((SRC / "icons").glob("*.svg")):
+        svg = f.read_text(encoding="utf-8")
+        view_box = re.search(r'viewBox="([^"]+)"', svg).group(1)
+        shapes = "".join(f'<{tag}{attrs} pathLength="1"/>' for tag, attrs in ICON_SHAPES.findall(svg))
+        symbols.append(f'<symbol id="{f.stem}" viewBox="{view_box}" {ICON_PAINT}>{shapes}</symbol>')
+    sprite = '<svg xmlns="http://www.w3.org/2000/svg">\n' + "\n".join(symbols) + "\n</svg>\n"
+    (OUT / "assets" / "icons.svg").write_text(sprite, encoding="utf-8")
+    licence = (SRC / "icons" / "LICENSE-lucide.txt").read_text(encoding="utf-8")
+    (OUT / "assets" / "icons-LICENSE.txt").write_text(licence, encoding="utf-8")
+
+
+def icon(name):
+    """Ícone decorativo do sprite, dentro de um círculo na cor da secção."""
+    return (f'<span class="card-icon" aria-hidden="true"><svg class="icon" width="24" height="24" '
+            f'aria-hidden="true" focusable="false"><use href="/assets/icons.svg#{name}"></use></svg></span>')
+
+
 def load_content(lang):
     return json.loads((SRC / "content" / f"{lang}.json").read_text(encoding="utf-8"))
 
@@ -74,28 +102,33 @@ def ticks(items):
     return f'<ul class="ticks">\n          {lis}\n        </ul>'
 
 
-def card(item):
+def card(item, num=None):
     parts = [f'<h3>{item["title"]}</h3>']
+    if "icon" in item:
+        parts = [icon(item["icon"]), f'<span class="num">{num:02d}</span>'] + parts
     if "text" in item:
         parts.append(f'<p>{item["text"]}</p>')
     if "address" in item:
         parts.append(f'<address class="dim">{item["address"]}</address>')
     if "link" in item:
         parts.append(f'<a class="more" href="{attr(item["link"]["href"])}">{item["link"]["text"]}</a>')
-    return '<li class="card">\n            ' + "\n            ".join(parts) + "\n          </li>"
+    cls = "card card-service" if "icon" in item else "card"
+    return f'<li class="{cls}">\n            ' + "\n            ".join(parts) + "\n          </li>"
 
 
 def cards(section):
-    items = "\n          ".join(card(i) for i in section["items"])
-    return f'<ul class="grid grid-{section["columns"]}">\n          {items}\n        </ul>'
+    items = "\n          ".join(card(i, n) for n, i in enumerate(section["items"], 1))
+    reveal = " data-reveal" if any("icon" in i for i in section["items"]) else ""
+    return f'<ul class="grid grid-{section["columns"]}"{reveal}>\n          {items}\n        </ul>'
 
 
 def steps(section):
     items = "\n          ".join(
-        f'<li class="card"><span class="num">{n:02d}</span><h3>{i["title"]}</h3><p>{i["text"]}</p></li>'
+        f'<li class="card card-step">\n            {icon(i["icon"])}\n            <span class="num">{n:02d}</span>'
+        f'<h3>{i["title"]}</h3><p>{i["text"]}</p>\n          </li>'
         for n, i in enumerate(section["items"], 1)
     )
-    return f'<ol class="grid grid-4" role="list">\n          {items}\n        </ol>'
+    return f'<ol class="grid grid-4" role="list" data-reveal>\n          {items}\n        </ol>'
 
 
 def facts(section):
@@ -140,8 +173,8 @@ def services(section, counter):
         num = next(counter)
         examples = ticks(item["examples"])
         out.append(
-            f'      <section class="service" id="{item["id"]}" aria-labelledby="{item["heading_id"]}">\n'
-            f'        {label(num=num)}\n'
+            f'      <section class="service" id="{item["id"]}" aria-labelledby="{item["heading_id"]}" data-reveal>\n'
+            f'        <div class="service-head">\n          {icon(item["icon"])}\n          {label(num=num)}\n        </div>\n'
             f'        <div class="service-grid">\n'
             f'          <div>\n            <h2 id="{item["heading_id"]}">{item["h2"]}</h2>\n'
             f'            <p>{item["text"]}</p>\n          </div>\n'
@@ -410,6 +443,7 @@ def main():
     content = {lang: load_content(lang) for lang in ("pt", "en")}
     urls = [render(lang, name, layout, content) for lang in ("pt", "en") for name in ROUTES]
     render_404(layout, content)
+    write_icons()
     write_sitemap()
     (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n", encoding="utf-8")
     print(f"{len(urls)} páginas e a 404 geradas em public/")
