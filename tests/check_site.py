@@ -69,6 +69,20 @@ CTA_TITLE = {"pt-PT": "Vamos falar?", "en": "Shall we talk?"}
 EMAIL = "hello@thr33.xyz"
 PHONE_HREF = "tel:+351936466845"
 FOOTER_LINE1 = {"pt-PT": ["/privacidade/", "/termos/"], "en": ["/en/privacy/", "/en/terms/"]}
+# Ficha (#33): fim da página Sobre, chave/valor em mono como créditos, com os dados do rodapé legal.
+# (termo, excerto que tem de estar no valor e na linha legal do rodapé; None = só o termo)
+FICHA = {
+    "pt-PT": [("Firma", "THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA"),
+              ("Tipo", "Sociedade unipessoal por quotas"), ("Constituição", None),
+              ("Sede", "Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos"), ("NIPC", "519573021"),
+              ("D-U-N-S", None), ("Capital social", "7.660,00 €"), ("CAE", None)],
+    "en": [("Legal name", "THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA"),
+           ("Type", "single-member private limited company"), ("Incorporated", None),
+           ("Registered office", "Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos"), ("Tax number (NIPC)", "519573021"),
+           ("D-U-N-S", None), ("Share capital", "€7,660.00"), ("Activity codes (CAE)", None)],
+}
+FICHA_LABEL = {"pt-PT": "(Ficha)", "en": "(Fact sheet)"}
+FICHA_EXTRA = {"pt-PT": {"Constituição": "2026", "D-U-N-S": "348597205"}, "en": {"Incorporated": "2026", "D-U-N-S": "348597205"}}
 # Marquee (#28): competências em loop na página inicial; a cópia para o loop não é lida duas vezes.
 MARQUEE = {
     "pt-PT": ["Consultoria", "Web", "Apps", "UX/UI", "Realidade aumentada", "Laravel", "3D"],
@@ -502,6 +516,33 @@ def check_footer(check, url, html, lang):
         check(needle in text, f"{url}: linha legal sem '{needle}'")
 
 
+def check_ficha(check, url, html, lang, is_about):
+    blocks = re.findall(r'<dl class="ficha">(.*?)</dl>', html, re.S)
+    if not is_about:
+        check(not blocks, f"{url}: a (Ficha) é só da página Sobre")
+        return
+    check(len(blocks) == 1, f"{url}: falta o bloco (Ficha) em <dl class=\"ficha\">")
+    if len(blocks) != 1:
+        return
+    main = html[html.index("<main"):html.index("</main>")]
+    last = main[main.rindex("<section"):]
+    check('<dl class="ficha">' in last, f"{url}: a (Ficha) tem de ser a última secção")
+    check(f'<p class="label">{FICHA_LABEL[lang]}</p>' in last, f"{url}: a Ficha leva a etiqueta {FICHA_LABEL[lang]}")
+    rows = re.findall(r"<div><dt>(.*?)</dt><dd>(.*?)</dd></div>", blocks[0], re.S)
+    terms = [t for t, _ in rows]
+    expected = [t for t, _ in FICHA[lang]]
+    check(terms == expected, f"{url}: Ficha com {terms}, esperado {expected}")
+    values = dict(rows)
+    legal = re.search(r'<p class="legal">(.*?)</p>', html, re.S)
+    legal_text = legal.group(1) if legal else ""
+    for term, needle in FICHA[lang]:
+        if needle and term in values:
+            check(needle.lower() in values[term].lower(), f"{url}: Ficha '{term}' devia conter '{needle}'")
+            check(needle.lower() in legal_text.lower(), f"{url}: rodapé legal sem '{needle}' (Ficha e rodapé têm de bater certo)")
+    for term, value in FICHA_EXTRA[lang].items():
+        check(values.get(term) == value, f"{url}: Ficha '{term}' devia ser {value}")
+
+
 def check_footer_css(check):
     css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
     legal = re.search(r"\n\.legal\s*\{([^}]*)\}", css)
@@ -516,6 +557,12 @@ def check_footer_css(check):
     check(line1 is not None and "--font-mono" not in line1.group(1), "site.css: .footer-line em Space Grotesk")
     title = re.search(r"\n\.cta-title\s*\{([^}]*)\}", css)
     check(title is not None and "var(--text-hero)" in title.group(1), "site.css: .cta-title em tamanho de hero")
+    ficha = re.search(r"\n\.ficha\s*\{([^}]*)\}", css)
+    check(ficha is not None and "var(--font-mono)" in ficha.group(1), "site.css: .ficha em JetBrains Mono")
+    row = re.search(r"\n\.ficha div\s*\{([^}]*)\}", css)
+    check(row is not None and "grid-template-columns" not in row.group(1), "site.css: .ficha numa coluna em mobile")
+    check(re.search(r"@media \(min-width: [\d.]+rem\) \{[^@]*?\.ficha div\s*\{[^}]*grid-template-columns", css),
+          "site.css: .ficha em duas colunas a partir de um min-width")
     js = (ROOT / SITE_JS.lstrip("/")).read_text(encoding="utf-8")
     check("data-cta-scale" in js, "site.js: falta a escala do CTA final (data-cta-scale)")
 
@@ -606,6 +653,7 @@ def main():
             raw = file_for(url).read_text(encoding="utf-8")
             check_cta(check, url, raw, lang, "telha" in [sc for sc, _ in p.scenes])
             check_footer(check, url, raw, lang)
+            check_ficha(check, url, raw, lang, url in ("/sobre/", "/en/about/"))
             check_page_icons(check, url, p, raw, url in ("/", "/en/"), url in ("/servicos/", "/en/services/"))
             if url in ("/", "/en/"):
                 check(section_labels(raw) == HOME_LABELS[lang], f"{url}: etiquetas {section_labels(raw)}, esperado {HOME_LABELS[lang]}")

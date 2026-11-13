@@ -229,7 +229,7 @@
           "label": "Princípios"
         },
         {
-          "type": "facts",
+          "type": "ficha",
           "id": "dados",
           "h2": "Dados da empresa",
           "items": [
@@ -238,20 +238,8 @@
               "value": "THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA"
             },
             {
-              "term": "Marca",
-              "value": "Thr33 Labs"
-            },
-            {
-              "term": "Tipo de sociedade",
+              "term": "Tipo",
               "value": "Sociedade unipessoal por quotas"
-            },
-            {
-              "term": "NIPC",
-              "value": "519573021"
-            },
-            {
-              "term": "D-U-N-S",
-              "value": "348597205"
             },
             {
               "term": "Constituição",
@@ -262,16 +250,20 @@
               "value": "Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos, Portugal"
             },
             {
-              "term": "Atividades (CAE)",
+              "term": "NIPC",
+              "value": "519573021"
+            },
+            {
+              "term": "D-U-N-S",
+              "value": "348597205"
+            },
+            {
+              "term": "Capital social",
+              "value": "7.660,00 €"
+            },
+            {
+              "term": "CAE",
               "value": "62100, 62201 e 62900"
-            },
-            {
-              "term": "Email",
-              "value": "<a href=\"mailto:hello@thr33.xyz\">hello@thr33.xyz</a>"
-            },
-            {
-              "term": "Telefone",
-              "value": "<a href=\"tel:+351936466845\">+351 936 466 845</a>"
             }
           ],
           "label": "Ficha"
