@@ -1,12 +1,3 @@
-/* Space Grotesk (OFL, ver /assets/fonts/OFL.txt), servida pelo próprio site: sem terceiros nem cookies. */
-@font-face {
-  font-family: "Space Grotesk";
-  src: url("/assets/fonts/space-grotesk.ttf") format("truetype");
-  font-weight: 300 700;
-  font-style: normal;
-  font-display: swap;
-}
-
 /* Cores, fontes e movimento vêm de /assets/css/tokens.css (carregado antes deste ficheiro). */
 
 *, *::before, *::after { box-sizing: border-box; }

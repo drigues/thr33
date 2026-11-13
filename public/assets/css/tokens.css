@@ -5,6 +5,23 @@
  * claro, escuro e secção em Tinta (.theme-ink).
  */
 
+/* Fontes servidas pelo site (OFL, licenças em /assets/fonts/), subset latino + setas. */
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("/assets/fonts/space-grotesk.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/assets/fonts/jetbrains-mono-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* Paleta (nomes de Óbidos) */
   --cal: #F3F0E8;

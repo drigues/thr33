@@ -48,6 +48,9 @@ REQUIRED_TOKENS = [
     "--font-sans", "--font-mono", "--text-hero", "--text-h2", "--text-body", "--leading-body", "--text-label",
     "--tracking-hero", "--tracking-label", "--dur-1", "--dur-2", "--dur-3", "--ease-ui", "--ease-reveal",
 ]
+FONTS = {"Space Grotesk": "space-grotesk.woff2", "JetBrains Mono": "jetbrains-mono-regular.woff2"}
+FONT_LICENCES = ["OFL.txt", "OFL-JetBrainsMono.txt"]
+FONT_PRELOAD = "/assets/fonts/space-grotesk.woff2"
 # (frente, fundo, mínimo) avaliados em cada esquema: claro, escuro e secção em Tinta.
 CONTRAST_PAIRS = [
     ("--ink", "--paper", 4.5), ("--muted", "--paper", 4.5), ("--link", "--paper", 4.5),
@@ -192,7 +195,20 @@ def check_tokens(check):
             ratio = contrast(a, b)
             check(ratio >= minimum, f"tokens.css ({scheme}): {fg} sobre {bg} tem {ratio:.2f}, mínimo {minimum}")
 
+    # Fontes servidas pelo site em WOFF2, com font-display: swap e licença ao lado.
+    faces = re.findall(r"@font-face\s*\{([^{}]*)\}", css)
+    for family, file in FONTS.items():
+        face = next((f for f in faces if re.search(rf"font-family:\s*\"{family}\"", f)), None)
+        check(face is not None, f"tokens.css: @font-face de {family} em falta")
+        if face:
+            check(f'url("/assets/fonts/{file}") format("woff2")' in face, f"tokens.css: {family} deve usar /assets/fonts/{file}")
+            check(re.search(r"font-display:\s*swap", face), f"tokens.css: {family} sem font-display: swap")
+        check((ROOT / "assets" / "fonts" / file).exists(), f"assets/fonts/{file} em falta")
+    for licence in FONT_LICENCES:
+        check((ROOT / "assets" / "fonts" / licence).exists(), f"assets/fonts/{licence} em falta (licença OFL)")
+
     site_css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
+    check(not re.search(r"\.ttf\b|@font-face", site_css), "site.css: as fontes ficam no tokens.css, em WOFF2")
     loose = re.findall(r"#[0-9A-Fa-f]{3,8}\b|\b(?:rgba?|hsla?)\(", site_css)
     check(not loose, f"site.css: cores soltas {sorted(set(loose))} (usar os tokens)")
 
@@ -244,6 +260,8 @@ def main():
             sheets = [h for rel, h, _ in p.links if rel == "stylesheet"]
             check(sheets[:2] == ["/assets/css/tokens.css", "/assets/site.css"],
                   f"{url}: tokens.css tem de vir antes do site.css ({sheets})")
+            check(any(rel == "preload" and h == FONT_PRELOAD for rel, h, _ in p.links),
+                  f"{url}: sem preload de {FONT_PRELOAD}")
             check(any(h == other for h, _, _ in p.hrefs), f"{url}: sem link para a outra língua ({other})")
             footer = " ".join(" ".join(p.footer_text).split())
             for needle in LEGAL_FOOTER[lang]:
