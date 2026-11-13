@@ -4,6 +4,7 @@ Corre com: python3 tests/check_site.py
 Sai com código 1 se alguma regra falhar.
 """
 import re
+from datetime import date
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
@@ -36,6 +37,55 @@ LEGAL_FOOTER = {
 COMPLAINTS_URL = "https://www.livroreclamacoes.pt/Inicio/"
 COMPLAINTS_LABEL = {"pt-PT": "Livro de Reclamações", "en": "Complaints Book (Livro de Reclamações)"}
 
+# Redesign (#24, #25): paleta aprovada e papéis que o site.css usa.
+TOKENS_CSS = ROOT / "assets" / "css" / "tokens.css"
+PALETTE = {
+    "--cal": "#F3F0E8", "--tinta": "#121212", "--telha": "#E8552D", "--lagoa": "#2C7564",
+    "--atlantico": "#3A3FD9", "--pedra": "#6B675F",
+    "--atlantico-claro": "#7679E5", "--pedra-clara": "#89847A", "--lagoa-clara": "#36907B",
+}
+REQUIRED_TOKENS = [
+    "--paper", "--ink", "--muted", "--link", "--focus", "--accent", "--on-accent", "--secondary", "--line", "--surface",
+    "--font-sans", "--font-mono", "--text-hero", "--text-h2", "--text-body", "--leading-body", "--text-label",
+    "--tracking-hero", "--tracking-label", "--dur-1", "--dur-2", "--dur-3", "--ease-ui", "--ease-reveal",
+]
+# Componentes (#26): conteúdos num ficheiro por língua, cabeçalho com menu e JS externo.
+BASE = ROOT.parent
+CONTENT = {"pt": BASE / "src" / "content" / "pt.json", "en": BASE / "src" / "content" / "en.json"}
+SITE_JS = "/assets/js/site.js"
+# Hero (#27): etiqueta, gradiente-assinatura decorativo e títulos com reveal por linhas.
+HERO_LABEL = "(Thr33 Labs / ©2026) Óbidos, PT"
+HERO_BLOBS = 3
+# Serviços e ícones (#29): sprite Lucide servido pelo site, um ícone por serviço e por passo.
+ICONS_SVG = ROOT / "assets" / "icons.svg"
+ICONS_LICENCE = ROOT / "assets" / "icons-LICENSE.txt"
+HOME_LABELS = {"pt-PT": ["Serviços", "Projetos", "Processo", "Sobre"], "en": ["Services", "Projects", "Process", "About"]}
+HOME_ICONS = {"service": 4, "step": 4}
+SERVICES_PAGE_ICONS = 4
+# Cores por secção (#31): Projetos veste Tinta e o CTA final veste Telha.
+SCENES = {"/": ["ink", "telha"], "/servicos/": ["telha"], "/produtos/": ["ink"]}
+# CTA final e rodapé (#32): "Vamos falar?" em tamanho de hero, email grande e rodapé em duas linhas.
+CTA_TITLE = {"pt-PT": "Vamos falar?", "en": "Shall we talk?"}
+EMAIL = "hello@thr33.xyz"
+PHONE_HREF = "tel:+351936466845"
+FOOTER_LINE1 = {"pt-PT": ["/privacidade/", "/termos/"], "en": ["/en/privacy/", "/en/terms/"]}
+# Marquee (#28): competências em loop na página inicial; a cópia para o loop não é lida duas vezes.
+MARQUEE = {
+    "pt-PT": ["Consultoria", "Web", "Apps", "UX/UI", "Realidade aumentada", "Laravel", "3D"],
+    "en": ["Consulting", "Web", "Apps", "UX/UI", "Augmented reality", "Laravel", "3D"],
+}
+SITE_JS_MAX_GZIP = 8 * 1024    # o site.js comprimido
+JS_TOTAL_MAX_GZIP = 70 * 1024  # orçamento total de JS da spec (gzip)
+
+FONTS = {"Space Grotesk": "space-grotesk.woff2", "JetBrains Mono": "jetbrains-mono-regular.woff2"}
+FONT_LICENCES = ["OFL.txt", "OFL-JetBrainsMono.txt"]
+FONT_PRELOAD = "/assets/fonts/space-grotesk.woff2"
+# (frente, fundo, mínimo) avaliados em cada esquema: claro, escuro e secção em Tinta.
+CONTRAST_PAIRS = [
+    ("--ink", "--paper", 4.5), ("--muted", "--paper", 4.5), ("--link", "--paper", 4.5),
+    ("--focus", "--paper", 3), ("--secondary", "--paper", 4.5), ("--on-accent", "--accent", 4.5),
+]
+
 FORBIDDEN = re.compile(r"em breve|brevemente|coming soon|lorem ipsum|TODO", re.I)
 
 
@@ -55,6 +105,27 @@ class Page(HTMLParser):
         self._in_footer = 0
         self.footer_text = []
         self.footer_hrefs = []   # (href, target, rel) dentro de <footer>
+        self.skeleton = []       # (tag, class) dentro de <main>: igual em PT e EN
+        self.label_nums = []     # texto de .label-num, por ordem
+        self.buttons = []        # atributos de cada <button>
+        self.scripts = []        # atributos de cada <script>
+        self.nav_nums = []       # texto de .nav-num no cabeçalho
+        self.h1_attrs = []
+        self.hero_gradient = []  # atributos de .hero-gradient
+        self.blobs = 0
+        self.hero_labels = []    # texto de .label dentro de .hero
+        self.scroll_hints = []   # atributos de .hero-scroll
+        self._in_hero = 0
+        self.marquees = 0
+        self.scenes = []         # (data-scene, classes) de cada <section> com cena
+        self.icon_uses = []      # (href, aria-hidden do <svg>, focusable)
+        self._svg = None
+        self.marquee_lists = []  # (aria-hidden, [itens])
+        self._in_marquee_list = False
+        self.header_hrefs = []
+        self._in_main = 0
+        self._in_header = 0
+        self._capture = None
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
@@ -77,18 +148,77 @@ class Page(HTMLParser):
         elif tag in ("img", "script"):
             if a.get("src"):
                 self.srcs.append(a["src"])
+            if tag == "script":
+                self.scripts.append(a)
+        elif tag == "button":
+            self.buttons.append(a)
         elif tag == "h1":
             self.h1 += 1
+            self.h1_attrs.append(a)
         elif tag == "footer":
             self._in_footer += 1
+        elif tag == "main":
+            self._in_main += 1
+        elif tag == "header":
+            self._in_header += 1
+        if self._in_main and tag != "main":
+            self.skeleton.append((tag, a.get("class", "")))
+        if tag == "a" and self._in_header:
+            self.header_hrefs.append(a.get("href", ""))
+        classes = a.get("class", "").split()
+        if tag == "section" and a.get("data-scene"):
+            self.scenes.append((a["data-scene"], classes))
+        if tag == "section" and "hero" in classes:
+            self._in_hero = 1
+        if "hero-gradient" in classes:
+            self.hero_gradient.append(a)
+        if "blob" in classes:
+            self.blobs += 1
+        if tag == "svg" and "icon" in classes:
+            self._svg = a
+        if tag == "use" and self._svg is not None:
+            self.icon_uses.append((a.get("href", ""), self._svg.get("aria-hidden"), self._svg.get("focusable")))
+        if "marquee" in classes:
+            self.marquees += 1
+        if "marquee-list" in classes:
+            self.marquee_lists.append((a.get("aria-hidden"), []))
+            self._in_marquee_list = True
+        if tag == "li" and self._in_marquee_list:
+            self._capture = self.marquee_lists[-1][1]
+            self._capture.append("")
+        if "hero-scroll" in classes:
+            self.scroll_hints.append(a)
+        if "label" in classes and self._in_hero:
+            self._capture = self.hero_labels
+            self.hero_labels.append("")
+        elif "label-num" in classes:
+            self._capture = self.label_nums
+            self.label_nums.append("")
+        elif "nav-num" in classes and self._in_header:
+            self._capture = self.nav_nums
+            self.nav_nums.append("")
 
     def handle_endtag(self, tag):
+        if tag in ("span", "p", "li"):
+            self._capture = None
+        if tag == "ul":
+            self._in_marquee_list = False
+        if tag == "svg":
+            self._svg = None
+        if tag == "section":
+            self._in_hero = 0
+        if tag == "main":
+            self._in_main -= 1
+        elif tag == "header":
+            self._in_header -= 1
         if tag == "title":
             self._in_title = False
         elif tag == "footer":
             self._in_footer -= 1
 
     def handle_data(self, data):
+        if self._capture is not None:
+            self._capture[-1] = " ".join((self._capture[-1] + data).split())
         if self._in_title:
             self.title += data
         self.text.append(data)
@@ -110,12 +240,323 @@ def parse(path):
     return p
 
 
+def css_vars(block):
+    return dict(re.findall(r"(--[\w-]+)\s*:\s*([^;]+);", block))
+
+
+def css_block(css, selector_re):
+    """Devolve o corpo do primeiro bloco cujo seletor bate com selector_re (sem chavetas aninhadas)."""
+    m = re.search(selector_re + r"\s*(?:,[^{}]*)?\{([^{}]*)\}", css)
+    return m.group(1) if m else None
+
+
+def luminance(hex_color):
+    h = hex_color.lstrip("#")
+    c = [int(h[i:i + 2], 16) / 255 for i in (0, 2, 4)]
+    c = [x / 12.92 if x <= 0.03928 else ((x + 0.055) / 1.055) ** 2.4 for x in c]
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+
+
+def contrast(a, b):
+    la, lb = sorted((luminance(a), luminance(b)), reverse=True)
+    return (la + 0.05) / (lb + 0.05)
+
+
+def resolve(name, scope, depth=0):
+    value = scope.get(name, "").strip()
+    m = re.fullmatch(r"var\((--[\w-]+)\)", value)
+    if m and depth < 10:
+        return resolve(m.group(1), scope, depth + 1)
+    return value
+
+
+def check_tokens(check):
+    check(TOKENS_CSS.exists(), "assets/css/tokens.css em falta")
+    if not TOKENS_CSS.exists():
+        return
+    css = TOKENS_CSS.read_text(encoding="utf-8")
+    root = css_block(css, r"(?<![\w-]):root")
+    check(root is not None, "tokens.css: bloco :root em falta")
+    if root is None:
+        return
+    light = css_vars(root)
+    for name, hex_color in PALETTE.items():
+        check(light.get(name, "").upper() == hex_color, f"tokens.css: {name} deve ser {hex_color}")
+    for name in REQUIRED_TOKENS:
+        check(name in light, f"tokens.css: token {name} em falta")
+
+    dark_media = re.search(r"@media\s*\(prefers-color-scheme:\s*dark\)\s*\{\s*:root\s*\{([^{}]*)\}", css)
+    check(dark_media is not None, "tokens.css: modo escuro (prefers-color-scheme: dark) em falta")
+    ink_section = css_block(css, r"\.theme-ink")
+    check(ink_section is not None, "tokens.css: classe .theme-ink (secção em Tinta) em falta")
+
+    for scene in ("ink", "telha"):
+        check(re.search(rf'html:not\(\.scenes\) \.scene-{scene}\b', css),
+              f"tokens.css: falta html:not(.scenes) .scene-{scene} (cor final sem JS e com reduced motion)")
+
+    schemes = {"claro": light}
+    if dark_media:
+        schemes["escuro"] = {**light, **css_vars(dark_media.group(1))}
+    if ink_section is not None:
+        schemes[".theme-ink"] = {**light, **css_vars(ink_section)}
+    for scene in ("ink", "telha"):
+        block = css_block(css, rf'html\.scenes\[data-scene="{scene}"\]')
+        check(block is not None, f'tokens.css: falta html.scenes[data-scene="{scene}"]')
+        if block is not None:
+            schemes[f"cena {scene}"] = {**light, **css_vars(block)}
+    for scheme, scope in schemes.items():
+        for fg, bg, minimum in CONTRAST_PAIRS:
+            a, b = resolve(fg, scope), resolve(bg, scope)
+            if not (re.fullmatch(r"#[0-9A-Fa-f]{6}", a) and re.fullmatch(r"#[0-9A-Fa-f]{6}", b)):
+                check(False, f"tokens.css ({scheme}): {fg}/{bg} não resolvem para cores hex ({a!r}, {b!r})")
+                continue
+            ratio = contrast(a, b)
+            check(ratio >= minimum, f"tokens.css ({scheme}): {fg} sobre {bg} tem {ratio:.2f}, mínimo {minimum}")
+
+    # Fontes servidas pelo site em WOFF2, com font-display: swap e licença ao lado.
+    faces = re.findall(r"@font-face\s*\{([^{}]*)\}", css)
+    for family, file in FONTS.items():
+        face = next((f for f in faces if re.search(rf"font-family:\s*\"{family}\"", f)), None)
+        check(face is not None, f"tokens.css: @font-face de {family} em falta")
+        if face:
+            check(f'url("/assets/fonts/{file}") format("woff2")' in face, f"tokens.css: {family} deve usar /assets/fonts/{file}")
+            check(re.search(r"font-display:\s*swap", face), f"tokens.css: {family} sem font-display: swap")
+        check((ROOT / "assets" / "fonts" / file).exists(), f"assets/fonts/{file} em falta")
+    for licence in FONT_LICENCES:
+        check((ROOT / "assets" / "fonts" / licence).exists(), f"assets/fonts/{licence} em falta (licença OFL)")
+
+    site_css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
+    check(not re.search(r"\.ttf\b|@font-face", site_css), "site.css: as fontes ficam no tokens.css, em WOFF2")
+    loose = re.findall(r"#[0-9A-Fa-f]{3,8}\b|\b(?:rgba?|hsla?)\(", site_css)
+    check(not loose, f"site.css: cores soltas {sorted(set(loose))} (usar os tokens)")
+
+
+def shape(value):
+    if isinstance(value, dict):
+        return {k: shape(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [shape(v) for v in value]
+    return type(value).__name__
+
+
+def check_content(check):
+    import json
+    data = {}
+    for lang, path in CONTENT.items():
+        check(path.exists(), f"{path.relative_to(BASE)} em falta")
+        if path.exists():
+            data[lang] = json.loads(path.read_text(encoding="utf-8"))
+    if len(data) == 2:
+        check(shape(data["pt"]["pages"]) == shape(data["en"]["pages"]),
+              "src/content: pt.json e en.json têm estruturas de páginas diferentes")
+    check(not (BASE / "src" / "pages").exists(), "src/pages ainda existe: as páginas vêm de src/content")
+
+
+def check_header(check, url, p):
+    toggles = [b for b in p.buttons if "menu-toggle" in b.get("class", "")]
+    check(len(toggles) == 1, f"{url}: deve ter um botão .menu-toggle, tem {len(toggles)}")
+    if toggles:
+        t = toggles[0]
+        check(t.get("type") == "button", f"{url}: .menu-toggle sem type=button")
+        check(t.get("aria-expanded") == "false", f"{url}: .menu-toggle deve começar com aria-expanded=false")
+        check(t.get("aria-controls") in p.ids, f"{url}: aria-controls do menu não aponta para um id")
+        check(t.get("aria-label"), f"{url}: .menu-toggle sem aria-label")
+    check(p.nav_nums == ["01", "02", "03", "04", "05"], f"{url}: menu deve numerar 01–05, tem {p.nav_nums}")
+    check(sum(1 for s in p.scripts if s.get("src") == SITE_JS) == 1, f"{url}: sem {SITE_JS}")
+
+
+def check_hero(check, url, p, is_home):
+    check(all("data-split" in a for a in p.h1_attrs), f"{url}: o <h1> deve ter data-split (reveal por linhas)")
+    if not is_home:
+        check(not p.hero_gradient, f"{url}: o gradiente-assinatura é só da página inicial")
+        return
+    check(p.hero_labels == [HERO_LABEL], f"{url}: etiqueta do hero deve ser '{HERO_LABEL}', é {p.hero_labels}")
+    check(len(p.hero_gradient) == 1 and p.hero_gradient[0].get("aria-hidden") == "true",
+          f"{url}: falta o .hero-gradient com aria-hidden=true")
+    check(p.blobs == HERO_BLOBS, f"{url}: o gradiente deve ter {HERO_BLOBS} manchas, tem {p.blobs}")
+    check(len(p.scroll_hints) == 1, f"{url}: falta a indicação ↓ scroll (.hero-scroll)")
+
+
+def check_motion_css(check):
+    css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
+    reduced = re.search(r"@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{(.*?)\n\}", css, re.S)
+    check(reduced is not None, "site.css: bloco prefers-reduced-motion em falta")
+    if reduced:
+        for needle in (".blob", ".wi", ".marquee-track", ".reveal"):
+            check(needle in reduced.group(1), f"site.css: prefers-reduced-motion não trata {needle}")
+    # Se o JS falhar depois de pôr .js, o título não pode ficar invisível para sempre.
+    body = re.search(r"\nbody\s*\{([^}]*)\}", css)
+    check(body is not None and "background-color" in body.group(1) and "transition" in body.group(1),
+          "site.css: o body precisa de transition em background-color (mudança de cena)")
+    grow = re.search(r"\.more:hover[^{]*\{([^}]*)\}", css)
+    check(grow is not None and "background-size: 100%" in grow.group(1), "site.css: falta o sublinhado que cresce em .more:hover")
+    check('content: "→"' in css and 'content: "↗"' in css, "site.css: faltam as setas → (links internos) e ↗ (externos)")
+    marquee = re.search(r"\.marquee\s*\{([^}]*)\}", css)
+    check(marquee is not None and "overflow: hidden" in marquee.group(1), "site.css: .marquee sem overflow: hidden")
+    guard = re.search(r"\.js \[data-split\]:not\(\.split\)\s*\{([^}]*)\}", css)
+    check(guard is not None and "animation" in guard.group(1),
+          "site.css: falta a salvaguarda .js [data-split]:not(.split) com animation")
+
+
+def check_marquee(check, url, p, lang, is_home):
+    if not is_home:
+        check(p.marquees == 0, f"{url}: o marquee é só da página inicial")
+        return
+    check(p.marquees == 1, f"{url}: falta o .marquee")
+    check(len(p.marquee_lists) == 2, f"{url}: o marquee deve ter 2 listas (original e cópia), tem {len(p.marquee_lists)}")
+    if len(p.marquee_lists) == 2:
+        (hidden_a, items_a), (hidden_b, items_b) = p.marquee_lists
+        check(hidden_a is None, f"{url}: a primeira lista do marquee tem de ser lida")
+        check(hidden_b == "true", f"{url}: a cópia do marquee tem de ter aria-hidden=true")
+        check(items_a == MARQUEE[lang] and items_b == MARQUEE[lang], f"{url}: itens do marquee {items_a}")
+
+
+def icon_symbols():
+    if not ICONS_SVG.exists():
+        return {}
+    svg = ICONS_SVG.read_text(encoding="utf-8")
+    return {m.group(1): m.group(2) for m in re.finditer(r'<symbol id="([\w-]+)"[^>]*>(.*?)</symbol>', svg, re.S)}
+
+
+def check_icons(check):
+    check(ICONS_SVG.exists(), "assets/icons.svg em falta (sprite dos ícones)")
+    check(ICONS_LICENCE.exists(), "assets/icons-LICENSE.txt em falta (licença ISC do Lucide)")
+    # O <use> não herda os atributos do <svg> raiz do sprite: cada <symbol> leva os seus.
+    if ICONS_SVG.exists():
+        for m in re.finditer(r"<symbol ([^>]*)>", ICONS_SVG.read_text(encoding="utf-8")):
+            check('fill="none"' in m.group(1) and 'stroke="currentColor"' in m.group(1),
+                  f"icons.svg: <symbol {m.group(1)[:30]}…> sem fill=none e stroke=currentColor")
+    for name, body in icon_symbols().items():
+        shapes = re.findall(r"<(path|circle|rect|line|polyline|polygon|ellipse)\b([^>]*)>", body)
+        check(shapes and all('pathLength="1"' in attrs for _, attrs in shapes),
+              f"icons.svg: #{name} precisa de pathLength=\"1\" em cada forma (traço animado)")
+
+
+def check_page_icons(check, url, p, html, is_home, is_services):
+    symbols = icon_symbols()
+    for href, hidden, focusable in p.icon_uses:
+        check(href.startswith("/assets/icons.svg#") and href.split("#")[1] in symbols, f"{url}: ícone inexistente {href}")
+        check(hidden == "true" and focusable == "false", f"{url}: ícone {href} sem aria-hidden=true e focusable=false")
+    count = lambda cls: len(re.findall(rf'<li class="card {cls}">\s*<span class="card-icon"', html))
+    if is_home:
+        check(count("card-service") == HOME_ICONS["service"], f"{url}: os 4 cartões de serviço precisam de ícone")
+        check(count("card-step") == HOME_ICONS["step"], f"{url}: os 4 passos precisam de ícone")
+    if is_services:
+        n = len(re.findall(r'<section class="service"[^>]*>\s*<div class="service-head">\s*<span class="card-icon"', html))
+        check(n == SERVICES_PAGE_ICONS, f"{url}: cada serviço precisa de ícone ({n} de {SERVICES_PAGE_ICONS})")
+
+
+def section_labels(html):
+    return re.findall(r'<p class="label"><span class="label-num">\(\d+\)</span> ([^<]+)</p>', html)
+
+
+def check_scenes(check, url, p):
+    base = url.replace("/en", "", 1) if url.startswith("/en/") else url
+    base = {"/about/": "/sobre/", "/services/": "/servicos/", "/products/": "/produtos/", "/contact/": "/contacto/",
+            "/privacy/": "/privacidade/", "/terms/": "/termos/"}.get(base, base)
+    expected = SCENES.get(base, [])
+    check([sc for sc, _ in p.scenes] == expected, f"{url}: cenas {[sc for sc, _ in p.scenes]}, esperado {expected}")
+    for scene, classes in p.scenes:
+        check(f"scene-{scene}" in classes, f"{url}: secção data-scene={scene} sem a classe scene-{scene}")
+
+
+def check_cta(check, url, html, lang, has_cta):
+    """CTA final: título em tamanho de hero com escala no scroll e email grande e clicável."""
+    m = re.search(r'<section class="band scene-telha"[^>]*>(.*?)</section>', html, re.S)
+    if not has_cta:
+        return
+    check(m is not None, f"{url}: falta o CTA final (secção scene-telha)")
+    if m is None:
+        return
+    cta = m.group(1)
+    title = re.search(r'<h2 class="cta-title"[^>]*>(.*?)</h2>', cta, re.S)
+    check(title is not None and title.group(1).strip() == CTA_TITLE[lang],
+          f"{url}: o CTA final deve ter <h2 class=\"cta-title\">{CTA_TITLE[lang]}</h2>")
+    check(title is not None and "data-cta-scale" in title.group(0), f"{url}: o título do CTA precisa de data-cta-scale")
+    check(re.search(rf'<a class="cta-email" href="mailto:{EMAIL}">{EMAIL}</a>', cta),
+          f"{url}: o CTA final precisa do email {EMAIL} grande e clicável (a.cta-email)")
+
+
+def check_footer(check, url, html, lang):
+    """Rodapé legal sucinto em duas linhas (art. 171.º CSC), sem nada escondido."""
+    m = re.search(r'<footer class="site-footer">(.*?)</footer>', html, re.S)
+    check(m is not None, f"{url}: rodapé em falta")
+    if m is None:
+        return
+    footer = m.group(1)
+    line1 = re.search(r'<ul class="footer-line">(.*?)</ul>', footer, re.S)
+    legal = re.findall(r'<p class="legal">(.*?)</p>', footer, re.S)
+    check(line1 is not None, f"{url}: falta a linha 1 do rodapé (ul.footer-line)")
+    check(len(legal) == 1, f"{url}: o rodapé deve ter uma só linha legal (p.legal), tem {len(legal)}")
+    check("footer-grid" not in footer, f"{url}: o rodapé passa a duas linhas, sem .footer-grid")
+    if line1 is None or len(legal) != 1:
+        return
+    check(footer.index('class="footer-line"') < footer.index('class="legal"'), f"{url}: a linha 1 vem antes da linha legal")
+    hrefs = re.findall(r'href="([^"]+)"', line1.group(1))
+    expected = [f"mailto:{EMAIL}", PHONE_HREF] + FOOTER_LINE1[lang] + [COMPLAINTS_URL]
+    check(hrefs == expected, f"{url}: linha 1 do rodapé com {hrefs}, esperado {expected}")
+    check(f"© {date.today().year} Thr33 Labs" in line1.group(1), f"{url}: linha 1 sem '© {date.today().year} Thr33 Labs'")
+    check(len(re.findall(r'href="', footer)) == len(expected), f"{url}: o rodapé só leva as ligações da linha 1")
+    text = " ".join(re.sub(r"<[^>]+>", " ", legal[0]).split())
+    for needle in LEGAL_FOOTER[lang]:
+        check(needle in text, f"{url}: linha legal sem '{needle}'")
+
+
+def check_footer_css(check):
+    css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
+    legal = re.search(r"\n\.legal\s*\{([^}]*)\}", css)
+    check(legal is not None, "site.css: regra .legal em falta")
+    if legal:
+        body = legal.group(1)
+        check("var(--font-mono)" in body, "site.css: .legal em JetBrains Mono (var(--font-mono))")
+        check("color: var(--muted)" in body, "site.css: .legal em Pedra (var(--muted)), contraste AA verificado nos tokens")
+        size = re.search(r"font-size:\s*([\d.]+)rem", body)
+        check(size is not None and 0.6875 <= float(size.group(1)) <= 0.75, "site.css: .legal entre 11 e 12 px")
+    line1 = re.search(r"\n\.footer-line\s*\{([^}]*)\}", css)
+    check(line1 is not None and "--font-mono" not in line1.group(1), "site.css: .footer-line em Space Grotesk")
+    title = re.search(r"\n\.cta-title\s*\{([^}]*)\}", css)
+    check(title is not None and "var(--text-hero)" in title.group(1), "site.css: .cta-title em tamanho de hero")
+    js = (ROOT / SITE_JS.lstrip("/")).read_text(encoding="utf-8")
+    check("data-cta-scale" in js, "site.js: falta a escala do CTA final (data-cta-scale)")
+
+
+def check_labels(check, url, p):
+    expected = [f"({i:02d})" for i in range(1, len(p.label_nums) + 1)]
+    check(p.label_nums == expected, f"{url}: etiquetas fora de ordem {p.label_nums}")
+
+
+def check_no_js_hiding(check):
+    css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
+    css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+    for selectors, body in re.findall(r"([^{}]+)\{([^{}]*)\}", css):
+        if re.search(r"display:\s*none|visibility:\s*hidden", body):
+            for sel in selectors.split(","):
+                sel = sel.strip()
+                ok = sel.startswith(".js ") or sel.startswith("html:not(.js)") or sel.startswith("[hidden]")
+                check(ok, f"site.css: '{sel}' esconde conteúdo sem depender de .js")
+    js = ROOT / SITE_JS.lstrip("/")
+    check(js.exists(), f"{SITE_JS} em falta")
+    if js.exists():
+        import gzip
+        size = len(gzip.compress(js.read_bytes()))
+        check(size <= SITE_JS_MAX_GZIP, f"{SITE_JS} tem {size} bytes gzip (máx. {SITE_JS_MAX_GZIP})")
+        total = sum(len(gzip.compress(f.read_bytes())) for f in ROOT.rglob("*.js"))
+        check(total <= JS_TOTAL_MAX_GZIP, f"JS total {total} bytes gzip (máx. {JS_TOTAL_MAX_GZIP})")
+
+
 def main():
     errors = []
 
     def check(cond, msg):
         if not cond:
             errors.append(msg)
+
+    check_tokens(check)
+    check_content(check)
+    check_no_js_hiding(check)
+    check_motion_css(check)
+    check_icons(check)
+    check_footer_css(check)
 
     titles, descriptions = {}, {}
     pages = {}
@@ -152,6 +593,25 @@ def main():
             check(links.get(("alternate", "x-default")) == SITE + pt, f"{url}: hreflang x-default em falta")
             check(any(rel == "icon" and (ROOT / h.lstrip("/")).exists() for rel, h, _ in p.links),
                   f"{url}: favicon em falta")
+            sheets = [h for rel, h, _ in p.links if rel == "stylesheet"]
+            check(sheets[:2] == ["/assets/css/tokens.css", "/assets/site.css"],
+                  f"{url}: tokens.css tem de vir antes do site.css ({sheets})")
+            check(any(rel == "preload" and h == FONT_PRELOAD for rel, h, _ in p.links),
+                  f"{url}: sem preload de {FONT_PRELOAD}")
+            check_header(check, url, p)
+            check_labels(check, url, p)
+            check_hero(check, url, p, url in ("/", "/en/"))
+            check_marquee(check, url, p, lang, url in ("/", "/en/"))
+            check_scenes(check, url, p)
+            raw = file_for(url).read_text(encoding="utf-8")
+            check_cta(check, url, raw, lang, "telha" in [sc for sc, _ in p.scenes])
+            check_footer(check, url, raw, lang)
+            check_page_icons(check, url, p, raw, url in ("/", "/en/"), url in ("/servicos/", "/en/services/"))
+            if url in ("/", "/en/"):
+                check(section_labels(raw) == HOME_LABELS[lang], f"{url}: etiquetas {section_labels(raw)}, esperado {HOME_LABELS[lang]}")
+                about = "/sobre/" if lang == "pt-PT" else "/en/about/"
+                main = raw[raw.index("<main"):raw.index("</main>")]
+                check(f'href="{about}"' in main, f"{url}: a secção Sobre precisa de ligação para {about} no conteúdo")
             check(any(h == other for h, _, _ in p.hrefs), f"{url}: sem link para a outra língua ({other})")
             footer = " ".join(" ".join(p.footer_text).split())
             for needle in LEGAL_FOOTER[lang]:
@@ -168,6 +628,10 @@ def main():
             titles.setdefault(p.title.strip(), []).append(url)
             descriptions.setdefault(p.meta.get("description"), []).append(url)
 
+    for pt, en in PAGES:
+        if pt in pages and en in pages:
+            check(pages[pt].skeleton == pages[en].skeleton, f"{pt} e {en}: HTML diferente entre PT e EN")
+
     for t, urls in titles.items():
         check(len(urls) == 1, f"<title> repetido em {urls}")
     for d, urls in descriptions.items():
@@ -182,6 +646,11 @@ def main():
         check(any(h == "/" for h, _, _ in p.hrefs), "404.html: sem link para o início")
         check(any(h == COMPLAINTS_URL for h, _, _ in p.footer_hrefs),
               "404.html: rodapé sem link para o Livro de Reclamações")
+        sheets = [h for rel, h, _ in p.links if rel == "stylesheet"]
+        check(sheets[:2] == ["/assets/css/tokens.css", "/assets/site.css"],
+              f"404.html: tokens.css tem de vir antes do site.css ({sheets})")
+        check_header(check, "404.html", p)
+        check_footer(check, "404.html", f404.read_text(encoding="utf-8"), "pt-PT")
         pages["/404.html"] = p
 
     # Links internos e externos em todas as páginas
@@ -217,7 +686,7 @@ def main():
         for host in ("fonts.googleapis.com", "fonts.gstatic.com", "googletagmanager", "google-analytics", "facebook.net"):
             check(host not in html, f"{f.relative_to(ROOT)}: pedido a terceiros ({host})")
         # A CSP em docs/deploy.md não permite estilos nem scripts inline.
-        for pattern in (r"\sstyle=", r"<style", r"<script", r"\son[a-z]+="):
+        for pattern in (r"\sstyle=", r"<style", r"<script(?![^>]*\bsrc=)", r"\son[a-z]+="):
             check(not re.search(pattern, html), f"{f.relative_to(ROOT)}: inline proibido pela CSP ({pattern})")
 
     # robots.txt e sitemap.xml

@@ -1,0 +1,697 @@
+{
+  "site": {
+    "html_lang": "pt-PT",
+    "og_locale": "pt_PT",
+    "og_image_alt": "Thr33 Labs, estúdio de produto digital",
+    "other_label": "EN",
+    "other_name": "English",
+    "nav_label": "Navegação principal",
+    "skip": "Saltar para o conteúdo",
+    "nav": {
+      "servicos": "Serviços",
+      "produtos": "Projetos",
+      "sobre": "Sobre",
+      "contacto": "Contacto",
+      "privacidade": "Privacidade",
+      "termos": "Termos de utilização",
+      "inicio": "Início"
+    },
+    "complaints": "Livro de Reclamações",
+    "legal": "THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA · Sociedade unipessoal por quotas · Sede: Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos · Conservatória do Registo Comercial (RNPC) · Matrícula e NIPC 519573021 · Capital social 7.660,00 €",
+    "menu_open": "Abrir menu",
+    "menu_close": "Fechar menu",
+    "menu_label": "Menu"
+  },
+  "pages": {
+    "inicio": {
+      "title": "Thr33 Labs · Estúdio de produto digital em Óbidos",
+      "description": "A Thr33 Labs desenha e desenvolve sites, aplicações e experiências em realidade aumentada para empresas, a partir de Óbidos, Portugal.",
+      "head": {
+        "kind": "hero",
+        "label": "Thr33 Labs / ©2026",
+        "label_after": "Óbidos, PT",
+        "h1": "Produtos digitais que as pessoas <span class=\"accent\">usam</span>",
+        "lead": "A Thr33 Labs é um estúdio de produto digital em Óbidos. Desenhamos e desenvolvemos sites, aplicações e experiências em realidade aumentada para empresas, da primeira conversa ao lançamento.",
+        "actions": [
+          {
+            "text": "Pedir uma proposta",
+            "href": "/contacto/",
+            "style": "primary"
+          },
+          {
+            "text": "Ver serviços",
+            "href": "/servicos/",
+            "style": "ghost"
+          }
+        ],
+        "scroll_hint": "↓ scroll"
+      },
+      "marquee": {
+        "label": "Competências",
+        "items": [
+          "Consultoria",
+          "Web",
+          "Apps",
+          "UX/UI",
+          "Realidade aumentada",
+          "Laravel",
+          "3D"
+        ]
+      },
+      "sections": [
+        {
+          "type": "cards",
+          "id": "o-que-fazemos",
+          "h2": "O que fazemos",
+          "columns": 4,
+          "items": [
+            {
+              "title": "Consultoria em informática",
+              "text": "Escolha de tecnologia, auditorias técnicas e planos de migração, antes de investir em código.",
+              "link": {
+                "text": "Consultoria em detalhe",
+                "href": "/servicos/#consultoria"
+              },
+              "icon": "compass"
+            },
+            {
+              "title": "Web e aplicações",
+              "text": "Sites, plataformas e aplicações iOS e Android, do protótipo à publicação.",
+              "link": {
+                "text": "Desenvolvimento em detalhe",
+                "href": "/servicos/#desenvolvimento"
+              },
+              "icon": "code"
+            },
+            {
+              "title": "UX e UI",
+              "text": "Interfaces claras e acessíveis, testadas com quem as vai usar.",
+              "link": {
+                "text": "Design em detalhe",
+                "href": "/servicos/#design"
+              },
+              "icon": "pen-tool"
+            },
+            {
+              "title": "Realidade aumentada",
+              "text": "Modelos 3D no espaço real, à escala, a partir do telemóvel ou do tablet.",
+              "link": {
+                "text": "Realidade aumentada em detalhe",
+                "href": "/servicos/#realidade-aumentada"
+              },
+              "icon": "box"
+            }
+          ],
+          "label": "Serviços"
+        },
+        {
+          "type": "ticks",
+          "id": "para-quem",
+          "h2": "Para quem trabalhamos",
+          "items": [
+            "PME e startups que querem lançar ou renovar um produto digital.",
+            "Equipas que precisam de reforço técnico ou de uma segunda opinião sobre um projeto.",
+            "Arquitetos, decoradores e organizadores de eventos que querem mostrar projetos em realidade aumentada."
+          ]
+        },
+        {
+          "type": "project",
+          "id": "produto",
+          "eyebrow": "Produto próprio",
+          "h2": "vizia",
+          "text": "Projetos de arquitetura, decoração e eventos em realidade aumentada, à escala real e no local.",
+          "actions": [
+            {
+              "text": "Ver produtos e projetos",
+              "href": "/produtos/",
+              "style": "ghost"
+            }
+          ],
+          "label": "Projetos"
+        },
+        {
+          "type": "steps",
+          "id": "como",
+          "h2": "Como trabalhamos",
+          "items": [
+            {
+              "title": "Conversa",
+              "text": "Percebemos o problema, o público e o que já existe.",
+              "icon": "message-circle"
+            },
+            {
+              "title": "Proposta",
+              "text": "Âmbito, prazos e custos por escrito, antes de começar.",
+              "icon": "file-text"
+            },
+            {
+              "title": "Desenho e desenvolvimento",
+              "text": "Ciclos curtos, com versões para rever a cada etapa.",
+              "icon": "layers"
+            },
+            {
+              "title": "Lançamento",
+              "text": "Publicação, medição e acompanhamento depois de sair.",
+              "icon": "rocket"
+            }
+          ],
+          "label": "Processo"
+        },
+        {
+          "type": "text",
+          "id": "sobre-nos",
+          "label": "Sobre",
+          "h2": "Quem somos",
+          "text": "Um estúdio independente de produto digital em Óbidos. Quem fundou a empresa acompanha cada projeto do início ao fim, sem intermediários.",
+          "actions": [
+            {
+              "text": "Conhecer a Thr33 Labs",
+              "href": "/sobre/",
+              "style": "ghost"
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "id": "falar",
+          "h2": "Vamos falar?",
+          "text": "Conte-nos o que precisa, por email ou por telefone. Respondemos com os próximos passos e, se fizer sentido, com uma proposta.",
+          "actions": [
+            {
+              "text": "Contactar a Thr33 Labs",
+              "href": "/contacto/",
+              "style": "primary"
+            }
+          ]
+        }
+      ]
+    },
+    "sobre": {
+      "title": "Sobre a Thr33 Labs · Estúdio de produto digital",
+      "description": "Quem somos: a Thr33 Labs é um estúdio independente de produto digital, constituído em 2026, com sede em Óbidos, Portugal.",
+      "head": {
+        "kind": "page",
+        "label": "Sobre",
+        "h1": "Um estúdio pequeno, perto de quem usa",
+        "lead": "A Thr33 Labs é a marca da THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA, uma empresa constituída em 2026 com sede em Óbidos, Portugal."
+      },
+      "sections": [
+        {
+          "type": "split",
+          "id": "quem-somos",
+          "h2": "Quem somos",
+          "paragraphs": [
+            "Somos um estúdio independente de produto digital. A empresa é gerida por quem a fundou, que acompanha cada projeto do início ao fim, sem intermediários.",
+            "Quando um projeto o pede, juntamos parceiros de confiança em design, desenvolvimento e 3D, sempre com um único ponto de contacto do lado da Thr33 Labs.",
+            "Para além do trabalho para clientes, desenvolvemos produtos próprios, como o <a href=\"/produtos/\">vizia</a>, de realidade aumentada."
+          ],
+          "label": "Estúdio"
+        },
+        {
+          "type": "cards",
+          "id": "principios",
+          "h2": "O que nos guia",
+          "columns": 3,
+          "items": [
+            {
+              "title": "Uso real",
+              "text": "Um produto conta quando as pessoas o usam. Medimos isso, não o número de funcionalidades."
+            },
+            {
+              "title": "Clareza",
+              "text": "Âmbito, prazos e custos por escrito antes de começar, e avisos cedo quando algo muda."
+            },
+            {
+              "title": "Responsabilidade",
+              "text": "Segurança, RGPD e acessibilidade desde o primeiro dia, não no fim."
+            }
+          ],
+          "label": "Princípios"
+        },
+        {
+          "type": "facts",
+          "id": "dados",
+          "h2": "Dados da empresa",
+          "items": [
+            {
+              "term": "Firma",
+              "value": "THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA"
+            },
+            {
+              "term": "Marca",
+              "value": "Thr33 Labs"
+            },
+            {
+              "term": "Tipo de sociedade",
+              "value": "Sociedade unipessoal por quotas"
+            },
+            {
+              "term": "NIPC",
+              "value": "519573021"
+            },
+            {
+              "term": "D-U-N-S",
+              "value": "348597205"
+            },
+            {
+              "term": "Constituição",
+              "value": "2026"
+            },
+            {
+              "term": "Sede",
+              "value": "Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos, Portugal"
+            },
+            {
+              "term": "Atividades (CAE)",
+              "value": "62100, 62201 e 62900"
+            },
+            {
+              "term": "Email",
+              "value": "<a href=\"mailto:hello@thr33.xyz\">hello@thr33.xyz</a>"
+            },
+            {
+              "term": "Telefone",
+              "value": "<a href=\"tel:+351936466845\">+351 936 466 845</a>"
+            }
+          ],
+          "label": "Ficha"
+        }
+      ]
+    },
+    "servicos": {
+      "title": "Serviços · Consultoria, web, aplicações, UX e realidade aumentada",
+      "description": "Consultoria em informática, desenvolvimento web e de aplicações, design UX/UI e realidade aumentada. Serviços da Thr33 Labs, com exemplos.",
+      "head": {
+        "kind": "page",
+        "label": "Serviços",
+        "h1": "Da ideia ao produto publicado",
+        "lead": "Quatro áreas que se combinam conforme o projeto. Pode contratar só uma, ou o percurso completo."
+      },
+      "sections": [
+        {
+          "type": "services",
+          "items": [
+            {
+              "id": "consultoria",
+              "heading_id": "consultoria-titulo",
+              "h2": "Consultoria em informática",
+              "text": "Ajudamos a decidir antes de construir: que tecnologia usar, o que comprar e o que desenvolver, e como pôr os sistemas a falar entre si.",
+              "examples_title": "Exemplos",
+              "examples": [
+                "Auditoria técnica de um site ou de uma aplicação existente.",
+                "Escolha de tecnologia, alojamento e fornecedores.",
+                "Plano de migração de sistemas antigos.",
+                "Revisão de segurança e de RGPD em produtos digitais."
+              ],
+              "icon": "compass"
+            },
+            {
+              "id": "desenvolvimento",
+              "heading_id": "desenvolvimento-titulo",
+              "h2": "Desenvolvimento web e de aplicações",
+              "text": "Construímos sites, plataformas e aplicações móveis, do primeiro protótipo à publicação na App Store e no Google Play.",
+              "examples_title": "Exemplos",
+              "examples": [
+                "Sites institucionais e páginas de produto.",
+                "Plataformas web com área de cliente e painel de gestão.",
+                "Aplicações iOS e Android.",
+                "Integrações com pagamentos, email e APIs de terceiros."
+              ],
+              "icon": "code"
+            },
+            {
+              "id": "design",
+              "heading_id": "design-titulo",
+              "h2": "Design de produto, UX e UI",
+              "text": "Desenhamos interfaces claras, acessíveis e coerentes com a marca, e testamo-las com quem as vai usar.",
+              "examples_title": "Exemplos",
+              "examples": [
+                "Entrevistas com utilizadores e mapas de fluxos.",
+                "Wireframes e protótipos navegáveis.",
+                "Sistemas de design e bibliotecas de componentes.",
+                "Revisão de acessibilidade segundo as WCAG 2.1 AA."
+              ],
+              "icon": "pen-tool"
+            },
+            {
+              "id": "realidade-aumentada",
+              "heading_id": "ra-titulo",
+              "h2": "Realidade aumentada",
+              "text": "Pomos modelos 3D no espaço real, à escala, a partir do telemóvel ou do tablet, para decidir antes de construir ou montar.",
+              "examples_title": "Exemplos",
+              "examples": [
+                "Projetos de arquitetura vistos no terreno.",
+                "Decoração e mobiliário à escala real.",
+                "Montagens de eventos antes do dia.",
+                "<a href=\"/produtos/\">vizia</a>, o nosso produto de realidade aumentada."
+              ],
+              "icon": "box"
+            }
+          ]
+        },
+        {
+          "type": "cta",
+          "id": "proposta",
+          "h2": "Vamos falar?",
+          "text": "Diga-nos o que precisa e em que prazo. Respondemos com perguntas, próximos passos e, se fizer sentido, uma proposta.",
+          "actions": [
+            {
+              "text": "Pedir uma proposta",
+              "href": "/contacto/",
+              "style": "primary"
+            }
+          ]
+        }
+      ]
+    },
+    "produtos": {
+      "title": "Produtos e projetos · Thr33 Labs",
+      "description": "O vizia, produto de realidade aumentada da Thr33 Labs para arquitetura, decoração e eventos, e os projetos que desenvolvemos para clientes.",
+      "head": {
+        "kind": "page",
+        "label": "Produtos e projetos",
+        "h1": "O que já construímos",
+        "lead": "Produtos próprios que desenvolvemos e mantemos, e projetos feitos à medida para outras empresas."
+      },
+      "sections": [
+        {
+          "type": "project",
+          "id": "vizia",
+          "eyebrow": "Produto próprio · Realidade aumentada",
+          "h2": "vizia",
+          "text": "Projetos de arquitetura, decoração e eventos em realidade aumentada, à escala real e no local. Para arquitetos, decoradores e organizadores de eventos que querem que o cliente veja o resultado antes de avançar.",
+          "actions": [
+            {
+              "text": "Visitar vizia.thr33.xyz",
+              "href": "https://vizia.thr33.xyz",
+              "style": "primary",
+              "external": true
+            }
+          ],
+          "ticks": [
+            "Modelos 3D colocados no espaço real, à escala.",
+            "Funciona no telemóvel e no tablet.",
+            "Pensado para apresentar no local, com o cliente."
+          ],
+          "label": "Produto"
+        },
+        {
+          "type": "text",
+          "id": "clientes",
+          "h2": "Projetos para clientes",
+          "text": "Desenvolvemos sites, plataformas e aplicações para outras empresas. Só mostramos publicamente projetos com autorização do cliente, por isso partilhamos exemplos relevantes para o seu caso numa conversa.",
+          "actions": [
+            {
+              "text": "Pedir exemplos de projetos",
+              "href": "/contacto/",
+              "style": "ghost"
+            }
+          ],
+          "label": "Clientes"
+        }
+      ]
+    },
+    "contacto": {
+      "title": "Contacto · Thr33 Labs",
+      "description": "Contacte a Thr33 Labs por email ou telefone. Sede em Óbidos, Portugal. Email hello@thr33.xyz, telefone +351 936 466 845.",
+      "head": {
+        "kind": "page",
+        "label": "Contacto",
+        "h1": "Fale connosco",
+        "lead": "Para propostas, dúvidas ou parcerias, escreva-nos ou ligue. Indique o que precisa e o prazo que tem em mente."
+      },
+      "sections": [
+        {
+          "type": "cards",
+          "id": "canais",
+          "h2": "Como nos contactar",
+          "columns": 3,
+          "items": [
+            {
+              "title": "Email",
+              "text": "O canal mais rápido para propostas e documentos.",
+              "link": {
+                "text": "hello@thr33.xyz",
+                "href": "mailto:hello@thr33.xyz"
+              }
+            },
+            {
+              "title": "Telefone",
+              "text": "Para uma primeira conversa sobre o projeto.",
+              "link": {
+                "text": "+351 936 466 845",
+                "href": "tel:+351936466845"
+              }
+            },
+            {
+              "title": "Sede",
+              "address": "Beco da Serra, 2<br>Sobral da Lagoa<br>2510-651 Óbidos<br>Portugal"
+            }
+          ],
+          "label": "Canais"
+        },
+        {
+          "type": "facts",
+          "id": "faturacao",
+          "h2": "Dados para faturação",
+          "items": [
+            {
+              "term": "Firma",
+              "value": "THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA"
+            },
+            {
+              "term": "NIPC",
+              "value": "519573021"
+            },
+            {
+              "term": "Morada",
+              "value": "Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos, Portugal"
+            }
+          ],
+          "note": "Questões sobre dados pessoais: envie um email para <a href=\"mailto:hello@thr33.xyz\">hello@thr33.xyz</a> com o assunto «Privacidade». Mais detalhes na <a href=\"/privacidade/\">política de privacidade</a>.",
+          "label": "Faturação"
+        }
+      ]
+    },
+    "privacidade": {
+      "title": "Política de privacidade · Thr33 Labs",
+      "description": "Como a Thr33 Labs trata dados pessoais no site thr33.xyz e nos contactos por email e telefone, ao abrigo do RGPD.",
+      "head": {
+        "kind": "page",
+        "label": "RGPD",
+        "h1": "Política de privacidade",
+        "lead": "O site thr33.xyz não tem formulários, não usa cookies e não tem ferramentas de análise nem de publicidade. Esta página explica os poucos dados que tratamos e porquê."
+      },
+      "sections": [
+        {
+          "type": "prose",
+          "blocks": [
+            {
+              "updated": "Última atualização: 12 de novembro de 2026"
+            },
+            {
+              "h2": "Responsável pelo tratamento",
+              "id": "responsavel"
+            },
+            {
+              "p": "THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA, NIPC 519573021, com sede em Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos, Portugal. Contacto para questões de privacidade: <a href=\"mailto:hello@thr33.xyz\">hello@thr33.xyz</a>, com o assunto «Privacidade»."
+            },
+            {
+              "h2": "Que dados tratamos",
+              "id": "dados"
+            },
+            {
+              "ul": [
+                "<strong>Visitas ao site.</strong> Como em qualquer site, o servidor regista pedidos técnicos: endereço IP, data e hora, página pedida, navegador e sistema operativo. Não usamos estes dados para identificar visitantes nem para criar perfis.",
+                "<strong>Contactos por email ou telefone.</strong> Se nos contactar, tratamos o seu nome, email ou número de telefone, a empresa e o conteúdo da mensagem.",
+                "<strong>Clientes.</strong> Se avançarmos para um projeto, tratamos os dados necessários ao contrato e à faturação."
+              ]
+            },
+            {
+              "h2": "Finalidades e fundamentos",
+              "id": "finalidades"
+            },
+            {
+              "ul": [
+                "Manter o site disponível e seguro, e detetar abusos: interesse legítimo (artigo 6.º, n.º 1, alínea f) do RGPD).",
+                "Responder a pedidos de informação e preparar propostas: diligências pré-contratuais a seu pedido (alínea b).",
+                "Executar contratos com clientes: execução do contrato (alínea b).",
+                "Cumprir obrigações fiscais e contabilísticas: obrigação legal (alínea c)."
+              ]
+            },
+            {
+              "p": "Não vendemos dados pessoais nem os usamos para publicidade ou decisões automatizadas."
+            },
+            {
+              "h2": "Quem tem acesso",
+              "id": "prestadores"
+            },
+            {
+              "p": "Usamos prestadores que tratam dados por nossa conta, com contratos que os obrigam a protegê-los:"
+            },
+            {
+              "ul": [
+                "Hetzner Online (Alemanha): alojamento do site.",
+                "Cloudflare: rede de distribuição e proteção do site contra ataques. Pode tratar dados fora da União Europeia, com as garantias do Quadro de Privacidade de Dados UE-EUA e das cláusulas contratuais-tipo da Comissão Europeia.",
+                "Zoho (centro de dados na União Europeia): email.",
+                "Contabilista certificado: dados de faturação de clientes."
+              ]
+            },
+            {
+              "p": "As fontes do site são servidas pelo próprio site, sem pedidos a terceiros."
+            },
+            {
+              "h2": "Durante quanto tempo",
+              "id": "conservacao"
+            },
+            {
+              "ul": [
+                "Registos técnicos do servidor: até 30 dias.",
+                "Pedidos de contacto que não resultem em projeto: até 2 anos após o último contacto.",
+                "Dados de clientes e faturação: durante o contrato e, depois, pelos prazos legais (10 anos para documentos fiscais)."
+              ]
+            },
+            {
+              "h2": "Os seus direitos",
+              "id": "direitos"
+            },
+            {
+              "p": "Pode pedir acesso, retificação, apagamento, limitação ou portabilidade dos seus dados, e opor-se ao tratamento baseado em interesse legítimo. Envie o pedido para <a href=\"mailto:hello@thr33.xyz\">hello@thr33.xyz</a>. Respondemos no prazo de um mês."
+            },
+            {
+              "p": "Pode também apresentar reclamação à Comissão Nacional de Proteção de Dados (<a href=\"https://www.cnpd.pt\" target=\"_blank\" rel=\"noopener noreferrer\">cnpd.pt</a>)."
+            },
+            {
+              "h2": "Cookies",
+              "id": "cookies"
+            },
+            {
+              "p": "O site thr33.xyz não instala cookies nem usa tecnologias semelhantes, por isso não mostra um banner de consentimento. A Cloudflare pode usar cookies estritamente necessários para proteger o site contra tráfego malicioso; estes não exigem consentimento."
+            },
+            {
+              "h2": "Outros sites",
+              "id": "outros-sites"
+            },
+            {
+              "p": "O site tem ligações para outros sites, como o <a href=\"https://vizia.thr33.xyz\" target=\"_blank\" rel=\"noopener noreferrer\">vizia</a>, que têm a sua própria política de privacidade."
+            },
+            {
+              "h2": "Alterações",
+              "id": "alteracoes"
+            },
+            {
+              "p": "Se esta política mudar, publicamos aqui a nova versão com a data de atualização."
+            }
+          ]
+        }
+      ]
+    },
+    "termos": {
+      "title": "Termos de utilização · Thr33 Labs",
+      "description": "Termos de utilização do site thr33.xyz: identificação da empresa, propriedade intelectual, ligações externas, responsabilidade e lei aplicável.",
+      "head": {
+        "kind": "page",
+        "label": "Legal",
+        "h1": "Termos de utilização",
+        "lead": "As regras de utilização do site thr33.xyz. Os serviços que prestamos a clientes regem-se pela proposta e pelo contrato de cada projeto."
+      },
+      "sections": [
+        {
+          "type": "prose",
+          "blocks": [
+            {
+              "updated": "Última atualização: 12 de novembro de 2026"
+            },
+            {
+              "h2": "Quem somos",
+              "id": "identificacao"
+            },
+            {
+              "p": "Este site pertence à THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA, sociedade unipessoal por quotas com sede em Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos, Portugal, matriculada na Conservatória do Registo Comercial com o número único de matrícula e NIPC 519573021 e com o capital social de 7.660,00 €. Contacto: <a href=\"mailto:hello@thr33.xyz\">hello@thr33.xyz</a>, <a href=\"tel:+351936466845\">+351 936 466 845</a>."
+            },
+            {
+              "h2": "Objeto do site",
+              "id": "objeto"
+            },
+            {
+              "p": "O site apresenta a empresa, os seus serviços e produtos. Não vende produtos nem serviços online. A informação publicada é geral e não constitui uma proposta contratual."
+            },
+            {
+              "h2": "Propriedade intelectual",
+              "id": "propriedade"
+            },
+            {
+              "p": "Os textos, a marca Thr33 Labs, o logótipo e o design do site pertencem à empresa, salvo indicação em contrário. Pode citar ou partilhar conteúdo com referência à fonte. Para outras utilizações, peça autorização por email."
+            },
+            {
+              "p": "A fonte Space Grotesk é usada ao abrigo da <a href=\"/assets/fonts/OFL.txt\">SIL Open Font License</a>."
+            },
+            {
+              "h2": "Utilização aceitável",
+              "id": "utilizacao"
+            },
+            {
+              "p": "Não é permitido usar o site para fins ilícitos, tentar aceder a áreas ou sistemas não públicos, nem interferir no seu funcionamento."
+            },
+            {
+              "h2": "Ligações externas",
+              "id": "ligacoes"
+            },
+            {
+              "p": "O site tem ligações para sites de terceiros e para produtos da empresa com termos próprios. Não somos responsáveis pelo conteúdo nem pelas práticas de sites de terceiros."
+            },
+            {
+              "h2": "Responsabilidade",
+              "id": "responsabilidade"
+            },
+            {
+              "p": "Mantemos a informação do site atualizada e o site disponível, mas não garantimos que esteja sempre livre de erros ou interrupções. Na medida permitida por lei, a empresa não responde por danos resultantes da utilização do site."
+            },
+            {
+              "h2": "Privacidade",
+              "id": "privacidade"
+            },
+            {
+              "p": "O tratamento de dados pessoais está descrito na <a href=\"/privacidade/\">política de privacidade</a>."
+            },
+            {
+              "h2": "Lei aplicável",
+              "id": "lei"
+            },
+            {
+              "p": "Estes termos regem-se pela lei portuguesa. Sem prejuízo das normas imperativas de proteção dos consumidores, os litígios são resolvidos nos tribunais portugueses competentes."
+            },
+            {
+              "h2": "Alterações",
+              "id": "alteracoes"
+            },
+            {
+              "p": "Podemos atualizar estes termos. A versão em vigor é sempre a publicada nesta página, com a data de atualização."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "notfound": {
+    "title": "Página não encontrada · Thr33 Labs",
+    "head": {
+      "kind": "page",
+      "label": "404",
+      "h1": "Página não encontrada",
+      "lead": "O endereço pode estar errado ou a página mudou de sítio. Volte ao início ou veja os serviços.",
+      "actions": [
+        {
+          "text": "Voltar ao início",
+          "href": "/",
+          "style": "primary"
+        },
+        {
+          "text": "Ver serviços",
+          "href": "/servicos/",
+          "style": "ghost"
+        }
+      ]
+    }
+  }
+}

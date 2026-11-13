@@ -4,16 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thr33 Labs · Digital product studio in Óbidos, Portugal</title>
+  <meta name="theme-color" content="#F3F0E8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <!-- Sem defer: põe a classe .js no html antes de pintar; o resto corre no DOMContentLoaded. -->
+  <script src="/assets/js/site.js"></script>
   <meta name="description" content="Thr33 Labs designs and builds websites, apps and augmented reality experiences for businesses, from Óbidos, Portugal.">
-  <meta name="theme-color" content="#0a0a0a">
   <link rel="canonical" href="https://thr33.xyz/en/">
   <link rel="alternate" hreflang="pt-PT" href="https://thr33.xyz/">
   <link rel="alternate" hreflang="en" href="https://thr33.xyz/en/">
   <link rel="alternate" hreflang="x-default" href="https://thr33.xyz/">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="preload" href="/assets/fonts/space-grotesk.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="/assets/site.css">
-
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Thr33 Labs">
   <meta property="og:title" content="Thr33 Labs · Digital product studio in Óbidos, Portugal">
@@ -30,54 +33,76 @@
 <body>
   <a class="skip" href="#conteudo">Skip to content</a>
 
-  <header class="site-header">
+  <header class="site-header" data-header>
     <div class="wrap header-inner">
       <a class="wordmark" href="/en/">Thr33 Labs</a>
-      <nav aria-label="Main navigation">
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu">
+        <span class="menu-toggle-icon" aria-hidden="true"></span>
+        <span class="menu-toggle-text">Menu</span>
+      </button>
+      <nav class="menu" id="menu" aria-label="Main navigation">
         <ul>
-          <li><a href="/en/services/">Services</a></li>
-          <li><a href="/en/products/">Products</a></li>
-          <li><a href="/en/about/">About</a></li>
-          <li><a href="/en/contact/">Contact</a></li>
+          <li><a href="/en/services/"><span class="nav-num" aria-hidden="true">01</span>Services</a></li>
+          <li><a href="/en/products/"><span class="nav-num" aria-hidden="true">02</span>Projects</a></li>
+          <li><a href="/en/about/"><span class="nav-num" aria-hidden="true">03</span>About</a></li>
+          <li><a href="/en/contact/"><span class="nav-num" aria-hidden="true">04</span>Contact</a></li>
+          <li><a class="lang" href="/" hreflang="pt-PT" lang="pt-PT" aria-label="Português"><span class="nav-num" aria-hidden="true">05</span>PT</a></li>
         </ul>
       </nav>
-      <a class="lang" href="/" hreflang="pt-PT" lang="pt-PT" aria-label="Português">PT</a>
     </div>
   </header>
 
   <main id="conteudo">
     <section class="hero">
+      <div class="hero-gradient" aria-hidden="true"><span class="blob blob-telha"></span><span class="blob blob-lagoa"></span><span class="blob blob-atlantico"></span></div>
       <div class="wrap">
-        <p class="badge">Digital Product Studio</p>
-        <h1>Digital products that people <span class="accent">use</span></h1>
+        <p class="label">(Thr33 Labs / ©2026) Óbidos, PT</p>
+        <h1 data-split>Digital products that people <span class="accent">use</span></h1>
         <p class="lead">Thr33 Labs is a digital product studio in Óbidos, Portugal. We design and build websites, apps and augmented reality experiences for businesses, from the first conversation to launch.</p>
         <div class="actions">
           <a class="btn btn-primary" href="/en/contact/">Request a proposal</a>
           <a class="btn btn-ghost" href="/en/services/">See our services</a>
         </div>
+        <p class="hero-scroll" aria-hidden="true">↓ scroll</p>
       </div>
     </section>
 
+    <div class="marquee" data-marquee>
+      <div class="marquee-track">
+        <ul class="marquee-list" aria-label="Skills"><li>Consulting</li><li>Web</li><li>Apps</li><li>UX/UI</li><li>Augmented reality</li><li>Laravel</li><li>3D</li></ul>
+        <ul class="marquee-list" aria-hidden="true"><li>Consulting</li><li>Web</li><li>Apps</li><li>UX/UI</li><li>Augmented reality</li><li>Laravel</li><li>3D</li></ul>
+      </div>
+    </div>
+
     <section class="band" aria-labelledby="what-we-do">
       <div class="wrap">
+        <p class="label"><span class="label-num">(01)</span> Services</p>
         <h2 id="what-we-do">What we do</h2>
-        <ul class="grid grid-4">
-          <li class="card">
+        <ul class="grid grid-4" data-reveal>
+          <li class="card card-service">
+            <span class="card-icon" aria-hidden="true"><svg class="icon" width="24" height="24" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#compass"></use></svg></span>
+            <span class="num">01</span>
             <h3>IT consulting</h3>
             <p>Technology choices, technical audits and migration plans, before you invest in code.</p>
             <a class="more" href="/en/services/#consulting">Consulting in detail</a>
           </li>
-          <li class="card">
+          <li class="card card-service">
+            <span class="card-icon" aria-hidden="true"><svg class="icon" width="24" height="24" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#code"></use></svg></span>
+            <span class="num">02</span>
             <h3>Web and apps</h3>
             <p>Websites, platforms and iOS and Android apps, from prototype to release.</p>
             <a class="more" href="/en/services/#development">Development in detail</a>
           </li>
-          <li class="card">
+          <li class="card card-service">
+            <span class="card-icon" aria-hidden="true"><svg class="icon" width="24" height="24" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#pen-tool"></use></svg></span>
+            <span class="num">03</span>
             <h3>UX and UI</h3>
             <p>Clear, accessible interfaces, tested with the people who will use them.</p>
             <a class="more" href="/en/services/#design">Design in detail</a>
           </li>
-          <li class="card">
+          <li class="card card-service">
+            <span class="card-icon" aria-hidden="true"><svg class="icon" width="24" height="24" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#box"></use></svg></span>
+            <span class="num">04</span>
             <h3>Augmented reality</h3>
             <p>3D models placed in real space, at real scale, from a phone or tablet.</p>
             <a class="more" href="/en/services/#augmented-reality">Augmented reality in detail</a>
@@ -97,8 +122,10 @@
       </div>
     </section>
 
-    <section class="band" aria-labelledby="product">
-      <div class="wrap product">
+    <section class="band scene-ink" data-scene="ink" aria-labelledby="product">
+      <div class="wrap">
+        <p class="label"><span class="label-num">(02)</span> Projects</p>
+        <div class="product">
         <div>
           <p class="examples-title">Our own product</p>
           <h2 id="product" class="product-name">vizia</h2>
@@ -108,24 +135,50 @@
           <a class="btn btn-ghost" href="/en/products/">See products and projects</a>
         </div>
       </div>
+      </div>
     </section>
 
     <section class="band" aria-labelledby="how">
       <div class="wrap">
+        <p class="label"><span class="label-num">(03)</span> Process</p>
         <h2 id="how">How we work</h2>
-        <ol class="grid grid-4" role="list">
-          <li class="card"><span class="num">01</span><h3>Conversation</h3><p>We learn about the problem, the audience and what already exists.</p></li>
-          <li class="card"><span class="num">02</span><h3>Proposal</h3><p>Scope, timeline and cost in writing, before any work starts.</p></li>
-          <li class="card"><span class="num">03</span><h3>Design and build</h3><p>Short cycles, with a version to review at every step.</p></li>
-          <li class="card"><span class="num">04</span><h3>Launch</h3><p>Release, measurement and support after it ships.</p></li>
+        <ol class="grid grid-4" role="list" data-reveal>
+          <li class="card card-step">
+            <span class="card-icon" aria-hidden="true"><svg class="icon" width="24" height="24" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#message-circle"></use></svg></span>
+            <span class="num">01</span><h3>Conversation</h3><p>We learn about the problem, the audience and what already exists.</p>
+          </li>
+          <li class="card card-step">
+            <span class="card-icon" aria-hidden="true"><svg class="icon" width="24" height="24" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#file-text"></use></svg></span>
+            <span class="num">02</span><h3>Proposal</h3><p>Scope, timeline and cost in writing, before any work starts.</p>
+          </li>
+          <li class="card card-step">
+            <span class="card-icon" aria-hidden="true"><svg class="icon" width="24" height="24" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#layers"></use></svg></span>
+            <span class="num">03</span><h3>Design and build</h3><p>Short cycles, with a version to review at every step.</p>
+          </li>
+          <li class="card card-step">
+            <span class="card-icon" aria-hidden="true"><svg class="icon" width="24" height="24" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#rocket"></use></svg></span>
+            <span class="num">04</span><h3>Launch</h3><p>Release, measurement and support after it ships.</p>
+          </li>
         </ol>
       </div>
     </section>
 
-    <section class="band" aria-labelledby="talk">
+    <section class="band" aria-labelledby="about-us">
       <div class="wrap">
-        <h2 id="talk">Have a project in mind?</h2>
+        <p class="label"><span class="label-num">(04)</span> About</p>
+        <h2 id="about-us">Who we are</h2>
+        <p class="band-intro">An independent digital product studio in Óbidos. The founder follows every project from start to finish, with no middlemen.</p>
+        <div class="actions">
+          <a class="btn btn-ghost" href="/en/about/">About Thr33 Labs</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="band scene-telha" data-scene="telha" aria-labelledby="talk">
+      <div class="wrap">
+        <h2 class="cta-title" id="talk" data-cta-scale>Shall we talk?</h2>
         <p class="band-intro">Tell us what you need, by email or phone. We reply with next steps and, where it makes sense, a proposal.</p>
+        <p class="cta-mail"><a class="cta-email" href="mailto:hello@thr33.xyz">hello@thr33.xyz</a></p>
         <div class="actions">
           <a class="btn btn-primary" href="/en/contact/">Contact Thr33 Labs</a>
         </div>
@@ -135,33 +188,15 @@
 
   <footer class="site-footer">
     <div class="wrap">
-      <div class="footer-grid">
-        <div>
-          <p class="footer-brand">Thr33 Labs</p>
-          <p class="dim">Digital product studio in Óbidos, Portugal.</p>
-        </div>
-        <nav aria-label="Footer links">
-          <p class="footer-heading">Pages</p>
-          <ul>
-            <li><a href="/en/services/">Services</a></li>
-            <li><a href="/en/products/">Products</a></li>
-            <li><a href="/en/about/">About</a></li>
-            <li><a href="/en/contact/">Contact</a></li>
-            <li><a href="/en/privacy/">Privacy</a></li>
-            <li><a href="/en/terms/">Terms of use</a></li>
-          </ul>
-        </nav>
-        <div>
-          <p class="footer-heading">Contact</p>
-          <ul>
-            <li><a href="mailto:hello@thr33.xyz">hello@thr33.xyz</a></li>
-            <li><a href="tel:+351936466845">+351 936 466 845</a></li>
-            <li><a href="https://www.livroreclamacoes.pt/Inicio/" target="_blank" rel="noopener noreferrer">Complaints Book (Livro de Reclamações)</a></li>
-          </ul>
-        </div>
-      </div>
+      <ul class="footer-line">
+        <li>© 2026 Thr33 Labs</li>
+        <li><a href="mailto:hello@thr33.xyz">hello@thr33.xyz</a></li>
+        <li><a href="tel:+351936466845">+351 936 466 845</a></li>
+        <li><a href="/en/privacy/">Privacy</a></li>
+        <li><a href="/en/terms/">Terms of use</a></li>
+        <li><a href="https://www.livroreclamacoes.pt/Inicio/" target="_blank" rel="noopener noreferrer">Complaints Book (Livro de Reclamações)</a></li>
+      </ul>
       <p class="legal">THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA · A single-member private limited company (sociedade unipessoal por quotas) · Registered office: Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos, Portugal · Portuguese Commercial Registry (RNPC) · Registration and tax number (NIPC) 519573021 · Share capital €7,660.00</p>
-      <p class="legal">© 2026 Thr33 Labs</p>
     </div>
   </footer>
 </body>

@@ -4,23 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Página não encontrada · Thr33 Labs</title>
-  <meta name="robots" content="noindex">
-  <meta name="theme-color" content="#0a0a0a">
+  <meta name="theme-color" content="#F3F0E8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/tokens.css">
   <link rel="stylesheet" href="/assets/site.css">
+  <!-- Sem defer: põe a classe .js no html antes de pintar; o resto corre no DOMContentLoaded. -->
+  <script src="/assets/js/site.js"></script>
+  <meta name="robots" content="noindex">
 </head>
 <body>
-  <header class="site-header">
+  <a class="skip" href="#conteudo">Saltar para o conteúdo</a>
+
+  <header class="site-header" data-header>
     <div class="wrap header-inner">
       <a class="wordmark" href="/">Thr33 Labs</a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Abrir menu" data-label-open="Abrir menu" data-label-close="Fechar menu">
+        <span class="menu-toggle-icon" aria-hidden="true"></span>
+        <span class="menu-toggle-text">Menu</span>
+      </button>
+      <nav class="menu" id="menu" aria-label="Navegação principal">
+        <ul>
+          <li><a href="/servicos/"><span class="nav-num" aria-hidden="true">01</span>Serviços</a></li>
+          <li><a href="/produtos/"><span class="nav-num" aria-hidden="true">02</span>Projetos</a></li>
+          <li><a href="/sobre/"><span class="nav-num" aria-hidden="true">03</span>Sobre</a></li>
+          <li><a href="/contacto/"><span class="nav-num" aria-hidden="true">04</span>Contacto</a></li>
+          <li><a class="lang" href="/en/" hreflang="en" lang="en" aria-label="English"><span class="nav-num" aria-hidden="true">05</span>EN</a></li>
+        </ul>
+      </nav>
     </div>
   </header>
 
   <main id="conteudo">
     <section class="page-head">
       <div class="wrap">
-        <p class="badge">404</p>
-        <h1>Página não encontrada</h1>
+        <p class="label">(404)</p>
+        <h1 data-split>Página não encontrada</h1>
         <p class="lead">O endereço pode estar errado ou a página mudou de sítio. Volte ao início ou veja os serviços.</p>
         <div class="actions">
           <a class="btn btn-primary" href="/">Voltar ao início</a>
@@ -42,8 +62,15 @@
 
   <footer class="site-footer">
     <div class="wrap">
+      <ul class="footer-line">
+        <li>© 2026 Thr33 Labs</li>
+        <li><a href="mailto:hello@thr33.xyz">hello@thr33.xyz</a></li>
+        <li><a href="tel:+351936466845">+351 936 466 845</a></li>
+        <li><a href="/privacidade/">Privacidade</a></li>
+        <li><a href="/termos/">Termos de utilização</a></li>
+        <li><a href="https://www.livroreclamacoes.pt/Inicio/" target="_blank" rel="noopener noreferrer">Livro de Reclamações</a></li>
+      </ul>
       <p class="legal">THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA · Sociedade unipessoal por quotas · Sede: Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos · Conservatória do Registo Comercial (RNPC) · Matrícula e NIPC 519573021 · Capital social 7.660,00 €</p>
-      <p class="legal"><a href="https://www.livroreclamacoes.pt/Inicio/" target="_blank" rel="noopener noreferrer">Livro de Reclamações</a></p>
     </div>
   </footer>
 </body>
