@@ -113,6 +113,11 @@ function revealGroups() {
     Array.prototype.forEach.call(group.children, function (child, i) { child.style.setProperty("--i", String(i)); });
     group.classList.add("reveal");
     io.observe(group);
+    /* Com Tab, o elemento focado não pode ficar invisível à espera da animação: o grupo aparece já. */
+    group.addEventListener("focusin", function () {
+      io.unobserve(group);
+      group.classList.remove("reveal");
+    }, { once: true });
   });
 }
 

@@ -69,6 +69,20 @@ CTA_TITLE = {"pt-PT": "Vamos falar?", "en": "Shall we talk?"}
 EMAIL = "hello@thr33.xyz"
 PHONE_HREF = "tel:+351936466845"
 FOOTER_LINE1 = {"pt-PT": ["/privacidade/", "/termos/"], "en": ["/en/privacy/", "/en/terms/"]}
+# Ficha (#33): fim da página Sobre, chave/valor em mono como créditos, com os dados do rodapé legal.
+# (termo, excerto que tem de estar no valor e na linha legal do rodapé; None = só o termo)
+FICHA = {
+    "pt-PT": [("Firma", "THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA"),
+              ("Tipo", "Sociedade unipessoal por quotas"), ("Constituição", None),
+              ("Sede", "Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos"), ("NIPC", "519573021"),
+              ("D-U-N-S", None), ("Capital social", "7.660,00 €"), ("CAE", None)],
+    "en": [("Legal name", "THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA"),
+           ("Type", "single-member private limited company"), ("Incorporated", None),
+           ("Registered office", "Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos"), ("Tax number (NIPC)", "519573021"),
+           ("D-U-N-S", None), ("Share capital", "€7,660.00"), ("Activity codes (CAE)", None)],
+}
+FICHA_LABEL = {"pt-PT": "(Ficha)", "en": "(Fact sheet)"}
+FICHA_EXTRA = {"pt-PT": {"Constituição": "2026", "D-U-N-S": "348597205"}, "en": {"Incorporated": "2026", "D-U-N-S": "348597205"}}
 # Marquee (#28): competências em loop na página inicial; a cópia para o loop não é lida duas vezes.
 MARQUEE = {
     "pt-PT": ["Consultoria", "Web", "Apps", "UX/UI", "Realidade aumentada", "Laravel", "3D"],
@@ -502,6 +516,50 @@ def check_footer(check, url, html, lang):
         check(needle in text, f"{url}: linha legal sem '{needle}'")
 
 
+def check_ficha(check, url, html, lang, is_about):
+    blocks = re.findall(r'<dl class="ficha">(.*?)</dl>', html, re.S)
+    if not is_about:
+        check(not blocks, f"{url}: a (Ficha) é só da página Sobre")
+        return
+    check(len(blocks) == 1, f"{url}: falta o bloco (Ficha) em <dl class=\"ficha\">")
+    if len(blocks) != 1:
+        return
+    main = html[html.index("<main"):html.index("</main>")]
+    last = main[main.rindex("<section"):]
+    check('<dl class="ficha">' in last, f"{url}: a (Ficha) tem de ser a última secção")
+    check(f'<p class="label">{FICHA_LABEL[lang]}</p>' in last, f"{url}: a Ficha leva a etiqueta {FICHA_LABEL[lang]}")
+    rows = re.findall(r"<div><dt>(.*?)</dt><dd>(.*?)</dd></div>", blocks[0], re.S)
+    terms = [t for t, _ in rows]
+    expected = [t for t, _ in FICHA[lang]]
+    check(terms == expected, f"{url}: Ficha com {terms}, esperado {expected}")
+    values = dict(rows)
+    legal = re.search(r'<p class="legal">(.*?)</p>', html, re.S)
+    legal_text = legal.group(1) if legal else ""
+    for term, needle in FICHA[lang]:
+        if needle and term in values:
+            check(needle.lower() in values[term].lower(), f"{url}: Ficha '{term}' devia conter '{needle}'")
+            check(needle.lower() in legal_text.lower(), f"{url}: rodapé legal sem '{needle}' (Ficha e rodapé têm de bater certo)")
+    for term, value in FICHA_EXTRA[lang].items():
+        check(values.get(term) == value, f"{url}: Ficha '{term}' devia ser {value}")
+
+
+# WCAG 2.5.3 (nome no rótulo): o link de língua mostra "EN"/"PT", por isso o nome acessível
+# tem de começar por esse texto. Sem aria-label; o nome completo vai num span .sr-only.
+LANG_LINK = {"pt-PT": ("EN", "English"), "en": ("PT", "Português")}
+
+
+def check_lang_link(check, url, html, lang):
+    m = re.search(r'<a class="lang"([^>]*)>(.*?)</a>', html, re.S)
+    check(m is not None, f"{url}: link de língua em falta")
+    if m is None:
+        return
+    short, full = LANG_LINK[lang]
+    check("aria-label" not in m.group(1), f"{url}: o link de língua não leva aria-label (nome tem de conter '{short}')")
+    inner = m.group(2)
+    check(re.search(rf'>{short}<span class="sr-only"> {full}</span>$', inner) is not None,
+          f"{url}: link de língua deve ser '{short}' + <span class=\"sr-only\"> {full}</span>")
+
+
 def check_footer_css(check):
     css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
     legal = re.search(r"\n\.legal\s*\{([^}]*)\}", css)
@@ -516,6 +574,12 @@ def check_footer_css(check):
     check(line1 is not None and "--font-mono" not in line1.group(1), "site.css: .footer-line em Space Grotesk")
     title = re.search(r"\n\.cta-title\s*\{([^}]*)\}", css)
     check(title is not None and "var(--text-hero)" in title.group(1), "site.css: .cta-title em tamanho de hero")
+    ficha = re.search(r"\n\.ficha\s*\{([^}]*)\}", css)
+    check(ficha is not None and "var(--font-mono)" in ficha.group(1), "site.css: .ficha em JetBrains Mono")
+    row = re.search(r"\n\.ficha div\s*\{([^}]*)\}", css)
+    check(row is not None and "grid-template-columns" not in row.group(1), "site.css: .ficha numa coluna em mobile")
+    check(re.search(r"@media \(min-width: [\d.]+rem\) \{[^@]*?\.ficha div\s*\{[^}]*grid-template-columns", css),
+          "site.css: .ficha em duas colunas a partir de um min-width")
     js = (ROOT / SITE_JS.lstrip("/")).read_text(encoding="utf-8")
     check("data-cta-scale" in js, "site.js: falta a escala do CTA final (data-cta-scale)")
 
@@ -532,7 +596,9 @@ def check_no_js_hiding(check):
         if re.search(r"display:\s*none|visibility:\s*hidden", body):
             for sel in selectors.split(","):
                 sel = sel.strip()
-                ok = sel.startswith(".js ") or sel.startswith("html:not(.js)") or sel.startswith("[hidden]")
+                # Esconder uma cópia com aria-hidden="true" (o marquee) não tira conteúdo a ninguém.
+                ok = (sel.startswith(".js ") or sel.startswith("html:not(.js)") or sel.startswith("[hidden]")
+                      or sel.endswith('[aria-hidden="true"]'))
                 check(ok, f"site.css: '{sel}' esconde conteúdo sem depender de .js")
     js = ROOT / SITE_JS.lstrip("/")
     check(js.exists(), f"{SITE_JS} em falta")
@@ -542,6 +608,80 @@ def check_no_js_hiding(check):
         check(size <= SITE_JS_MAX_GZIP, f"{SITE_JS} tem {size} bytes gzip (máx. {SITE_JS_MAX_GZIP})")
         total = sum(len(gzip.compress(f.read_bytes())) for f in ROOT.rglob("*.js"))
         check(total <= JS_TOTAL_MAX_GZIP, f"JS total {total} bytes gzip (máx. {JS_TOTAL_MAX_GZIP})")
+
+
+# Fecho do redesign (#35): reduced motion, foco, imagens e CSP.
+# Funções do site.js que mexem em movimento: todas têm de respeitar prefers-reduced-motion.
+MOTION_FUNCTIONS = ["followPointer", "marqueeScroll", "countLabels", "revealGroups", "colourScenes",
+                    "magneticButtons", "ctaScale"]
+
+
+def js_function(js, name):
+    m = re.search(rf"function {name}\(.*?\n\}}", js, re.S)
+    return m.group(0) if m else None
+
+
+def check_finish(check):
+    css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
+    plain = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+
+    # Reduced motion: uma regra universal corta animações e transições de tudo, incluindo o que
+    # vier depois; e o scroll suave, se existir, desliga-se.
+    reduced = re.search(r"@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{(.*?)\n\}", plain, re.S)
+    block = reduced.group(1) if reduced else ""
+    universal = re.search(r"\*,\s*\*::before,\s*\*::after\s*\{([^}]*)\}", block)
+    check(universal is not None and "animation: none !important" in universal.group(1)
+          and "transition: none !important" in universal.group(1),
+          "site.css: reduced motion precisa de *, *::before, *::after { animation: none !important; transition: none !important }")
+    check(".cta-title" in block, "site.css: prefers-reduced-motion não trata .cta-title")
+    sr = re.search(r"\n\.sr-only\s*\{([^}]*)\}", plain)
+    check(sr is not None and "clip" in sr.group(1) and "position: absolute" in sr.group(1),
+          "site.css: falta .sr-only (texto só para leitores de ecrã)")
+    # Marquee parado: as competências quebram em linhas e a cópia sai, para nada ficar cortado.
+    track = re.search(r"\.marquee-track\s*\{([^}]*)\}", block)
+    check(track is not None and "flex-wrap: wrap" in track.group(1) and "width: auto" in track.group(1),
+          "site.css: em reduced motion o .marquee-track quebra em linhas (flex-wrap: wrap; width: auto)")
+    copy = re.search(r'\.marquee-list\[aria-hidden="true"\]\s*\{([^}]*)\}', block)
+    check(copy is not None and "display: none" in copy.group(1),
+          "site.css: em reduced motion a cópia do marquee (aria-hidden) sai")
+    if "scroll-behavior: smooth" in plain:
+        check("scroll-behavior: auto" in block, "site.css: scroll suave sem ser desligado em reduced motion")
+
+    # Foco do teclado sempre visível, em --focus (Atlântico; Tinta na cena Telha).
+    focus = re.search(r"(?<![\w-]):focus-visible\s*\{([^}]*)\}", plain)
+    check(focus is not None and "outline: 2px solid var(--focus)" in focus.group(1),
+          "site.css: :focus-visible com outline: 2px solid var(--focus)")
+    for selectors, body in re.findall(r"([^{}]+)\{([^{}]*)\}", plain):
+        if re.search(r"outline:\s*(none|0)\b", body):
+            check("box-shadow" in body or "border" in body,
+                  f"site.css: '{selectors.strip()}' tira o outline sem alternativa visível")
+
+    js = (ROOT / SITE_JS.lstrip("/")).read_text(encoding="utf-8")
+    for name in MOTION_FUNCTIONS:
+        body = js_function(js, name)
+        check(body is not None, f"site.js: função {name} em falta")
+        if body is not None:
+            check("reducedMotion" in body, f"site.js: {name} não respeita prefers-reduced-motion")
+    check(not re.search(r"\beval\(|new Function\(|innerHTML\s*=", js), "site.js: eval, new Function ou innerHTML")
+    # Quem chega com Tab a um grupo ainda por revelar tem de ver logo o que tem foco.
+    reveal = js_function(js, "revealGroups") or ""
+    check("focusin" in reveal, "site.js: revealGroups tem de revelar o grupo logo no focusin")
+
+    # CSP sem unsafe-inline nem unsafe-eval; o HTML já é verificado sem inline.
+    deploy = (BASE / "docs" / "deploy.md").read_text(encoding="utf-8")
+    csp = re.search(r'Content-Security-Policy "([^"]+)"', deploy)
+    check(csp is not None and "script-src 'self'" in csp.group(1) and "unsafe-" not in csp.group(1),
+          "docs/deploy.md: CSP com script-src 'self' e sem unsafe-inline/unsafe-eval")
+
+    for f in sorted(ROOT.rglob("*.html")):
+        html = f.read_text(encoding="utf-8")
+        name = f.relative_to(ROOT)
+        for tag in re.findall(r"<img\b[^>]*>", html):
+            check(re.search(r'\salt="', tag), f"{name}: <img> sem alt ({tag[:60]})")
+            check(re.search(r'\swidth="\d+"', tag) and re.search(r'\sheight="\d+"', tag),
+                  f"{name}: <img> sem width e height ({tag[:60]})")
+        for value in re.findall(r'tabindex="(-?\d+)"', html):
+            check(int(value) <= 0, f"{name}: tabindex={value} quebra a ordem de tabulação")
 
 
 def main():
@@ -557,6 +697,7 @@ def main():
     check_motion_css(check)
     check_icons(check)
     check_footer_css(check)
+    check_finish(check)
 
     titles, descriptions = {}, {}
     pages = {}
@@ -606,6 +747,8 @@ def main():
             raw = file_for(url).read_text(encoding="utf-8")
             check_cta(check, url, raw, lang, "telha" in [sc for sc, _ in p.scenes])
             check_footer(check, url, raw, lang)
+            check_lang_link(check, url, raw, lang)
+            check_ficha(check, url, raw, lang, url in ("/sobre/", "/en/about/"))
             check_page_icons(check, url, p, raw, url in ("/", "/en/"), url in ("/servicos/", "/en/services/"))
             if url in ("/", "/en/"):
                 check(section_labels(raw) == HOME_LABELS[lang], f"{url}: etiquetas {section_labels(raw)}, esperado {HOME_LABELS[lang]}")
