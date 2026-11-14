@@ -314,9 +314,10 @@ def site_header(site, lang, current, other_url, other_lang):
         aria = ' aria-current="page"' if name == current else ""
         items.append(f'<li><a href="{url_for(lang, name)}"{aria}><span class="nav-num" aria-hidden="true">{n:02d}</span>'
                      f'{site["nav"][name]}</a></li>')
-    items.append(f'<li><a class="lang" href="{other_url}" hreflang="{other_lang}" lang="{other_lang}" '
-                 f'aria-label="{site["other_name"]}"><span class="nav-num" aria-hidden="true">05</span>'
-                 f'{site["other_label"]}</a></li>')
+    # WCAG 2.5.3: o nome acessível começa pelo texto visível (EN/PT); o nome completo vai em .sr-only.
+    items.append(f'<li><a class="lang" href="{other_url}" hreflang="{other_lang}" lang="{other_lang}">'
+                 f'<span class="nav-num" aria-hidden="true">05</span>'
+                 f'{site["other_label"]}<span class="sr-only"> {site["other_name"]}</span></a></li>')
     lis = "\n          ".join(items)
     return f'''  <header class="site-header" data-header>
     <div class="wrap header-inner">
