@@ -712,7 +712,7 @@
               "ul": [
                 "<strong>thr33_consent</strong> (Thr33 Labs, necessário): guarda se aceitou ou recusou os cookies de análise. Dura 6 meses.",
                 "<strong>_ga</strong> (Google Analytics, análise): distingue visitas de forma pseudónima. Dura 2 anos. Só com consentimento.",
-                "<strong>_ga_JCJZ754SWW</strong> (Google Analytics, análise): guarda o estado da sessão. Dura 2 anos. Só com consentimento.",
+                "<strong>_ga_&lt;ID&gt;</strong> (Google Analytics, análise): guarda o estado da sessão. Dura 2 anos. Só com consentimento.",
                 "<strong>__cf_bm</strong> (Cloudflare, necessário): pode ser instalado para proteger o site contra bots. Dura 30 minutos."
               ]
             },

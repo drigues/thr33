@@ -368,7 +368,7 @@ def site_footer(site, lang):
 
 
 def cookie_banner(site, lang):
-    """Banner de consentimento (Lei 41/2004, art. 5.º, e RGPD): aceitar e recusar com o mesmo peso.
+    """Banner de consentimento (Lei 41/2004, art. 5.º, e RGPD): aceitar e recusar lado a lado, na mesma camada.
 
     Começa com hidden: o consent.js mostra-o se ainda não houver escolha. O GA só carrega depois de aceitar.
     """
@@ -377,7 +377,7 @@ def cookie_banner(site, lang):
     <p class="cookie-banner-title" id="cookie-banner-title">{b["title"]}</p>
     <p>{b["text"]} <a href="{url_for(lang, "cookies")}">{b["policy"]}</a></p>
     <div class="actions">
-      <button class="btn btn-primary" type="button" data-consent="denied">{b["reject"]}</button>
+      <button class="btn btn-ghost" type="button" data-consent="denied">{b["reject"]}</button>
       <button class="btn btn-primary" type="button" data-consent="granted">{b["accept"]}</button>
     </div>
   </div>'''

@@ -712,7 +712,7 @@
               "ul": [
                 "<strong>thr33_consent</strong> (Thr33 Labs, necessary): remembers whether you accepted or rejected analytics cookies. Lasts 6 months.",
                 "<strong>_ga</strong> (Google Analytics, analytics): tells visits apart under a pseudonym. Lasts 2 years. Only with consent.",
-                "<strong>_ga_JCJZ754SWW</strong> (Google Analytics, analytics): keeps the session state. Lasts 2 years. Only with consent.",
+                "<strong>_ga_&lt;ID&gt;</strong> (Google Analytics, analytics): keeps the session state. Lasts 2 years. Only with consent.",
                 "<strong>__cf_bm</strong> (Cloudflare, necessary): may be set to protect the website against bots. Lasts 30 minutes."
               ]
             },
