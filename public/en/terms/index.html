@@ -9,9 +9,11 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="/assets/fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/css/tokens.css?v=926a9147">
-  <link rel="stylesheet" href="/assets/site.css?v=1612e417">
+  <link rel="stylesheet" href="/assets/site.css?v=9553c4fa">
   <!-- Sem defer: põe a classe .js no html antes de pintar; o resto corre no DOMContentLoaded. -->
   <script src="/assets/js/site.js?v=41a42991"></script>
+  <!-- Consentimento de cookies e Google Analytics: o gtag.js só se pede depois de aceitar. -->
+  <script src="/assets/js/consent.js?v=83086bf5" defer></script>
   <meta name="description" content="Terms of use for thr33.xyz: company details, intellectual property, external links, liability and governing law.">
   <link rel="canonical" href="https://thr33.xyz/en/terms/">
   <link rel="alternate" hreflang="pt-PT" href="https://thr33.xyz/termos/">
@@ -112,10 +114,21 @@
         <li><a href="tel:+351936466845">+351 936 466 845</a></li>
         <li><a href="/en/privacy/">Privacy</a></li>
         <li><a href="/en/terms/">Terms of use</a></li>
+        <li><a href="/en/cookies/">Cookie policy</a></li>
+        <li hidden><button class="footer-button" type="button" data-consent-open>Cookie settings</button></li>
         <li><a href="https://www.livroreclamacoes.pt/Inicio/" target="_blank" rel="noopener noreferrer">Complaints Book (Livro de Reclamações)</a></li>
       </ul>
       <p class="legal">THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA · A single-member private limited company (sociedade unipessoal por quotas) · Registered office: Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos, Portugal · Portuguese Commercial Registry (RNPC) · Registration and tax number (NIPC) 519573021 · Share capital €7,660.00</p>
     </div>
   </footer>
+
+  <div class="cookie-banner" id="cookie-banner" role="region" aria-labelledby="cookie-banner-title" hidden>
+    <p class="cookie-banner-title" id="cookie-banner-title">Analytics cookies</p>
+    <p>We use Google Analytics to understand which pages are visited. It only sets cookies if you accept. <a href="/en/cookies/">Read the cookie policy</a></p>
+    <div class="actions">
+      <button class="btn btn-primary" type="button" data-consent="denied">Reject analytics cookies</button>
+      <button class="btn btn-primary" type="button" data-consent="granted">Accept analytics cookies</button>
+    </div>
+  </div>
 </body>
 </html>

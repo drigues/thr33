@@ -14,13 +14,22 @@
       "contacto": "Contacto",
       "privacidade": "Privacidade",
       "termos": "Termos de utilização",
-      "inicio": "Início"
+      "inicio": "Início",
+      "cookies": "Política de cookies"
     },
     "complaints": "Livro de Reclamações",
     "legal": "THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA · Sociedade unipessoal por quotas · Sede: Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos · Conservatória do Registo Comercial (RNPC) · Matrícula e NIPC 519573021 · Capital social 7.660,00 €",
     "menu_open": "Abrir menu",
     "menu_close": "Fechar menu",
-    "menu_label": "Menu"
+    "menu_label": "Menu",
+    "cookie_settings": "Preferências de cookies",
+    "cookie_banner": {
+      "title": "Cookies de análise",
+      "text": "Usamos o Google Analytics para perceber que páginas são visitadas. Só instala cookies se aceitar.",
+      "policy": "Ler a política de cookies",
+      "accept": "Aceitar cookies de análise",
+      "reject": "Recusar cookies de análise"
+    }
   },
   "pages": {
     "inicio": {
@@ -69,7 +78,8 @@
               "title": "Consultoria em informática",
               "text": "Escolha de tecnologia, auditorias técnicas e planos de migração, antes de investir em código.",
               "link": {
-                "text": "Consultoria em detalhe",
+                "text": "Ver mais",
+                "sr": "sobre consultoria",
                 "href": "/servicos/#consultoria"
               },
               "icon": "compass"
@@ -78,7 +88,8 @@
               "title": "Web e aplicações",
               "text": "Sites, plataformas e aplicações iOS e Android, do protótipo à publicação.",
               "link": {
-                "text": "Desenvolvimento em detalhe",
+                "text": "Ver mais",
+                "sr": "sobre web e aplicações",
                 "href": "/servicos/#desenvolvimento"
               },
               "icon": "code"
@@ -87,7 +98,8 @@
               "title": "UX e UI",
               "text": "Interfaces claras e acessíveis, testadas com quem as vai usar.",
               "link": {
-                "text": "Design em detalhe",
+                "text": "Ver mais",
+                "sr": "sobre UX e UI",
                 "href": "/servicos/#design"
               },
               "icon": "pen-tool"
@@ -96,7 +108,8 @@
               "title": "Realidade aumentada",
               "text": "Modelos 3D no espaço real, à escala, a partir do telemóvel ou do tablet.",
               "link": {
-                "text": "Realidade aumentada em detalhe",
+                "text": "Ver mais",
+                "sr": "sobre realidade aumentada",
                 "href": "/servicos/#realidade-aumentada"
               },
               "icon": "box"
@@ -118,7 +131,7 @@
           "type": "project",
           "id": "produto",
           "eyebrow": "Produto próprio",
-          "h2": "vizia",
+          "h2": "Vizia - Arquitetura em AR",
           "text": "Projetos de arquitetura, decoração e eventos em realidade aumentada, à escala real e no local.",
           "actions": [
             {
@@ -203,7 +216,7 @@
           "paragraphs": [
             "Somos um estúdio independente de produto digital. A empresa é gerida por quem a fundou, que acompanha cada projeto do início ao fim, sem intermediários.",
             "Quando um projeto o pede, juntamos parceiros de confiança em design, desenvolvimento e 3D, sempre com um único ponto de contacto do lado da Thr33 Labs.",
-            "Para além do trabalho para clientes, desenvolvemos produtos próprios, como o <a href=\"/produtos/\">vizia</a>, de realidade aumentada."
+            "Para além do trabalho para clientes, desenvolvemos produtos próprios, como o <a href=\"/produtos/\">Vizia</a>, de realidade aumentada."
           ],
           "label": "Estúdio"
         },
@@ -335,7 +348,7 @@
                 "Projetos de arquitetura vistos no terreno.",
                 "Decoração e mobiliário à escala real.",
                 "Montagens de eventos antes do dia.",
-                "<a href=\"/produtos/\">vizia</a>, o nosso produto de realidade aumentada."
+                "<a href=\"/produtos/\">Vizia</a>, o nosso produto de realidade aumentada."
               ],
               "icon": "box"
             }
@@ -358,7 +371,7 @@
     },
     "produtos": {
       "title": "Produtos e projetos · Thr33 Labs",
-      "description": "O vizia, produto de realidade aumentada da Thr33 Labs para arquitetura, decoração e eventos, e os projetos que desenvolvemos para clientes.",
+      "description": "O Vizia - Arquitetura em AR, produto de realidade aumentada da Thr33 Labs para arquitetura, decoração e eventos, e os projetos que desenvolvemos para clientes.",
       "head": {
         "kind": "page",
         "label": "Produtos e projetos",
@@ -370,7 +383,7 @@
           "type": "project",
           "id": "vizia",
           "eyebrow": "Produto próprio · Realidade aumentada",
-          "h2": "vizia",
+          "h2": "Vizia - Arquitetura em AR",
           "text": "Projetos de arquitetura, decoração e eventos em realidade aumentada, à escala real e no local. Para arquitetos, decoradores e organizadores de eventos que querem que o cliente veja o resultado antes de avançar.",
           "actions": [
             {
@@ -472,14 +485,14 @@
         "kind": "page",
         "label": "RGPD",
         "h1": "Política de privacidade",
-        "lead": "O site thr33.xyz não tem formulários, não usa cookies e não tem ferramentas de análise nem de publicidade. Esta página explica os poucos dados que tratamos e porquê."
+        "lead": "O site thr33.xyz não tem formulários nem publicidade. Usa o Google Analytics para medir visitas, só se aceitar os cookies de análise. Esta página explica que dados tratamos e porquê."
       },
       "sections": [
         {
           "type": "prose",
           "blocks": [
             {
-              "updated": "Última atualização: 12 de novembro de 2026"
+              "updated": "Última atualização: 14 de novembro de 2026"
             },
             {
               "h2": "Responsável pelo tratamento",
@@ -495,6 +508,7 @@
             {
               "ul": [
                 "<strong>Visitas ao site.</strong> Como em qualquer site, o servidor regista pedidos técnicos: endereço IP, data e hora, página pedida, navegador e sistema operativo. Não usamos estes dados para identificar visitantes nem para criar perfis.",
+                "<strong>Estatísticas de visitas.</strong> Se aceitar os cookies de análise, o Google Analytics recolhe dados de utilização: páginas vistas, duração da visita, de onde veio, tipo de dispositivo e localização aproximada. O Google Analytics 4 não guarda o endereço IP.",
                 "<strong>Contactos por email ou telefone.</strong> Se nos contactar, tratamos o seu nome, email ou número de telefone, a empresa e o conteúdo da mensagem.",
                 "<strong>Clientes.</strong> Se avançarmos para um projeto, tratamos os dados necessários ao contrato e à faturação."
               ]
@@ -506,6 +520,7 @@
             {
               "ul": [
                 "Manter o site disponível e seguro, e detetar abusos: interesse legítimo (artigo 6.º, n.º 1, alínea f) do RGPD).",
+                "Medir a utilização do site para o melhorar: consentimento (alínea a), que pode retirar a qualquer momento em «Preferências de cookies», no rodapé.",
                 "Responder a pedidos de informação e preparar propostas: diligências pré-contratuais a seu pedido (alínea b).",
                 "Executar contratos com clientes: execução do contrato (alínea b).",
                 "Cumprir obrigações fiscais e contabilísticas: obrigação legal (alínea c)."
@@ -526,11 +541,12 @@
                 "Hetzner Online (Alemanha): alojamento do site.",
                 "Cloudflare: rede de distribuição e proteção do site contra ataques. Pode tratar dados fora da União Europeia, com as garantias do Quadro de Privacidade de Dados UE-EUA e das cláusulas contratuais-tipo da Comissão Europeia.",
                 "Zoho (centro de dados na União Europeia): email.",
+                "Google Ireland Limited (Irlanda): Google Analytics, só com o seu consentimento. Pode tratar dados nos Estados Unidos, com as garantias do Quadro de Privacidade de Dados UE-EUA.",
                 "Contabilista certificado: dados de faturação de clientes."
               ]
             },
             {
-              "p": "As fontes do site são servidas pelo próprio site, sem pedidos a terceiros."
+              "p": "As fontes do site são servidas pelo próprio site. O único pedido a terceiros é o do Google Analytics, e só depois de aceitar."
             },
             {
               "h2": "Durante quanto tempo",
@@ -539,6 +555,7 @@
             {
               "ul": [
                 "Registos técnicos do servidor: até 30 dias.",
+                "Dados do Google Analytics: 14 meses.",
                 "Pedidos de contacto que não resultem em projeto: até 2 anos após o último contacto.",
                 "Dados de clientes e faturação: durante o contrato e, depois, pelos prazos legais (10 anos para documentos fiscais)."
               ]
@@ -558,14 +575,14 @@
               "id": "cookies"
             },
             {
-              "p": "O site thr33.xyz não instala cookies nem usa tecnologias semelhantes, por isso não mostra um banner de consentimento. A Cloudflare pode usar cookies estritamente necessários para proteger o site contra tráfego malicioso; estes não exigem consentimento."
+              "p": "O site usa um cookie para guardar a sua escolha e, só se aceitar, os cookies de análise do Google Analytics. Os detalhes estão na <a href=\"/cookies/\">política de cookies</a>."
             },
             {
               "h2": "Outros sites",
               "id": "outros-sites"
             },
             {
-              "p": "O site tem ligações para outros sites, como o <a href=\"https://vizia.thr33.xyz\" target=\"_blank\" rel=\"noopener noreferrer\">vizia</a>, que têm a sua própria política de privacidade."
+              "p": "O site tem ligações para outros sites, como o <a href=\"https://vizia.thr33.xyz\" target=\"_blank\" rel=\"noopener noreferrer\">Vizia</a>, que têm a sua própria política de privacidade."
             },
             {
               "h2": "Alterações",
@@ -659,6 +676,72 @@
             },
             {
               "p": "Podemos atualizar estes termos. A versão em vigor é sempre a publicada nesta página, com a data de atualização."
+            }
+          ]
+        }
+      ]
+    },
+    "cookies": {
+      "title": "Política de cookies · Thr33 Labs",
+      "description": "Que cookies o site thr33.xyz usa, para quê e como aceitar ou recusar os cookies de análise do Google Analytics.",
+      "head": {
+        "kind": "page",
+        "label": "Cookies",
+        "h1": "Política de cookies",
+        "lead": "O site thr33.xyz usa um cookie para guardar a sua escolha e, só se aceitar, os cookies do Google Analytics para medir visitas."
+      },
+      "sections": [
+        {
+          "type": "prose",
+          "blocks": [
+            {
+              "updated": "Última atualização: 14 de novembro de 2026"
+            },
+            {
+              "h2": "O que são cookies",
+              "id": "o-que-sao"
+            },
+            {
+              "p": "Cookies são pequenos ficheiros que um site guarda no seu navegador. Alguns são necessários para o site funcionar. Outros, como os de análise, só podem ser usados com o seu consentimento."
+            },
+            {
+              "h2": "Cookies que usamos",
+              "id": "lista"
+            },
+            {
+              "ul": [
+                "<strong>thr33_consent</strong> (Thr33 Labs, necessário): guarda se aceitou ou recusou os cookies de análise. Dura 6 meses.",
+                "<strong>_ga</strong> (Google Analytics, análise): distingue visitas de forma pseudónima. Dura 2 anos. Só com consentimento.",
+                "<strong>_ga_JCJZ754SWW</strong> (Google Analytics, análise): guarda o estado da sessão. Dura 2 anos. Só com consentimento.",
+                "<strong>__cf_bm</strong> (Cloudflare, necessário): pode ser instalado para proteger o site contra bots. Dura 30 minutos."
+              ]
+            },
+            {
+              "h2": "Google Analytics",
+              "id": "analise"
+            },
+            {
+              "p": "O Google Analytics é um serviço da Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irlanda. Usamo-lo para saber que páginas são vistas e como se chega ao site, em números agregados. Não o usamos para publicidade nem para criar perfis, e os sinais de publicidade estão desligados."
+            },
+            {
+              "p": "Os dados podem ser tratados nos Estados Unidos, ao abrigo do Quadro de Privacidade de Dados UE-EUA. Mais informação na <a href=\"https://policies.google.com/privacy\" target=\"_blank\" rel=\"noopener noreferrer\">política de privacidade da Google</a>."
+            },
+            {
+              "h2": "Aceitar, recusar ou mudar de ideias",
+              "id": "escolha"
+            },
+            {
+              "p": "Na primeira visita, um aviso pergunta se aceita os cookies de análise. Recusar é tão fácil como aceitar, e o site funciona da mesma forma. Até escolher, o Google Analytics não é carregado."
+            },
+            {
+              "p": "Pode mudar a sua escolha a qualquer momento em «Preferências de cookies», no rodapé de todas as páginas, ou apagar os cookies nas definições do navegador. Se recusar depois de ter aceitado, apagamos os cookies do Google Analytics."
+            },
+            {
+              "h2": "Mais informação",
+              "id": "mais"
+            },
+            {
+              "p": "Para saber como tratamos dados pessoais, veja a <a href=\"/privacidade/\">política de privacidade</a>. Questões: <a href=\"mailto:hello@thr33.xyz\">hello@thr33.xyz</a>."
             }
           ]
         }

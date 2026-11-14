@@ -41,6 +41,8 @@ a:hover { text-decoration-thickness: 2px; }
   background: var(--accent); color: var(--on-accent); padding: 0.5rem 1rem; border-radius: 0.375rem; font-weight: 700;
 }
 .skip:focus { top: 1rem; }
+/* O atributo hidden ganha sempre, mesmo a componentes com display próprio (banner de cookies). */
+[hidden] { display: none !important; }
 /* Texto só para leitores de ecrã (ex.: "English" ao lado de "EN" no link de língua). */
 .sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
@@ -134,6 +136,10 @@ html.menu-open { overflow: hidden; }
 .hero h1 {
   font-size: var(--text-hero); font-weight: 500; letter-spacing: var(--tracking-hero);
   line-height: 0.95; max-width: none;
+}
+/* Desktop: um pouco menor, para "Produtos digitais que as pessoas usam" ficar em 3 linhas. */
+@media (min-width: 64rem) {
+  .hero h1 { font-size: min(var(--text-hero), 8rem); }
 }
 .hero .label, .hero .lead { color: var(--ink); }
 .hero .lead { margin-top: 2rem; }
@@ -349,6 +355,24 @@ address { font-style: normal; }
   font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.7; letter-spacing: 0.03em;
   color: var(--muted); max-width: 60rem;
 }
+
+/* Banner de cookies: aceitar e recusar com o mesmo peso. Só aparece com JS (o consent.js tira o hidden). */
+.cookie-banner {
+  position: fixed; z-index: 60; left: 1rem; right: 1rem; bottom: 1rem; margin-inline: auto; max-width: 36rem;
+  padding: 1.25rem; border: 1px solid var(--line); border-radius: 0.75rem;
+  background: var(--paper); color: var(--ink); box-shadow: 0 0.75rem 2.5rem color-mix(in srgb, var(--tinta) 18%, transparent);
+  font-size: 0.95rem;
+}
+.cookie-banner-title { font-weight: 700; margin-bottom: 0.25rem; }
+.cookie-banner a { color: var(--link); }
+.cookie-banner .actions { margin-top: 1rem; }
+.cookie-banner .btn { flex: 1 1 14rem; font: inherit; font-weight: 700; border: 0; cursor: pointer; }
+.footer-button {
+  font: inherit; color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer;
+  display: inline-flex; min-height: 2rem; align-items: center;
+  text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 0.2em;
+}
+.footer-button:hover, .footer-button:focus-visible { color: var(--link); text-decoration-color: currentColor; }
 
 @media (prefers-reduced-motion: reduce) {
   /* Regra geral: nada anima nem transita, mesmo o que for acrescentado depois. */

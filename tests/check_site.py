@@ -22,6 +22,7 @@ PAGES = [
     ("/contacto/", "/en/contact/"),
     ("/privacidade/", "/en/privacy/"),
     ("/termos/", "/en/terms/"),
+    ("/cookies/", "/en/cookies/"),
 ]
 
 LEGAL_FOOTER = {
@@ -68,7 +69,7 @@ SCENES = {"/": ["ink", "telha"], "/servicos/": ["telha"], "/produtos/": ["ink"]}
 CTA_TITLE = {"pt-PT": "Vamos falar?", "en": "Shall we talk?"}
 EMAIL = "hello@thr33.xyz"
 PHONE_HREF = "tel:+351936466845"
-FOOTER_LINE1 = {"pt-PT": ["/privacidade/", "/termos/"], "en": ["/en/privacy/", "/en/terms/"]}
+FOOTER_LINE1 = {"pt-PT": ["/privacidade/", "/termos/", "/cookies/"], "en": ["/en/privacy/", "/en/terms/", "/en/cookies/"]}
 # Ficha (#33): fim da página Sobre, chave/valor em mono como créditos, com os dados do rodapé legal.
 # (termo, excerto que tem de estar no valor e na linha legal do rodapé; None = só o termo)
 FICHA = {
@@ -562,7 +563,8 @@ def check_lang_link(check, url, html, lang):
 
 # Versão nos URLs (cache do Cloudflare e dos browsers): cada ficheiro que muda entre deploys é
 # referido com ?v=<8 primeiros hex do sha256 do conteúdo>. Um deploy novo muda o URL.
-VERSIONED = ["/assets/css/tokens.css", "/assets/site.css", "/assets/js/site.js", "/assets/icons.svg"]
+VERSIONED = ["/assets/css/tokens.css", "/assets/site.css", "/assets/js/site.js", "/assets/js/consent.js",
+             "/assets/icons.svg"]
 
 
 def check_versions(check, name, html):
@@ -701,6 +703,113 @@ def check_finish(check):
             check(int(value) <= 0, f"{name}: tabindex={value} quebra a ordem de tabulação")
 
 
+# Ajustes de novembro 2026: hero em 3 linhas no desktop, "Ver mais" nos cartões e nome do Vizia.
+HERO_DESKTOP_MAX = "8rem"
+MORE_TEXT = {"pt-PT": "Ver mais", "en": "See more"}
+VIZIA = "Vizia - Arquitetura em AR"
+
+# Google Analytics 4 só depois de consentimento (RGPD + Lei 41/2004, art. 5.º).
+GA_ID = "G-JCJZ754SWW"
+CONSENT_JS = "/assets/js/consent.js"
+CONSENT_COOKIE = "thr33_consent"
+COOKIE_PAGE = {"pt-PT": "/cookies/", "en": "/en/cookies/"}
+CONSENT_TEXT = {
+    "pt-PT": ("Aceitar cookies de análise", "Recusar cookies de análise", "Preferências de cookies"),
+    "en": ("Accept analytics cookies", "Reject analytics cookies", "Cookie settings"),
+}
+
+
+def check_hero_desktop(check):
+    css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
+    m = re.search(r"@media \(min-width: 64rem\) \{[^@]*?\.hero h1\s*\{([^}]*)\}", css)
+    check(m is not None and f"min(var(--text-hero), {HERO_DESKTOP_MAX})" in m.group(1),
+          f"site.css: no desktop (min-width: 64rem) o .hero h1 fica em min(var(--text-hero), {HERO_DESKTOP_MAX}), 3 linhas")
+
+
+def check_more_links(check, url, html, lang):
+    """Links dos cartões: "Ver mais" numa linha; o destino vai num .sr-only (WCAG 2.4.4 e 2.5.3)."""
+    for inner in re.findall(r'<a class="more"[^>]*>(.*?)</a>', html, re.S):
+        ok = re.fullmatch(rf'{MORE_TEXT[lang]}<span class="sr-only"> [^<]+</span>', inner)
+        check(ok is not None, f"{url}: link .more deve ser '{MORE_TEXT[lang]}' + .sr-only, é '{inner}'")
+
+
+def check_vizia(check, url, html):
+    main = html[html.index("<main"):html.index("</main>")]
+    text = re.sub(r'[\w-]+="[^"]*"', "", main)
+    text = re.sub(r"vizia\.thr33\.xyz", "", text)
+    check(not re.search(r"\bvizia\b", text), f"{url}: 'vizia' em minúsculas; o nome é '{VIZIA}'")
+    if url in ("/produtos/", "/en/products/", "/", "/en/"):
+        check(f'class="product-name">{VIZIA}</h2>' in main, f"{url}: o produto chama-se '{VIZIA}'")
+
+
+def check_consent_html(check, url, html, lang):
+    """Banner de cookies em todas as páginas: escondido sem JS, aceitar e recusar com o mesmo peso."""
+    accept, reject, settings = CONSENT_TEXT[lang]
+    scripts = re.findall(rf'<script src="{re.escape(CONSENT_JS)}[^"]*"([^>]*)></script>', html)
+    check(len(scripts) == 1 and "defer" in scripts[0], f"{url}: falta <script src=\"{CONSENT_JS}\" defer>")
+    banner = re.search(r'<div class="cookie-banner" id="cookie-banner"([^>]*)>(.*?)\n  </div>', html, re.S)
+    check(banner is not None, f"{url}: falta o banner de cookies (div.cookie-banner#cookie-banner)")
+    if banner:
+        attrs, inner = banner.groups()
+        check(" hidden" in attrs, f"{url}: o banner começa com hidden (sem JS não há GA nem banner)")
+        check('role="region"' in attrs and "aria-labelledby=" in attrs, f"{url}: banner sem role=region e aria-labelledby")
+        check(re.search(rf'<button class="btn btn-primary" type="button" data-consent="granted">{accept}</button>', inner),
+              f"{url}: banner sem botão '{accept}'")
+        check(re.search(rf'<button class="btn btn-primary" type="button" data-consent="denied">{reject}</button>', inner),
+              f"{url}: banner sem botão '{reject}' com o mesmo peso que aceitar")
+        check(f'href="{COOKIE_PAGE[lang]}"' in inner, f"{url}: banner sem link para {COOKIE_PAGE[lang]}")
+        footer_end = html.index("</footer>")
+        check(html.index('id="cookie-banner"') > footer_end, f"{url}: o banner vem depois do rodapé")
+    footer = re.search(r'<footer class="site-footer">(.*?)</footer>', html, re.S)
+    check(footer is not None and re.search(
+        rf'<li hidden><button class="footer-button" type="button" data-consent-open>{settings}</button></li>', footer.group(1)),
+        f"{url}: rodapé sem botão '{settings}' (data-consent-open, li hidden sem JS)")
+
+
+def check_consent_js(check):
+    f = ROOT / CONSENT_JS.lstrip("/")
+    check(f.exists(), f"{CONSENT_JS} em falta")
+    if not f.exists():
+        return
+    js = f.read_text(encoding="utf-8")
+    check(GA_ID in js, f"{CONSENT_JS}: sem o ID {GA_ID}")
+    check(CONSENT_COOKIE in js and "SameSite=Lax" in js and "max-age=" in js,
+          f"{CONSENT_JS}: a escolha guarda-se no cookie {CONSENT_COOKIE} (max-age, SameSite=Lax)")
+    check("localStorage" not in js, f"{CONSENT_JS}: consentimento em cookie, não em localStorage")
+    default = js.find('gtag("consent", "default"')
+    load = js.find("googletagmanager.com/gtag/js")
+    check(default != -1 and "analytics_storage: \"denied\"" in js, f"{CONSENT_JS}: Consent Mode v2 com tudo denied por defeito")
+    check(load > default != -1, f"{CONSENT_JS}: o gtag.js só se pede depois do consent default")
+    load_fn = re.search(r"function loadAnalytics\(\) \{.*?\n  \}", js, re.S)
+    check(load_fn is not None and "googletagmanager.com/gtag/js" in load_fn.group(0),
+          f"{CONSENT_JS}: o gtag.js só carrega dentro de loadAnalytics()")
+    calls = re.findall(r"(?<!function )loadAnalytics\(\)", js)
+    check(len(calls) == 2, f"{CONSENT_JS}: loadAnalytics() só se chama com consentimento (cookie granted ou aceitar)")
+    check("_ga" in js, f"{CONSENT_JS}: ao recusar apagam-se os cookies _ga")
+    check(not re.search(r"\beval\(|new Function\(|innerHTML\s*=", js), f"{CONSENT_JS}: eval, new Function ou innerHTML")
+    check("ad_storage: \"denied\"" in js and "ad_storage: \"granted\"" not in js,
+          f"{CONSENT_JS}: sem publicidade: ad_storage fica sempre denied")
+
+
+def check_cookie_policy(check, pages_raw):
+    for lang, (privacy, cookies) in {"pt-PT": ("/privacidade/", "/cookies/"), "en": ("/en/privacy/", "/en/cookies/")}.items():
+        raw = pages_raw.get(privacy, "")
+        check("Google Analytics" in raw, f"{privacy}: a política de privacidade tem de referir o Google Analytics")
+        check("não usa cookies" not in raw and "does not use cookies" not in raw,
+              f"{privacy}: ainda diz que o site não usa cookies")
+        check(f'href="{cookies}"' in raw[raw.index("<main"):], f"{privacy}: sem link para {cookies}")
+        pol = pages_raw.get(cookies, "")
+        for needle in ("_ga", CONSENT_COOKIE, "Google Ireland", f'data-consent-open'):
+            check(needle in pol, f"{cookies}: falta '{needle}'")
+    deploy = (BASE / "docs" / "deploy.md").read_text(encoding="utf-8")
+    csp = re.search(r'Content-Security-Policy "([^"]+)"', deploy)
+    value = csp.group(1) if csp else ""
+    check("script-src 'self' https://www.googletagmanager.com" in value,
+          "docs/deploy.md: CSP tem de permitir https://www.googletagmanager.com em script-src")
+    check("connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com" in value,
+          "docs/deploy.md: CSP tem de permitir o GA em connect-src")
+
+
 def main():
     errors = []
 
@@ -715,9 +824,11 @@ def main():
     check_icons(check)
     check_footer_css(check)
     check_finish(check)
+    check_hero_desktop(check)
+    check_consent_js(check)
 
     titles, descriptions = {}, {}
-    pages = {}
+    pages, pages_raw = {}, {}
     for pt, en in PAGES:
         for url in (pt, en):
             f = file_for(url)
@@ -766,6 +877,11 @@ def main():
             check_footer(check, url, raw, lang)
             check_lang_link(check, url, raw, lang)
             check_ficha(check, url, raw, lang, url in ("/sobre/", "/en/about/"))
+            if url in ("/", "/en/"):
+                check_more_links(check, url, raw, lang)
+            check_vizia(check, url, raw)
+            check_consent_html(check, url, raw, lang)
+            pages_raw[url] = raw
             check_page_icons(check, url, p, raw, url in ("/", "/en/"), url in ("/servicos/", "/en/services/"))
             if url in ("/", "/en/"):
                 check(section_labels(raw) == HOME_LABELS[lang], f"{url}: etiquetas {section_labels(raw)}, esperado {HOME_LABELS[lang]}")
@@ -796,6 +912,8 @@ def main():
         check(len(urls) == 1, f"<title> repetido em {urls}")
     for d, urls in descriptions.items():
         check(len(urls) == 1, f"meta description repetida em {urls}")
+
+    check_cookie_policy(check, pages_raw)
 
     # 404
     f404 = ROOT / "404.html"
@@ -846,6 +964,7 @@ def main():
         check_versions(check, str(f.relative_to(ROOT)), html)
         for host in ("fonts.googleapis.com", "fonts.gstatic.com", "googletagmanager", "google-analytics", "facebook.net"):
             check(host not in html, f"{f.relative_to(ROOT)}: pedido a terceiros ({host})")
+        check(GA_ID not in html, f"{f.relative_to(ROOT)}: o GA não vai no HTML, só no {CONSENT_JS}")
         # A CSP em docs/deploy.md não permite estilos nem scripts inline.
         for pattern in (r"\sstyle=", r"<style", r"<script(?![^>]*\bsrc=)", r"\son[a-z]+="):
             check(not re.search(pattern, html), f"{f.relative_to(ROOT)}: inline proibido pela CSP ({pattern})")

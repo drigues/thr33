@@ -9,9 +9,11 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="/assets/fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/css/tokens.css?v=926a9147">
-  <link rel="stylesheet" href="/assets/site.css?v=1612e417">
+  <link rel="stylesheet" href="/assets/site.css?v=9553c4fa">
   <!-- Sem defer: põe a classe .js no html antes de pintar; o resto corre no DOMContentLoaded. -->
   <script src="/assets/js/site.js?v=41a42991"></script>
+  <!-- Consentimento de cookies e Google Analytics: o gtag.js só se pede depois de aceitar. -->
+  <script src="/assets/js/consent.js?v=83086bf5" defer></script>
   <meta name="description" content="Como a Thr33 Labs trata dados pessoais no site thr33.xyz e nos contactos por email e telefone, ao abrigo do RGPD.">
   <link rel="canonical" href="https://thr33.xyz/privacidade/">
   <link rel="alternate" hreflang="pt-PT" href="https://thr33.xyz/privacidade/">
@@ -57,12 +59,12 @@
       <div class="wrap">
         <p class="label">(RGPD)</p>
         <h1 data-split>Política de privacidade</h1>
-        <p class="lead">O site thr33.xyz não tem formulários, não usa cookies e não tem ferramentas de análise nem de publicidade. Esta página explica os poucos dados que tratamos e porquê.</p>
+        <p class="lead">O site thr33.xyz não tem formulários nem publicidade. Usa o Google Analytics para medir visitas, só se aceitar os cookies de análise. Esta página explica que dados tratamos e porquê.</p>
       </div>
     </section>
 
     <div class="wrap prose">
-      <p class="updated">Última atualização: 12 de novembro de 2026</p>
+      <p class="updated">Última atualização: 14 de novembro de 2026</p>
 
       <h2 id="responsavel">Responsável pelo tratamento</h2>
 
@@ -72,6 +74,7 @@
 
       <ul>
         <li><strong>Visitas ao site.</strong> Como em qualquer site, o servidor regista pedidos técnicos: endereço IP, data e hora, página pedida, navegador e sistema operativo. Não usamos estes dados para identificar visitantes nem para criar perfis.</li>
+        <li><strong>Estatísticas de visitas.</strong> Se aceitar os cookies de análise, o Google Analytics recolhe dados de utilização: páginas vistas, duração da visita, de onde veio, tipo de dispositivo e localização aproximada. O Google Analytics 4 não guarda o endereço IP.</li>
         <li><strong>Contactos por email ou telefone.</strong> Se nos contactar, tratamos o seu nome, email ou número de telefone, a empresa e o conteúdo da mensagem.</li>
         <li><strong>Clientes.</strong> Se avançarmos para um projeto, tratamos os dados necessários ao contrato e à faturação.</li>
       </ul>
@@ -80,6 +83,7 @@
 
       <ul>
         <li>Manter o site disponível e seguro, e detetar abusos: interesse legítimo (artigo 6.º, n.º 1, alínea f) do RGPD).</li>
+        <li>Medir a utilização do site para o melhorar: consentimento (alínea a), que pode retirar a qualquer momento em «Preferências de cookies», no rodapé.</li>
         <li>Responder a pedidos de informação e preparar propostas: diligências pré-contratuais a seu pedido (alínea b).</li>
         <li>Executar contratos com clientes: execução do contrato (alínea b).</li>
         <li>Cumprir obrigações fiscais e contabilísticas: obrigação legal (alínea c).</li>
@@ -95,15 +99,17 @@
         <li>Hetzner Online (Alemanha): alojamento do site.</li>
         <li>Cloudflare: rede de distribuição e proteção do site contra ataques. Pode tratar dados fora da União Europeia, com as garantias do Quadro de Privacidade de Dados UE-EUA e das cláusulas contratuais-tipo da Comissão Europeia.</li>
         <li>Zoho (centro de dados na União Europeia): email.</li>
+        <li>Google Ireland Limited (Irlanda): Google Analytics, só com o seu consentimento. Pode tratar dados nos Estados Unidos, com as garantias do Quadro de Privacidade de Dados UE-EUA.</li>
         <li>Contabilista certificado: dados de faturação de clientes.</li>
       </ul>
 
-      <p>As fontes do site são servidas pelo próprio site, sem pedidos a terceiros.</p>
+      <p>As fontes do site são servidas pelo próprio site. O único pedido a terceiros é o do Google Analytics, e só depois de aceitar.</p>
 
       <h2 id="conservacao">Durante quanto tempo</h2>
 
       <ul>
         <li>Registos técnicos do servidor: até 30 dias.</li>
+        <li>Dados do Google Analytics: 14 meses.</li>
         <li>Pedidos de contacto que não resultem em projeto: até 2 anos após o último contacto.</li>
         <li>Dados de clientes e faturação: durante o contrato e, depois, pelos prazos legais (10 anos para documentos fiscais).</li>
       </ul>
@@ -116,11 +122,11 @@
 
       <h2 id="cookies">Cookies</h2>
 
-      <p>O site thr33.xyz não instala cookies nem usa tecnologias semelhantes, por isso não mostra um banner de consentimento. A Cloudflare pode usar cookies estritamente necessários para proteger o site contra tráfego malicioso; estes não exigem consentimento.</p>
+      <p>O site usa um cookie para guardar a sua escolha e, só se aceitar, os cookies de análise do Google Analytics. Os detalhes estão na <a href="/cookies/">política de cookies</a>.</p>
 
       <h2 id="outros-sites">Outros sites</h2>
 
-      <p>O site tem ligações para outros sites, como o <a href="https://vizia.thr33.xyz" target="_blank" rel="noopener noreferrer">vizia</a>, que têm a sua própria política de privacidade.</p>
+      <p>O site tem ligações para outros sites, como o <a href="https://vizia.thr33.xyz" target="_blank" rel="noopener noreferrer">Vizia</a>, que têm a sua própria política de privacidade.</p>
 
       <h2 id="alteracoes">Alterações</h2>
 
@@ -136,10 +142,21 @@
         <li><a href="tel:+351936466845">+351 936 466 845</a></li>
         <li><a href="/privacidade/">Privacidade</a></li>
         <li><a href="/termos/">Termos de utilização</a></li>
+        <li><a href="/cookies/">Política de cookies</a></li>
+        <li hidden><button class="footer-button" type="button" data-consent-open>Preferências de cookies</button></li>
         <li><a href="https://www.livroreclamacoes.pt/Inicio/" target="_blank" rel="noopener noreferrer">Livro de Reclamações</a></li>
       </ul>
       <p class="legal">THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA · Sociedade unipessoal por quotas · Sede: Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos · Conservatória do Registo Comercial (RNPC) · Matrícula e NIPC 519573021 · Capital social 7.660,00 €</p>
     </div>
   </footer>
+
+  <div class="cookie-banner" id="cookie-banner" role="region" aria-labelledby="cookie-banner-title" hidden>
+    <p class="cookie-banner-title" id="cookie-banner-title">Cookies de análise</p>
+    <p>Usamos o Google Analytics para perceber que páginas são visitadas. Só instala cookies se aceitar. <a href="/cookies/">Ler a política de cookies</a></p>
+    <div class="actions">
+      <button class="btn btn-primary" type="button" data-consent="denied">Recusar cookies de análise</button>
+      <button class="btn btn-primary" type="button" data-consent="granted">Aceitar cookies de análise</button>
+    </div>
+  </div>
 </body>
 </html>

@@ -9,10 +9,12 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="/assets/fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/css/tokens.css?v=926a9147">
-  <link rel="stylesheet" href="/assets/site.css?v=1612e417">
+  <link rel="stylesheet" href="/assets/site.css?v=9553c4fa">
   <!-- Sem defer: põe a classe .js no html antes de pintar; o resto corre no DOMContentLoaded. -->
   <script src="/assets/js/site.js?v=41a42991"></script>
-  <meta name="description" content="O vizia, produto de realidade aumentada da Thr33 Labs para arquitetura, decoração e eventos, e os projetos que desenvolvemos para clientes.">
+  <!-- Consentimento de cookies e Google Analytics: o gtag.js só se pede depois de aceitar. -->
+  <script src="/assets/js/consent.js?v=83086bf5" defer></script>
+  <meta name="description" content="O Vizia - Arquitetura em AR, produto de realidade aumentada da Thr33 Labs para arquitetura, decoração e eventos, e os projetos que desenvolvemos para clientes.">
   <link rel="canonical" href="https://thr33.xyz/produtos/">
   <link rel="alternate" hreflang="pt-PT" href="https://thr33.xyz/produtos/">
   <link rel="alternate" hreflang="en" href="https://thr33.xyz/en/products/">
@@ -20,7 +22,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Thr33 Labs">
   <meta property="og:title" content="Produtos e projetos · Thr33 Labs">
-  <meta property="og:description" content="O vizia, produto de realidade aumentada da Thr33 Labs para arquitetura, decoração e eventos, e os projetos que desenvolvemos para clientes.">
+  <meta property="og:description" content="O Vizia - Arquitetura em AR, produto de realidade aumentada da Thr33 Labs para arquitetura, decoração e eventos, e os projetos que desenvolvemos para clientes.">
   <meta property="og:url" content="https://thr33.xyz/produtos/">
   <meta property="og:locale" content="pt_PT">
   <meta property="og:locale:alternate" content="en_GB">
@@ -67,7 +69,7 @@
         <div class="product">
         <div>
           <p class="examples-title">Produto próprio · Realidade aumentada</p>
-          <h2 id="vizia" class="product-name">vizia</h2>
+          <h2 id="vizia" class="product-name">Vizia - Arquitetura em AR</h2>
           <p class="dim">Projetos de arquitetura, decoração e eventos em realidade aumentada, à escala real e no local. Para arquitetos, decoradores e organizadores de eventos que querem que o cliente veja o resultado antes de avançar.</p>
           <div class="actions">
           <a class="btn btn-primary" href="https://vizia.thr33.xyz" target="_blank" rel="noopener noreferrer">Visitar vizia.thr33.xyz</a>
@@ -102,10 +104,21 @@
         <li><a href="tel:+351936466845">+351 936 466 845</a></li>
         <li><a href="/privacidade/">Privacidade</a></li>
         <li><a href="/termos/">Termos de utilização</a></li>
+        <li><a href="/cookies/">Política de cookies</a></li>
+        <li hidden><button class="footer-button" type="button" data-consent-open>Preferências de cookies</button></li>
         <li><a href="https://www.livroreclamacoes.pt/Inicio/" target="_blank" rel="noopener noreferrer">Livro de Reclamações</a></li>
       </ul>
       <p class="legal">THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA · Sociedade unipessoal por quotas · Sede: Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos · Conservatória do Registo Comercial (RNPC) · Matrícula e NIPC 519573021 · Capital social 7.660,00 €</p>
     </div>
   </footer>
+
+  <div class="cookie-banner" id="cookie-banner" role="region" aria-labelledby="cookie-banner-title" hidden>
+    <p class="cookie-banner-title" id="cookie-banner-title">Cookies de análise</p>
+    <p>Usamos o Google Analytics para perceber que páginas são visitadas. Só instala cookies se aceitar. <a href="/cookies/">Ler a política de cookies</a></p>
+    <div class="actions">
+      <button class="btn btn-primary" type="button" data-consent="denied">Recusar cookies de análise</button>
+      <button class="btn btn-primary" type="button" data-consent="granted">Aceitar cookies de análise</button>
+    </div>
+  </div>
 </body>
 </html>

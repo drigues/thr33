@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="/assets/site.css">
   <!-- Sem defer: põe a classe .js no html antes de pintar; o resto corre no DOMContentLoaded. -->
   <script src="/assets/js/site.js"></script>
+  <!-- Consentimento de cookies e Google Analytics: o gtag.js só se pede depois de aceitar. -->
+  <script src="/assets/js/consent.js" defer></script>
 {{head_meta}}
 </head>
 <body>
@@ -24,5 +26,7 @@
   </main>
 
 {{footer}}
+
+{{cookie_banner}}
 </body>
 </html>
