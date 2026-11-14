@@ -376,7 +376,7 @@ def check_header(check, url, p):
         check(t.get("aria-controls") in p.ids, f"{url}: aria-controls do menu não aponta para um id")
         check(t.get("aria-label"), f"{url}: .menu-toggle sem aria-label")
     check(p.nav_nums == ["01", "02", "03", "04", "05"], f"{url}: menu deve numerar 01–05, tem {p.nav_nums}")
-    check(sum(1 for s in p.scripts if s.get("src") == SITE_JS) == 1, f"{url}: sem {SITE_JS}")
+    check(sum(1 for s in p.scripts if s.get("src", "").split("?")[0] == SITE_JS) == 1, f"{url}: sem {SITE_JS}")
 
 
 def check_hero(check, url, p, is_home):
@@ -449,7 +449,7 @@ def check_icons(check):
 def check_page_icons(check, url, p, html, is_home, is_services):
     symbols = icon_symbols()
     for href, hidden, focusable in p.icon_uses:
-        check(href.startswith("/assets/icons.svg#") and href.split("#")[1] in symbols, f"{url}: ícone inexistente {href}")
+        check(href.split("?")[0].split("#")[0] == "/assets/icons.svg" and href.split("#")[1] in symbols, f"{url}: ícone inexistente {href}")
         check(hidden == "true" and focusable == "false", f"{url}: ícone {href} sem aria-hidden=true e focusable=false")
     count = lambda cls: len(re.findall(rf'<li class="card {cls}">\s*<span class="card-icon"', html))
     if is_home:
@@ -558,6 +558,23 @@ def check_lang_link(check, url, html, lang):
     inner = m.group(2)
     check(re.search(rf'>{short}<span class="sr-only"> {full}</span>$', inner) is not None,
           f"{url}: link de língua deve ser '{short}' + <span class=\"sr-only\"> {full}</span>")
+
+
+# Versão nos URLs (cache do Cloudflare e dos browsers): cada ficheiro que muda entre deploys é
+# referido com ?v=<8 primeiros hex do sha256 do conteúdo>. Um deploy novo muda o URL.
+VERSIONED = ["/assets/css/tokens.css", "/assets/site.css", "/assets/js/site.js", "/assets/icons.svg"]
+
+
+def check_versions(check, name, html):
+    import hashlib
+    for path in VERSIONED:
+        f = ROOT / path.lstrip("/")
+        if not f.exists():
+            continue
+        want = hashlib.sha256(f.read_bytes()).hexdigest()[:8]
+        refs = re.findall(rf'(?:href|src)="{re.escape(path)}([^"#]*)', html)
+        for query in refs:
+            check(query == f"?v={want}", f"{name}: {path}{query} devia ser {path}?v={want}")
 
 
 def check_footer_css(check):
@@ -734,7 +751,7 @@ def main():
             check(links.get(("alternate", "x-default")) == SITE + pt, f"{url}: hreflang x-default em falta")
             check(any(rel == "icon" and (ROOT / h.lstrip("/")).exists() for rel, h, _ in p.links),
                   f"{url}: favicon em falta")
-            sheets = [h for rel, h, _ in p.links if rel == "stylesheet"]
+            sheets = [h.split("?")[0] for rel, h, _ in p.links if rel == "stylesheet"]
             check(sheets[:2] == ["/assets/css/tokens.css", "/assets/site.css"],
                   f"{url}: tokens.css tem de vir antes do site.css ({sheets})")
             check(any(rel == "preload" and h == FONT_PRELOAD for rel, h, _ in p.links),
@@ -789,7 +806,7 @@ def main():
         check(any(h == "/" for h, _, _ in p.hrefs), "404.html: sem link para o início")
         check(any(h == COMPLAINTS_URL for h, _, _ in p.footer_hrefs),
               "404.html: rodapé sem link para o Livro de Reclamações")
-        sheets = [h for rel, h, _ in p.links if rel == "stylesheet"]
+        sheets = [h.split("?")[0] for rel, h, _ in p.links if rel == "stylesheet"]
         check(sheets[:2] == ["/assets/css/tokens.css", "/assets/site.css"],
               f"404.html: tokens.css tem de vir antes do site.css ({sheets})")
         check_header(check, "404.html", p)
@@ -826,6 +843,7 @@ def main():
     # Sem pedidos a terceiros (fontes, scripts, analytics)
     for f in ROOT.rglob("*.html"):
         html = f.read_text(encoding="utf-8")
+        check_versions(check, str(f.relative_to(ROOT)), html)
         for host in ("fonts.googleapis.com", "fonts.gstatic.com", "googletagmanager", "google-analytics", "facebook.net"):
             check(host not in html, f"{f.relative_to(ROOT)}: pedido a terceiros ({host})")
         # A CSP em docs/deploy.md não permite estilos nem scripts inline.

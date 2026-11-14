@@ -10,6 +10,7 @@ Cada página é uma cabeça (hero ou page) seguida de secções. Cada secção t
 (cards, ticks, project, steps, services, split, facts, ficha, prose, text, cta) e, se tiver
 "label", leva uma etiqueta numerada (01), (02)… pela ordem em que aparece.
 """
+import hashlib
 import json
 import re
 from datetime import date
@@ -379,6 +380,19 @@ def head_meta(site, other_site, page, url, pt_url, en_url):
   <meta name="twitter:card" content="summary_large_image">'''
 
 
+# Ficheiros que mudam entre deploys: o HTML refere-os com ?v=<hash do conteúdo>, para o
+# Cloudflare e os browsers irem buscar a versão nova sem limpar a cache. As fontes ficam sem
+# versão: o URL do preload tem de ser igual ao do @font-face no tokens.css.
+VERSIONED = ["/assets/css/tokens.css", "/assets/site.css", "/assets/js/site.js", "/assets/icons.svg"]
+
+
+def versioned(html):
+    for path in VERSIONED:
+        digest = hashlib.sha256((OUT / path.lstrip("/")).read_bytes()).hexdigest()[:8]
+        html = re.sub(rf'((?:href|src)="{re.escape(path)})(?=["#])', rf"\g<1>?v={digest}", html)
+    return html
+
+
 def fill(layout, values):
     html = layout
     for key, value in values.items():
@@ -386,7 +400,7 @@ def fill(layout, values):
     leftover = re.findall(r"\{\{\w+\}\}", html)
     if leftover:
         raise SystemExit(f"marcadores por preencher {leftover}")
-    return html
+    return versioned(html)
 
 
 def write(url, html):
@@ -458,9 +472,9 @@ def write_sitemap():
 def main():
     layout = (SRC / "layout.html").read_text(encoding="utf-8")
     content = {lang: load_content(lang) for lang in ("pt", "en")}
+    write_icons()  # antes das páginas: a versão do icons.svg no HTML vem do sprite novo
     urls = [render(lang, name, layout, content) for lang in ("pt", "en") for name in ROUTES]
     render_404(layout, content)
-    write_icons()
     write_sitemap()
     (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n", encoding="utf-8")
     print(f"{len(urls)} páginas e a 404 geradas em public/")
