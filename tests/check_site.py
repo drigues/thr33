@@ -719,6 +719,18 @@ CONSENT_TEXT = {
 }
 
 
+def check_cookie_banner_css(check):
+    """Desktop: banner no canto inferior direito; mobile: largura toda, em baixo."""
+    css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
+    m = re.search(r"@media \(min-width: 48rem\) \{\s*\.cookie-banner\s*\{([^}]*)\}", css)
+    body = m.group(1) if m else ""
+    check("left: auto" in body and "right: 1.5rem" in body and "margin-inline: 0" in body,
+          "site.css: no desktop (min-width: 48rem) o .cookie-banner fica no canto inferior direito")
+    ghost = re.search(r"\.cookie-banner \.btn-ghost\s*\{([^}]*)\}", css)
+    check(ghost is not None and "background: transparent" in ghost.group(1),
+          "site.css: o botão secundário do banner (<button>.btn-ghost) precisa de background: transparent")
+
+
 def check_hero_desktop(check):
     css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
     m = re.search(r"@media \(min-width: 64rem\) \{[^@]*?\.hero h1\s*\{([^}]*)\}", css)
@@ -755,8 +767,8 @@ def check_consent_html(check, url, html, lang):
         check('role="region"' in attrs and "aria-labelledby=" in attrs, f"{url}: banner sem role=region e aria-labelledby")
         check(re.search(rf'<button class="btn btn-primary" type="button" data-consent="granted">{accept}</button>', inner),
               f"{url}: banner sem botão '{accept}'")
-        check(re.search(rf'<button class="btn btn-primary" type="button" data-consent="denied">{reject}</button>', inner),
-              f"{url}: banner sem botão '{reject}' com o mesmo peso que aceitar")
+        check(re.search(rf'<button class="btn btn-ghost" type="button" data-consent="denied">{reject}</button>', inner),
+              f"{url}: banner sem botão secundário '{reject}' (btn-ghost, na mesma camada que aceitar)")
         check(f'href="{COOKIE_PAGE[lang]}"' in inner, f"{url}: banner sem link para {COOKIE_PAGE[lang]}")
         footer_end = html.index("</footer>")
         check(html.index('id="cookie-banner"') > footer_end, f"{url}: o banner vem depois do rodapé")
@@ -825,6 +837,7 @@ def main():
     check_footer_css(check)
     check_finish(check)
     check_hero_desktop(check)
+    check_cookie_banner_css(check)
     check_consent_js(check)
 
     titles, descriptions = {}, {}
@@ -964,7 +977,7 @@ def main():
         check_versions(check, str(f.relative_to(ROOT)), html)
         for host in ("fonts.googleapis.com", "fonts.gstatic.com", "googletagmanager", "google-analytics", "facebook.net"):
             check(host not in html, f"{f.relative_to(ROOT)}: pedido a terceiros ({host})")
-        check(GA_ID not in html, f"{f.relative_to(ROOT)}: o GA não vai no HTML, só no {CONSENT_JS}")
+        check(GA_ID.split("-", 1)[1] not in html, f"{f.relative_to(ROOT)}: o ID do GA não aparece no HTML, só no {CONSENT_JS}")
         # A CSP em docs/deploy.md não permite estilos nem scripts inline.
         for pattern in (r"\sstyle=", r"<style", r"<script(?![^>]*\bsrc=)", r"\son[a-z]+="):
             check(not re.search(pattern, html), f"{f.relative_to(ROOT)}: inline proibido pela CSP ({pattern})")

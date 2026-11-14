@@ -9,7 +9,7 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="/assets/fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/css/tokens.css?v=926a9147">
-  <link rel="stylesheet" href="/assets/site.css?v=9553c4fa">
+  <link rel="stylesheet" href="/assets/site.css?v=1e3ba0c6">
   <!-- Sem defer: põe a classe .js no html antes de pintar; o resto corre no DOMContentLoaded. -->
   <script src="/assets/js/site.js?v=41a42991"></script>
   <!-- Consentimento de cookies e Google Analytics: o gtag.js só se pede depois de aceitar. -->
@@ -75,7 +75,7 @@
       <ul>
         <li><strong>thr33_consent</strong> (Thr33 Labs, necessário): guarda se aceitou ou recusou os cookies de análise. Dura 6 meses.</li>
         <li><strong>_ga</strong> (Google Analytics, análise): distingue visitas de forma pseudónima. Dura 2 anos. Só com consentimento.</li>
-        <li><strong>_ga_JCJZ754SWW</strong> (Google Analytics, análise): guarda o estado da sessão. Dura 2 anos. Só com consentimento.</li>
+        <li><strong>_ga_&lt;ID&gt;</strong> (Google Analytics, análise): guarda o estado da sessão. Dura 2 anos. Só com consentimento.</li>
         <li><strong>__cf_bm</strong> (Cloudflare, necessário): pode ser instalado para proteger o site contra bots. Dura 30 minutos.</li>
       </ul>
 
@@ -117,7 +117,7 @@
     <p class="cookie-banner-title" id="cookie-banner-title">Cookies de análise</p>
     <p>Usamos o Google Analytics para perceber que páginas são visitadas. Só instala cookies se aceitar. <a href="/cookies/">Ler a política de cookies</a></p>
     <div class="actions">
-      <button class="btn btn-primary" type="button" data-consent="denied">Recusar cookies de análise</button>
+      <button class="btn btn-ghost" type="button" data-consent="denied">Recusar cookies de análise</button>
       <button class="btn btn-primary" type="button" data-consent="granted">Aceitar cookies de análise</button>
     </div>
   </div>

@@ -356,7 +356,8 @@ address { font-style: normal; }
   color: var(--muted); max-width: 60rem;
 }
 
-/* Banner de cookies: aceitar e recusar com o mesmo peso. Só aparece com JS (o consent.js tira o hidden). */
+/* Banner de cookies: recusar (secundário) e aceitar lado a lado. Só aparece com JS (o consent.js tira o hidden).
+   Mobile: largura toda, em baixo. Desktop: canto inferior direito. */
 .cookie-banner {
   position: fixed; z-index: 60; left: 1rem; right: 1rem; bottom: 1rem; margin-inline: auto; max-width: 36rem;
   padding: 1.25rem; border: 1px solid var(--line); border-radius: 0.75rem;
@@ -366,7 +367,13 @@ address { font-style: normal; }
 .cookie-banner-title { font-weight: 700; margin-bottom: 0.25rem; }
 .cookie-banner a { color: var(--link); }
 .cookie-banner .actions { margin-top: 1rem; }
-.cookie-banner .btn { flex: 1 1 14rem; font: inherit; font-weight: 700; border: 0; cursor: pointer; }
+.cookie-banner .actions { gap: 0.5rem; }
+.cookie-banner .btn { flex: 1 1 10rem; font: inherit; font-weight: 700; white-space: nowrap; cursor: pointer; }
+.cookie-banner .btn-primary { border: 0; }
+.cookie-banner .btn-ghost { background: transparent; }
+@media (min-width: 48rem) {
+  .cookie-banner { left: auto; right: 1.5rem; bottom: 1.5rem; margin-inline: 0; max-width: 26rem; }
+}
 .footer-button {
   font: inherit; color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer;
   display: inline-flex; min-height: 2rem; align-items: center;
