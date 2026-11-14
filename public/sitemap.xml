@@ -84,4 +84,16 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://thr33.xyz/en/terms/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://thr33.xyz/termos/"/>
   </url>
+  <url>
+    <loc>https://thr33.xyz/cookies/</loc>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://thr33.xyz/cookies/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://thr33.xyz/en/cookies/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://thr33.xyz/cookies/"/>
+  </url>
+  <url>
+    <loc>https://thr33.xyz/en/cookies/</loc>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://thr33.xyz/cookies/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://thr33.xyz/en/cookies/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://thr33.xyz/cookies/"/>
+  </url>
 </urlset>

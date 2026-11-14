@@ -9,9 +9,11 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="/assets/fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/css/tokens.css?v=926a9147">
-  <link rel="stylesheet" href="/assets/site.css?v=1612e417">
+  <link rel="stylesheet" href="/assets/site.css?v=9553c4fa">
   <!-- Sem defer: põe a classe .js no html antes de pintar; o resto corre no DOMContentLoaded. -->
   <script src="/assets/js/site.js?v=41a42991"></script>
+  <!-- Consentimento de cookies e Google Analytics: o gtag.js só se pede depois de aceitar. -->
+  <script src="/assets/js/consent.js?v=83086bf5" defer></script>
   <meta name="description" content="Quem somos: a Thr33 Labs é um estúdio independente de produto digital, constituído em 2026, com sede em Óbidos, Portugal.">
   <link rel="canonical" href="https://thr33.xyz/sobre/">
   <link rel="alternate" hreflang="pt-PT" href="https://thr33.xyz/sobre/">
@@ -69,7 +71,7 @@
           <div class="prose">
             <p>Somos um estúdio independente de produto digital. A empresa é gerida por quem a fundou, que acompanha cada projeto do início ao fim, sem intermediários.</p>
             <p>Quando um projeto o pede, juntamos parceiros de confiança em design, desenvolvimento e 3D, sempre com um único ponto de contacto do lado da Thr33 Labs.</p>
-            <p>Para além do trabalho para clientes, desenvolvemos produtos próprios, como o <a href="/produtos/">vizia</a>, de realidade aumentada.</p>
+            <p>Para além do trabalho para clientes, desenvolvemos produtos próprios, como o <a href="/produtos/">Vizia</a>, de realidade aumentada.</p>
           </div>
         </div>
       </div>
@@ -122,10 +124,21 @@
         <li><a href="tel:+351936466845">+351 936 466 845</a></li>
         <li><a href="/privacidade/">Privacidade</a></li>
         <li><a href="/termos/">Termos de utilização</a></li>
+        <li><a href="/cookies/">Política de cookies</a></li>
+        <li hidden><button class="footer-button" type="button" data-consent-open>Preferências de cookies</button></li>
         <li><a href="https://www.livroreclamacoes.pt/Inicio/" target="_blank" rel="noopener noreferrer">Livro de Reclamações</a></li>
       </ul>
       <p class="legal">THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA · Sociedade unipessoal por quotas · Sede: Beco da Serra, 2, Sobral da Lagoa, 2510-651 Óbidos · Conservatória do Registo Comercial (RNPC) · Matrícula e NIPC 519573021 · Capital social 7.660,00 €</p>
     </div>
   </footer>
+
+  <div class="cookie-banner" id="cookie-banner" role="region" aria-labelledby="cookie-banner-title" hidden>
+    <p class="cookie-banner-title" id="cookie-banner-title">Cookies de análise</p>
+    <p>Usamos o Google Analytics para perceber que páginas são visitadas. Só instala cookies se aceitar. <a href="/cookies/">Ler a política de cookies</a></p>
+    <div class="actions">
+      <button class="btn btn-primary" type="button" data-consent="denied">Recusar cookies de análise</button>
+      <button class="btn btn-primary" type="button" data-consent="granted">Aceitar cookies de análise</button>
+    </div>
+  </div>
 </body>
 </html>

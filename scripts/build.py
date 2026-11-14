@@ -31,6 +31,7 @@ ROUTES = {
     "contacto": ("/contacto/", "/en/contact/"),
     "privacidade": ("/privacidade/", "/en/privacy/"),
     "termos": ("/termos/", "/en/terms/"),
+    "cookies": ("/cookies/", "/en/cookies/"),
 }
 
 NAV = ["servicos", "produtos", "sobre", "contacto"]
@@ -113,7 +114,10 @@ def card(item, num=None):
     if "address" in item:
         parts.append(f'<address class="dim">{item["address"]}</address>')
     if "link" in item:
-        parts.append(f'<a class="more" href="{attr(item["link"]["href"])}">{item["link"]["text"]}</a>')
+        # "Ver mais" numa linha; o destino vai em .sr-only para o link não ser ambíguo (WCAG 2.4.4).
+        link = item["link"]
+        sr = f'<span class="sr-only"> {link["sr"]}</span>' if link.get("sr") else ""
+        parts.append(f'<a class="more" href="{attr(link["href"])}">{link["text"]}{sr}</a>')
     cls = "card card-service" if "icon" in item else "card"
     return f'<li class="{cls}">\n            ' + "\n            ".join(parts) + "\n          </li>"
 
@@ -345,9 +349,14 @@ def site_footer(site, lang):
         '<a href="tel:+351936466845">+351 936 466 845</a>',
         f'<a href="{url_for(lang, "privacidade")}">{site["nav"]["privacidade"]}</a>',
         f'<a href="{url_for(lang, "termos")}">{site["nav"]["termos"]}</a>',
+        f'<a href="{url_for(lang, "cookies")}">{site["nav"]["cookies"]}</a>',
         f'<a href="{COMPLAINTS_URL}" target="_blank" rel="noopener noreferrer">{site["complaints"]}</a>',
     ]
     line1 = "\n        ".join(f"<li>{i}</li>" for i in items)
+    # Reabre o banner de cookies; sem JS fica escondido, porque sem JS também não há GA.
+    settings = (f'<li hidden><button class="footer-button" type="button" data-consent-open>'
+                f'{site["cookie_settings"]}</button></li>')
+    line1 = line1.replace("\n        <li><a href=\"" + COMPLAINTS_URL, "\n        " + settings + "\n        <li><a href=\"" + COMPLAINTS_URL)
     return f'''  <footer class="site-footer">
     <div class="wrap">
       <ul class="footer-line">
@@ -356,6 +365,22 @@ def site_footer(site, lang):
       <p class="legal">{site["legal"]}</p>
     </div>
   </footer>'''
+
+
+def cookie_banner(site, lang):
+    """Banner de consentimento (Lei 41/2004, art. 5.º, e RGPD): aceitar e recusar com o mesmo peso.
+
+    Começa com hidden: o consent.js mostra-o se ainda não houver escolha. O GA só carrega depois de aceitar.
+    """
+    b = site["cookie_banner"]
+    return f'''  <div class="cookie-banner" id="cookie-banner" role="region" aria-labelledby="cookie-banner-title" hidden>
+    <p class="cookie-banner-title" id="cookie-banner-title">{b["title"]}</p>
+    <p>{b["text"]} <a href="{url_for(lang, "cookies")}">{b["policy"]}</a></p>
+    <div class="actions">
+      <button class="btn btn-primary" type="button" data-consent="denied">{b["reject"]}</button>
+      <button class="btn btn-primary" type="button" data-consent="granted">{b["accept"]}</button>
+    </div>
+  </div>'''
 
 
 def head_meta(site, other_site, page, url, pt_url, en_url):
@@ -383,7 +408,8 @@ def head_meta(site, other_site, page, url, pt_url, en_url):
 # Ficheiros que mudam entre deploys: o HTML refere-os com ?v=<hash do conteúdo>, para o
 # Cloudflare e os browsers irem buscar a versão nova sem limpar a cache. As fontes ficam sem
 # versão: o URL do preload tem de ser igual ao do @font-face no tokens.css.
-VERSIONED = ["/assets/css/tokens.css", "/assets/site.css", "/assets/js/site.js", "/assets/icons.svg"]
+VERSIONED = ["/assets/css/tokens.css", "/assets/site.css", "/assets/js/site.js", "/assets/js/consent.js",
+             "/assets/icons.svg"]
 
 
 def versioned(html):
@@ -423,6 +449,7 @@ def render(lang, name, layout, content):
         "header": site_header(site, lang, name, url_for(other_lang, name), other["html_lang"]),
         "main": main_html(page),
         "footer": site_footer(site, lang),
+        "cookie_banner": cookie_banner(site, lang),
     })
     write(url, html)
     return url
@@ -444,6 +471,7 @@ def render_404(layout, content):
         "header": site_header(site, "pt", None, "/en/", en["site"]["html_lang"]),
         "main": page_head(nf["head"]) + "\n\n" + en_band,
         "footer": site_footer(site, "pt"),
+        "cookie_banner": cookie_banner(site, "pt"),
     })
     (OUT / "404.html").write_text(html, encoding="utf-8")
 

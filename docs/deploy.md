@@ -33,13 +33,14 @@ O site é estático: o servidor só tem de servir a pasta `public/`. Não há bu
        add_header X-Content-Type-Options "nosniff" always;
    }
 
-   # Cabeçalhos de segurança (SEC-1). O site não tem scripts nem pedidos a terceiros.
+   # Cabeçalhos de segurança (SEC-1). O único pedido a terceiros é o Google Analytics, que o
+   # consent.js só carrega depois de o visitante aceitar os cookies de análise.
    add_header X-Frame-Options "SAMEORIGIN" always;
    add_header X-Content-Type-Options "nosniff" always;
    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
    add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-   add_header Content-Security-Policy "default-src 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; script-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'none'" always;
+   add_header Content-Security-Policy "default-src 'self'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; style-src 'self'; font-src 'self'; script-src 'self' https://www.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-ancestors 'self'; base-uri 'self'; form-action 'none'" always;
    ```
 
    Se houver um `location ~ \.php$`, pode sair: o site não tem PHP.
