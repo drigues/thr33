@@ -50,6 +50,39 @@ function followPointer(hero) {
   });
 }
 
+/* Manchas do hero em deriva (#58): cada mancha vai de um ponto aleatório a outro, devagar, como um
+   espectro em deriva. Só transform e opacity (Web Animations); pára quando o hero sai do ecrã ou o
+   separador fica escondido, e não corre com reduced motion (as manchas ficam paradas). */
+function driftBlobs(hero) {
+  var blobs = hero.querySelectorAll(".blob");
+  if (reducedMotion || !blobs.length || !blobs[0].animate || !("IntersectionObserver" in window)) return;
+  var onScreen = true, running = [];
+  function rand(min, max) { return min + Math.random() * (max - min); }
+  function pose(base) {
+    var r = hero.getBoundingClientRect(), reach = Math.max(r.width, r.height) * 0.22;
+    return {
+      transform: "translate3d(" + rand(-reach, reach).toFixed(0) + "px, " + rand(-reach, reach).toFixed(0) + "px, 0) scale(" + rand(0.85, 1.2).toFixed(2) + ")",
+      opacity: (base * rand(0.7, 1.25)).toFixed(3)
+    };
+  }
+  function live() { return onScreen && !document.hidden; }
+  Array.prototype.forEach.call(blobs, function (blob, i) {
+    var base = parseFloat(getComputedStyle(blob).opacity) || 0.35;
+    var from = { transform: "translate3d(0px, 0px, 0) scale(1)", opacity: String(base) };
+    (function leg() {
+      var to = pose(base);
+      var anim = blob.animate([from, to], { duration: rand(14000, 24000), easing: "ease-in-out", fill: "forwards" });
+      if (running[i]) running[i].cancel();
+      running[i] = anim;
+      if (!live()) anim.pause();
+      anim.onfinish = function () { from = to; leg(); };
+    })();
+  });
+  function sync() { running.forEach(function (a) { if (live()) a.play(); else a.pause(); }); }
+  new IntersectionObserver(function (entries) { onScreen = entries[0].isIntersecting; sync(); }).observe(hero);
+  document.addEventListener("visibilitychange", sync);
+}
+
 /* Marquee: a velocidade sobe com a velocidade do scroll e o sentido segue o do scroll;
    depois volta devagar à velocidade base. O loop em si é a animação CSS. */
 function marqueeScroll(el) {
@@ -178,7 +211,7 @@ document.addEventListener("DOMContentLoaded", function () {
   Array.prototype.forEach.call(document.querySelectorAll("[data-marquee]"), marqueeScroll);
   countLabels();
   var hero = document.querySelector(".hero");
-  if (hero) followPointer(hero);
+  if (hero) { followPointer(hero); driftBlobs(hero); }
 
   var header = document.querySelector("[data-header]");
   if (!header) return;

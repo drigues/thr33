@@ -2,7 +2,7 @@
   "site": {
     "html_lang": "en",
     "og_locale": "en_GB",
-    "og_image_alt": "Thr33 Labs, interactive technology studio",
+    "og_image_alt": "Thr33 Labs, interactive technology studio: made to be explored",
     "other_label": "PT",
     "other_name": "Português",
     "nav_label": "Main navigation",
@@ -34,13 +34,13 @@
   "pages": {
     "inicio": {
       "title": "Thr33 Labs · Interactive technology studio in Óbidos, Portugal",
-      "description": "An interactive technology studio in Óbidos, Portugal: hardware, software and augmented reality for experiences people touch and use.",
+      "description": "An interactive technology studio in Óbidos, Portugal: iOS and Android apps, platforms and interactive experiences, from software to hardware, UX-led.",
       "head": {
         "kind": "hero",
         "label": "Thr33 Labs / ©2026",
-        "label_after": "Interactive technology studio · Óbidos, PT",
-        "h1": "Technology people <span class=\"accent\">touch and use</span>",
-        "lead": "Hardware, software and augmented reality for experiences people touch and use. From the first conversation to launch, built in Óbidos, Portugal.",
+        "label_after": "Interactive technology studio",
+        "h1": "Made to be <span class=\"accent\">explored.</span>",
+        "lead": "iOS and Android apps, platforms and interactive experiences, from software to hardware. UX-led, from Óbidos.",
         "actions": [
           {
             "text": "Request a proposal",
@@ -73,57 +73,37 @@
           "type": "cards",
           "id": "what-we-do",
           "h2": "What we do",
-          "columns": 5,
+          "columns": 3,
           "items": [
             {
-              "title": "IT consulting",
-              "text": "Technology choices, technical audits and migration plans, before you invest in code.",
+              "title": "Technology consulting",
+              "text": "An assessment of what exists, recommendations and a report, so you can decide before you invest.",
               "link": {
                 "text": "See more",
-                "sr": "about consulting",
+                "sr": "about technology consulting",
                 "href": "/en/services/#consulting"
               },
               "icon": "compass"
             },
             {
-              "title": "Digital product",
-              "text": "Websites, platforms and iOS and Android apps, with UX/UI tested with the people who will use them.",
+              "title": "Digital products",
+              "text": "iOS and Android apps and platforms, UX-led, including augmented reality.",
               "link": {
                 "text": "See more",
-                "sr": "about digital product",
-                "href": "/en/services/#digital-product"
+                "sr": "about digital products",
+                "href": "/en/services/#digital-products"
               },
               "icon": "code"
             },
             {
-              "title": "Hardware and interactive experiences",
-              "text": "Internet-connected devices, sensors and prototypes, with the software that makes them work.",
+              "title": "Interactive experiences",
+              "text": "Hardware with microcontrollers and sensors, and custom games for brands, events and activations.",
               "link": {
                 "text": "See more",
-                "sr": "about hardware and interactive experiences",
-                "href": "/en/services/#hardware"
-              },
-              "icon": "cpu"
-            },
-            {
-              "title": "Games for brands",
-              "text": "Custom games for events, brand activations, advertising and customer engagement.",
-              "link": {
-                "text": "See more",
-                "sr": "about games for brands",
-                "href": "/en/services/#games"
+                "sr": "about interactive experiences",
+                "href": "/en/services/#interactive-experiences"
               },
               "icon": "gamepad-2"
-            },
-            {
-              "title": "Augmented reality",
-              "text": "Models in augmented reality (AR), at real scale, from a phone or tablet.",
-              "link": {
-                "text": "See more",
-                "sr": "about augmented reality",
-                "href": "/en/services/#augmented-reality"
-              },
-              "icon": "box"
             }
           ],
           "label": "Services"
@@ -191,23 +171,18 @@
           "h2": "How we work",
           "items": [
             {
-              "title": "Conversation",
-              "text": "We learn about the problem, the audience and what already exists.",
+              "title": "Discover",
+              "text": "Conversation and assessment, to understand the problem and propose the way forward.",
               "icon": "message-circle"
             },
             {
-              "title": "Proposal",
-              "text": "Scope, timeline and cost in writing, before any work starts.",
-              "icon": "file-text"
-            },
-            {
-              "title": "Design and build",
-              "text": "Short cycles, with a version to review at every step.",
+              "title": "Build",
+              "text": "Design, software and hardware in short cycles, with prototypes you can test.",
               "icon": "layers"
             },
             {
               "title": "Launch",
-              "text": "Release, measurement and support after it ships.",
+              "text": "Release, measurement and improvements.",
               "icon": "rocket"
             }
           ],
@@ -257,7 +232,7 @@
           "id": "who-we-are",
           "h2": "Who we are",
           "paragraphs": [
-            "We are an independent interactive technology studio. We bring together hardware, software and augmented reality to create experiences people touch and use, from websites and apps to games for events.",
+            "We are an independent interactive technology studio. We bring together hardware, software and augmented reality to create apps, platforms and interactive experiences, such as games for events.",
             "When a project calls for it, we bring in trusted partners in design, development and augmented reality, always with a single point of contact at Thr33 Labs.",
             "Besides client work, we build our own products, such as <a href=\"/en/products/\">Vizia</a>, an augmented reality product.",
             "Founded by Thiago Oliveira, Software Engineer with over 10 years of experience."
@@ -328,13 +303,13 @@
       ]
     },
     "servicos": {
-      "title": "Services · Consulting, digital product, hardware, games and AR",
-      "description": "IT consulting, digital product, hardware and interactive experiences, games for brands and augmented reality. Thr33 Labs services, with examples.",
+      "title": "Services · Consulting, digital products and interactive experiences",
+      "description": "Technology consulting, digital products and interactive experiences: Thr33 Labs services, with examples.",
       "head": {
         "kind": "page",
         "label": "Services",
         "h1": "From idea to a released product",
-        "lead": "Five areas that combine to fit each project. You can hire us for one of them, or for the whole journey."
+        "lead": "Three areas that combine to fit each project. You can hire us for one of them, or for the whole journey."
       },
       "sections": [
         {
@@ -343,11 +318,11 @@
             {
               "id": "consulting",
               "heading_id": "consulting-title",
-              "h2": "IT consulting",
-              "text": "We help you decide before you build: which technology to use, what to buy and what to develop, and how to make systems work together.",
+              "h2": "Technology consulting",
+              "text": "We help you decide before you build: we assess what exists, recommend the way forward and put it all in a report.",
               "examples_title": "Examples",
               "examples": [
-                "Technical audit of an existing website or app.",
+                "Technical audit of an existing app or platform.",
                 "Choosing technology, hosting and suppliers.",
                 "Migration plans for legacy systems.",
                 "Security and GDPR review of digital products."
@@ -355,62 +330,33 @@
               "icon": "compass"
             },
             {
-              "id": "digital-product",
-              "heading_id": "digital-product-title",
-              "h2": "Digital product: web and apps",
-              "text": "We design and build websites, platforms and mobile apps, from the first prototype to release on the App Store and Google Play.",
+              "id": "digital-products",
+              "heading_id": "digital-products-title",
+              "h2": "Digital products",
+              "text": "We design and build iOS and Android apps and platforms, UX-led, from the first prototype to release on the App Store and Google Play, including augmented reality.",
               "examples_title": "Examples",
               "examples": [
-                "Company websites and product pages.",
-                "Web platforms with customer areas and admin dashboards.",
                 "iOS and Android apps.",
+                "Web platforms with customer areas and admin dashboards.",
                 "UX/UI: user interviews, clickable prototypes and design systems.",
-                "Accessibility reviews against WCAG 2.1 AA."
+                "Augmented reality (AR) on phones and tablets, at real scale.",
+                "<a href=\"/en/products/\">Vizia - Arquitetura em AR</a>, our augmented reality product."
               ],
               "icon": "code"
             },
             {
-              "id": "hardware",
-              "heading_id": "hardware-title",
-              "h2": "Hardware and interactive experiences",
-              "text": "We connect physical objects to the digital world: internet-connected devices, sensors and prototypes, and the software that makes them work.",
+              "id": "interactive-experiences",
+              "heading_id": "interactive-experiences-title",
+              "h2": "Interactive experiences",
+              "text": "We connect physical objects to the digital world and build custom games: hardware with microcontrollers and sensors, and games for brands, events and activations.",
               "examples_title": "Examples",
               "examples": [
-                "Firmware for Wi-Fi connected devices.",
-                "Sensors that feed apps and data dashboards.",
+                "Devices with microcontrollers and sensors, connected over Wi-Fi.",
                 "Working prototypes to test an idea with real people.",
-                "The <a href=\"/en/products/get-it-vac/\">Get It Vac</a> robot controller: a mini robot vacuum that controls a game."
-              ],
-              "icon": "cpu"
-            },
-            {
-              "id": "games",
-              "heading_id": "games-title",
-              "h2": "Custom games for brands",
-              "text": "We create games for events, brand activations, advertising and customer engagement, on screen, on the phone or with physical controllers.",
-              "examples_title": "Examples",
-              "examples": [
-                "Games for event stands and activations.",
-                "Phone multiplayer, joined with a QR code.",
-                "Campaigns with a game, photos and sharing.",
+                "Games for event stands and activations, with phone multiplayer.",
                 "<a href=\"/en/products/get-it-vac/\">Get It Vac</a>: an arcade game controlled by a mini robot vacuum."
               ],
               "icon": "gamepad-2"
-            },
-            {
-              "id": "augmented-reality",
-              "heading_id": "ar-title",
-              "h2": "Augmented reality",
-              "text": "We show projects in augmented reality (AR), at real scale and on site, from a phone or tablet, so you can decide before you build or set up.",
-              "examples_title": "Examples",
-              "examples": [
-                "Architecture projects viewed on site.",
-                "Interior design and furniture at real scale.",
-                "Event layouts before the day.",
-                "Posters and printed materials that come to life in AR.",
-                "<a href=\"/en/products/\">Vizia</a>, our augmented reality product."
-              ],
-              "icon": "box"
             }
           ]
         },
@@ -487,7 +433,7 @@
           "type": "text",
           "id": "clients",
           "h2": "Client projects",
-          "text": "We build websites, platforms and apps for other businesses. We only show client projects publicly with the client's permission, so we share examples relevant to your case in a conversation.",
+          "text": "We build apps, platforms and interactive experiences for other businesses. We only show client projects publicly with the client's permission, so we share examples relevant to your case in a conversation.",
           "actions": [
             {
               "text": "Ask for project examples",
@@ -661,11 +607,11 @@
               "p": "The website sets one cookie to remember your choice and, only if you accept, Google Analytics cookies. The details are in the <a href=\"/en/cookies/\">cookie policy</a>."
             },
             {
-              "h2": "Other websites",
+              "h2": "External links",
               "id": "other-sites"
             },
             {
-              "p": "The website links to other websites, such as <a href=\"https://vizia.thr33.xyz\" target=\"_blank\" rel=\"noopener noreferrer\">Vizia</a> and <a href=\"https://vac.navego.pt\" target=\"_blank\" rel=\"noopener noreferrer\">Get It Vac</a>, which have their own privacy policies."
+              "p": "The website links to other services, such as <a href=\"https://vizia.thr33.xyz\" target=\"_blank\" rel=\"noopener noreferrer\">Vizia</a> and <a href=\"https://vac.navego.pt\" target=\"_blank\" rel=\"noopener noreferrer\">Get It Vac</a>, which have their own privacy policies."
             },
             {
               "h2": "Changes",
@@ -692,7 +638,7 @@
           "type": "prose",
           "blocks": [
             {
-              "updated": "Last updated: 12 November 2026"
+              "updated": "Last updated: 26 November 2026"
             },
             {
               "h2": "Who we are",
@@ -730,7 +676,7 @@
               "id": "links"
             },
             {
-              "p": "The website links to third-party websites and to company products with their own terms. We are not responsible for the content or practices of third-party websites."
+              "p": "The website links to third-party pages and to company products with their own terms. We are not responsible for the content or practices of third-party pages."
             },
             {
               "h2": "Liability",

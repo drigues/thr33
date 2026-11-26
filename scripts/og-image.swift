@@ -80,9 +80,9 @@ func draw(_ string: String, at point: CGPoint, font: NSFont, color: NSColor, ker
     NSAttributedString(string: string, attributes: [.font: font, .foregroundColor: color, .kern: kern]).draw(at: point)
 }
 
-// Selo "Interactive Technology Studio" (#52)
+// Selo "Interactive Technology Studio" (#52) e o título do hero (#58)
 render(badgeText: "INTERACTIVE TECHNOLOGY STUDIO", title: "Thr33 Labs",
-       line: "Experiences people touch and ", accentText: "use.", to: "og-image.png")
+       line: "Made to be ", accentText: "explored.", to: "og-image.png")
 // Caso de estudo (#53). O #54 pode trocar por uma imagem com o ecrã do jogo.
 render(badgeText: "CASE STUDY · THR33 LABS", title: "Get It Vac",
        line: "A robot vacuum that controls a ", accentText: "game.", to: "og-get-it-vac.png")

@@ -140,7 +140,7 @@ html.menu-open { overflow: hidden; }
   font-size: var(--text-hero); font-weight: 500; letter-spacing: var(--tracking-hero);
   line-height: 0.95; max-width: none;
 }
-/* Desktop: um pouco menor, para "Produtos digitais que as pessoas usam" ficar em 3 linhas. */
+/* Desktop: um pouco menor, para o título do hero caber em 3 linhas no máximo. */
 @media (min-width: 64rem) {
   .hero h1 { font-size: min(var(--text-hero), 8rem); }
 }
@@ -159,20 +159,19 @@ html.menu-open { overflow: hidden; }
 .page-head { padding-block: clamp(2.5rem, 7vw, 4.5rem) 2rem; }
 .page-head h1 { font-size: var(--text-h2); font-weight: 500; letter-spacing: -0.03em; line-height: 1; max-width: 18ch; }
 
-/* Gradiente-assinatura: três manchas que derivam devagar e seguem um pouco o rato. */
+/* Gradiente-assinatura: três manchas do espectro que seguem um pouco o rato. A deriva (#58) é do site.js:
+   trajetos aleatórios e lentos, só em transform e opacity, em pausa fora do ecrã. Sem JS ficam paradas. */
 .hero-gradient {
   position: absolute; inset: 0; z-index: -1; pointer-events: none;
   transform: translate3d(calc(var(--mx, 0) * 1.5rem), calc(var(--my, 0) * 1.5rem), 0);
   transition: transform var(--dur-3) var(--ease-ui);
 }
-.blob { position: absolute; width: 60vmax; aspect-ratio: 1; border-radius: 50%; opacity: 0.35; will-change: transform; }
-.blob-telha { top: -28vmax; right: -18vmax; background: radial-gradient(circle closest-side, var(--telha), transparent); animation: drift-a 24s ease-in-out infinite alternate; }
-.blob-lagoa { top: 6vmax; right: -30vmax; background: radial-gradient(circle closest-side, var(--secondary), transparent); animation: drift-b 28s ease-in-out infinite alternate; }
-.blob-atlantico { bottom: -38vmax; right: 6vmax; background: radial-gradient(circle closest-side, var(--link), transparent); animation: drift-c 30s ease-in-out infinite alternate; }
+.blob { position: absolute; width: 60vmax; aspect-ratio: 1; border-radius: 50%; opacity: 0.35; }
+.js .blob { will-change: transform, opacity; }
+.blob-telha { top: -28vmax; right: -18vmax; background: radial-gradient(circle closest-side, var(--telha), transparent); }
+.blob-lagoa { top: 6vmax; right: -30vmax; background: radial-gradient(circle closest-side, var(--secondary), transparent); }
+.blob-atlantico { bottom: -38vmax; right: 6vmax; background: radial-gradient(circle closest-side, var(--link), transparent); }
 @media (prefers-color-scheme: dark) { .blob { opacity: 0.45; } }
-@keyframes drift-a { to { transform: translate3d(-14vmax, 10vmax, 0) scale(1.1); } }
-@keyframes drift-b { to { transform: translate3d(-10vmax, -8vmax, 0) scale(0.9); } }
-@keyframes drift-c { to { transform: translate3d(12vmax, -10vmax, 0) scale(1.15); } }
 
 /* Marquee de competências: duas listas iguais lado a lado; a pista anda metade da largura e repete.
    Só CSS chega para o loop; o site.js ajusta a velocidade e o sentido ao scroll. */
@@ -224,18 +223,9 @@ html.menu-open { overflow: hidden; }
 .note { color: var(--muted); max-width: 40rem; margin-top: 1.5rem; }
 
 .grid { display: grid; gap: 1rem; grid-template-columns: 1fr; list-style: none; }
-@media (min-width: 40rem) { .grid-2, .grid-4 { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 60rem) { .grid-4 { grid-template-columns: repeat(4, 1fr); } .grid-3 { grid-template-columns: repeat(3, 1fr); } }
-/* 5 cartões sem buracos: 2+2+1 (o último a toda a largura) no tablet e 3+2 no desktop. */
-@media (min-width: 40rem) {
-  .grid-5 { grid-template-columns: repeat(2, 1fr); }
-  .grid-5 > :last-child { grid-column: 1 / -1; }
-}
-@media (min-width: 60rem) {
-  .grid-5 { grid-template-columns: repeat(6, 1fr); }
-  .grid-5 > * { grid-column: span 2; }
-  .grid-5 > :nth-child(n + 4) { grid-column: span 3; }
-}
+/* Serviços e processo (#58): 3 cartões numa coluna até 60rem e lado a lado a partir daí, sem buracos. */
+@media (min-width: 40rem) { .grid-2 { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 60rem) { .grid-3 { grid-template-columns: repeat(3, 1fr); } }
 
 .card {
   background: var(--surface); border: 1px solid var(--line); border-radius: 0.75rem; padding: 1.5rem;
@@ -431,7 +421,7 @@ address { font-style: normal; }
 @media (prefers-reduced-motion: reduce) {
   /* Regra geral: nada anima nem transita, mesmo o que for acrescentado depois. */
   *, *::before, *::after { animation: none !important; transition: none !important; }
-  .blob { animation: none; }
+  .blob { animation: none; will-change: auto; }
   .hero-gradient { transform: none; }
   .split .wi { transform: none; }
   .js [data-split]:not(.split) { opacity: 1; animation: none; }

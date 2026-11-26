@@ -2,7 +2,7 @@
   "site": {
     "html_lang": "pt-PT",
     "og_locale": "pt_PT",
-    "og_image_alt": "Thr33 Labs, estúdio de tecnologia interativa",
+    "og_image_alt": "Thr33 Labs, estúdio de tecnologia interativa: feito para ser explorado",
     "other_label": "EN",
     "other_name": "English",
     "nav_label": "Navegação principal",
@@ -34,13 +34,13 @@
   "pages": {
     "inicio": {
       "title": "Thr33 Labs · Estúdio de tecnologia interativa em Óbidos",
-      "description": "Estúdio de tecnologia interativa em Óbidos: hardware, software e realidade aumentada para experiências que as pessoas tocam e usam.",
+      "description": "Estúdio de tecnologia interativa em Óbidos: aplicações iOS e Android, plataformas e experiências interativas, do software ao hardware, com foco em UX.",
       "head": {
         "kind": "hero",
         "label": "Thr33 Labs / ©2026",
-        "label_after": "Estúdio de tecnologia interativa · Óbidos, PT",
-        "h1": "Tecnologia que as pessoas <span class=\"accent\">tocam e usam</span>",
-        "lead": "Hardware, software e realidade aumentada para experiências que as pessoas tocam e usam. Da primeira conversa ao lançamento, a partir de Óbidos.",
+        "label_after": "Estúdio de tecnologia interativa",
+        "h1": "Feito para ser <span class=\"accent\">explorado.</span>",
+        "lead": "Aplicações iOS e Android, plataformas e experiências interativas, do software ao hardware. Com foco em UX, a partir de Óbidos.",
         "actions": [
           {
             "text": "Pedir uma proposta",
@@ -73,57 +73,37 @@
           "type": "cards",
           "id": "o-que-fazemos",
           "h2": "O que fazemos",
-          "columns": 5,
+          "columns": 3,
           "items": [
             {
-              "title": "Consultoria em informática",
-              "text": "Escolha de tecnologia, auditorias técnicas e planos de migração, antes de investir em código.",
+              "title": "Consultoria tecnológica",
+              "text": "Diagnóstico do que existe, recomendações e um relatório para decidir antes de investir.",
               "link": {
                 "text": "Ver mais",
-                "sr": "sobre consultoria",
+                "sr": "sobre consultoria tecnológica",
                 "href": "/servicos/#consultoria"
               },
               "icon": "compass"
             },
             {
-              "title": "Produto digital",
-              "text": "Sites, plataformas e aplicações iOS e Android, com UX/UI testada com quem os vai usar.",
+              "title": "Produtos digitais",
+              "text": "Aplicações iOS e Android e plataformas, com foco em UX, incluindo realidade aumentada.",
               "link": {
                 "text": "Ver mais",
-                "sr": "sobre produto digital",
-                "href": "/servicos/#produto-digital"
+                "sr": "sobre produtos digitais",
+                "href": "/servicos/#produtos-digitais"
               },
               "icon": "code"
             },
             {
-              "title": "Hardware e experiências interativas",
-              "text": "Dispositivos ligados à internet, sensores e protótipos, com o software que os põe a funcionar.",
+              "title": "Experiências interativas",
+              "text": "Hardware com microcontroladores e sensores, e jogos à medida para marcas, eventos e ativações.",
               "link": {
                 "text": "Ver mais",
-                "sr": "sobre hardware e experiências interativas",
-                "href": "/servicos/#hardware"
-              },
-              "icon": "cpu"
-            },
-            {
-              "title": "Jogos para marcas",
-              "text": "Jogos à medida para eventos, ativações, publicidade e interação com clientes.",
-              "link": {
-                "text": "Ver mais",
-                "sr": "sobre jogos para marcas",
-                "href": "/servicos/#jogos"
+                "sr": "sobre experiências interativas",
+                "href": "/servicos/#experiencias-interativas"
               },
               "icon": "gamepad-2"
-            },
-            {
-              "title": "Realidade aumentada",
-              "text": "Modelos em realidade aumentada (AR), à escala, a partir do telemóvel ou do tablet.",
-              "link": {
-                "text": "Ver mais",
-                "sr": "sobre realidade aumentada",
-                "href": "/servicos/#realidade-aumentada"
-              },
-              "icon": "box"
             }
           ],
           "label": "Serviços"
@@ -191,23 +171,18 @@
           "h2": "Como trabalhamos",
           "items": [
             {
-              "title": "Conversa",
-              "text": "Percebemos o problema, o público e o que já existe.",
+              "title": "Descobrir",
+              "text": "Conversa e diagnóstico, para perceber o problema e propor o caminho.",
               "icon": "message-circle"
             },
             {
-              "title": "Proposta",
-              "text": "Âmbito, prazos e custos por escrito, antes de começar.",
-              "icon": "file-text"
-            },
-            {
-              "title": "Desenho e desenvolvimento",
-              "text": "Ciclos curtos, com versões para rever a cada etapa.",
+              "title": "Construir",
+              "text": "Design, software e hardware em ciclos curtos, com protótipos que se testam.",
               "icon": "layers"
             },
             {
-              "title": "Lançamento",
-              "text": "Publicação, medição e acompanhamento depois de sair.",
+              "title": "Lançar e acompanhar",
+              "text": "Publicação, medição e melhorias.",
               "icon": "rocket"
             }
           ],
@@ -257,7 +232,7 @@
           "id": "quem-somos",
           "h2": "Quem somos",
           "paragraphs": [
-            "Somos um estúdio independente de tecnologia interativa. Juntamos hardware, software e realidade aumentada para criar experiências que as pessoas tocam e usam, de sites e aplicações a jogos para eventos.",
+            "Somos um estúdio independente de tecnologia interativa. Juntamos hardware, software e realidade aumentada para criar aplicações, plataformas e experiências interativas, como jogos para eventos.",
             "Quando um projeto o pede, juntamos parceiros de confiança em design, desenvolvimento e realidade aumentada, sempre com um único ponto de contacto do lado da Thr33 Labs.",
             "Para além do trabalho para clientes, desenvolvemos produtos próprios, como o <a href=\"/produtos/\">Vizia</a>, de realidade aumentada.",
             "Fundada por Thiago Oliveira, engenheiro de software com mais de 10 anos de experiência."
@@ -328,13 +303,13 @@
       ]
     },
     "servicos": {
-      "title": "Serviços · Consultoria, produto digital, hardware, jogos e AR",
-      "description": "Consultoria em informática, produto digital, hardware e experiências interativas, jogos para marcas e realidade aumentada. Serviços da Thr33 Labs, com exemplos.",
+      "title": "Serviços · Consultoria, produtos digitais e experiências interativas",
+      "description": "Consultoria tecnológica, produtos digitais e experiências interativas: os serviços da Thr33 Labs, com exemplos.",
       "head": {
         "kind": "page",
         "label": "Serviços",
         "h1": "Da ideia ao produto publicado",
-        "lead": "Cinco áreas que se combinam conforme o projeto. Pode contratar só uma, ou o percurso completo."
+        "lead": "Três áreas que se combinam conforme o projeto. Pode contratar só uma, ou o percurso completo."
       },
       "sections": [
         {
@@ -343,11 +318,11 @@
             {
               "id": "consultoria",
               "heading_id": "consultoria-titulo",
-              "h2": "Consultoria em informática",
-              "text": "Ajudamos a decidir antes de construir: que tecnologia usar, o que comprar e o que desenvolver, e como pôr os sistemas a falar entre si.",
+              "h2": "Consultoria tecnológica",
+              "text": "Ajudamos a decidir antes de construir: fazemos o diagnóstico do que existe, recomendamos o caminho e entregamos tudo num relatório.",
               "examples_title": "Exemplos",
               "examples": [
-                "Auditoria técnica de um site ou de uma aplicação existente.",
+                "Auditoria técnica de uma aplicação ou plataforma existente.",
                 "Escolha de tecnologia, alojamento e fornecedores.",
                 "Plano de migração de sistemas antigos.",
                 "Revisão de segurança e de RGPD em produtos digitais."
@@ -355,62 +330,33 @@
               "icon": "compass"
             },
             {
-              "id": "produto-digital",
-              "heading_id": "produto-digital-titulo",
-              "h2": "Produto digital: web e aplicações",
-              "text": "Desenhamos e construímos sites, plataformas e aplicações móveis, do primeiro protótipo à publicação na App Store e no Google Play.",
+              "id": "produtos-digitais",
+              "heading_id": "produtos-digitais-titulo",
+              "h2": "Produtos digitais",
+              "text": "Desenhamos e construímos aplicações iOS e Android e plataformas, com foco em UX, do primeiro protótipo à publicação na App Store e no Google Play, incluindo realidade aumentada.",
               "examples_title": "Exemplos",
               "examples": [
-                "Sites institucionais e páginas de produto.",
-                "Plataformas web com área de cliente e painel de gestão.",
                 "Aplicações iOS e Android.",
+                "Plataformas web com área de cliente e painel de gestão.",
                 "UX/UI: entrevistas com utilizadores, protótipos navegáveis e sistemas de design.",
-                "Revisão de acessibilidade segundo as WCAG 2.1 AA."
+                "Realidade aumentada (AR) no telemóvel e no tablet, à escala real.",
+                "<a href=\"/produtos/\">Vizia - Arquitetura em AR</a>, o nosso produto de realidade aumentada."
               ],
               "icon": "code"
             },
             {
-              "id": "hardware",
-              "heading_id": "hardware-titulo",
-              "h2": "Hardware e experiências interativas",
-              "text": "Ligamos objetos físicos ao digital: dispositivos ligados à internet, sensores e protótipos, e o software que os põe a funcionar.",
+              "id": "experiencias-interativas",
+              "heading_id": "experiencias-interativas-titulo",
+              "h2": "Experiências interativas",
+              "text": "Ligamos objetos físicos ao digital e criamos jogos à medida: hardware com microcontroladores e sensores, e jogos para marcas, eventos e ativações.",
               "examples_title": "Exemplos",
               "examples": [
-                "Firmware para dispositivos ligados por Wi-Fi.",
-                "Sensores que alimentam aplicações e painéis de dados.",
+                "Dispositivos com microcontroladores e sensores, ligados por Wi-Fi.",
                 "Protótipos funcionais para testar uma ideia com pessoas reais.",
-                "O comando-robô do <a href=\"/produtos/get-it-vac/\">Get It Vac</a>: um mini robô aspirador que comanda um jogo."
-              ],
-              "icon": "cpu"
-            },
-            {
-              "id": "jogos",
-              "heading_id": "jogos-titulo",
-              "h2": "Jogos à medida para marcas",
-              "text": "Criamos jogos para eventos, ativações de marca, publicidade e interação com clientes, no ecrã, no telemóvel ou com comandos físicos.",
-              "examples_title": "Exemplos",
-              "examples": [
-                "Jogos para stands e ativações em eventos.",
-                "Multijogador no telemóvel, com entrada por QR code.",
-                "Campanhas com jogo, fotografia e partilha.",
+                "Jogos para stands e ativações, com multijogador no telemóvel.",
                 "O <a href=\"/produtos/get-it-vac/\">Get It Vac</a>: um jogo arcade comandado por um mini robô aspirador."
               ],
               "icon": "gamepad-2"
-            },
-            {
-              "id": "realidade-aumentada",
-              "heading_id": "ra-titulo",
-              "h2": "Realidade aumentada",
-              "text": "Mostramos projetos em realidade aumentada (AR), à escala e no local, a partir do telemóvel ou do tablet, para decidir antes de construir ou montar.",
-              "examples_title": "Exemplos",
-              "examples": [
-                "Projetos de arquitetura vistos no terreno.",
-                "Decoração e mobiliário à escala real.",
-                "Montagens de eventos antes do dia.",
-                "Cartazes e materiais impressos que ganham vida em AR.",
-                "<a href=\"/produtos/\">Vizia</a>, o nosso produto de realidade aumentada."
-              ],
-              "icon": "box"
             }
           ]
         },
@@ -487,7 +433,7 @@
           "type": "text",
           "id": "clientes",
           "h2": "Projetos para clientes",
-          "text": "Desenvolvemos sites, plataformas e aplicações para outras empresas. Só mostramos publicamente projetos com autorização do cliente, por isso partilhamos exemplos relevantes para o seu caso numa conversa.",
+          "text": "Desenvolvemos aplicações, plataformas e experiências interativas para outras empresas. Só mostramos publicamente projetos com autorização do cliente, por isso partilhamos exemplos relevantes para o seu caso numa conversa.",
           "actions": [
             {
               "text": "Pedir exemplos de projetos",
@@ -661,11 +607,11 @@
               "p": "O site usa um cookie para guardar a sua escolha e, só se aceitar, os cookies de análise do Google Analytics. Os detalhes estão na <a href=\"/cookies/\">política de cookies</a>."
             },
             {
-              "h2": "Outros sites",
+              "h2": "Ligações externas",
               "id": "outros-sites"
             },
             {
-              "p": "O site tem ligações para outros sites, como o <a href=\"https://vizia.thr33.xyz\" target=\"_blank\" rel=\"noopener noreferrer\">Vizia</a> e o <a href=\"https://vac.navego.pt\" target=\"_blank\" rel=\"noopener noreferrer\">Get It Vac</a>, que têm a sua própria política de privacidade."
+              "p": "O site tem ligações para outros serviços, como o <a href=\"https://vizia.thr33.xyz\" target=\"_blank\" rel=\"noopener noreferrer\">Vizia</a> e o <a href=\"https://vac.navego.pt\" target=\"_blank\" rel=\"noopener noreferrer\">Get It Vac</a>, que têm a sua própria política de privacidade."
             },
             {
               "h2": "Alterações",
@@ -692,7 +638,7 @@
           "type": "prose",
           "blocks": [
             {
-              "updated": "Última atualização: 12 de novembro de 2026"
+              "updated": "Última atualização: 26 de novembro de 2026"
             },
             {
               "h2": "Quem somos",
@@ -730,7 +676,7 @@
               "id": "ligacoes"
             },
             {
-              "p": "O site tem ligações para sites de terceiros e para produtos da empresa com termos próprios. Não somos responsáveis pelo conteúdo nem pelas práticas de sites de terceiros."
+              "p": "O site tem ligações para páginas de terceiros e para produtos da empresa com termos próprios. Não somos responsáveis pelo conteúdo nem pelas práticas de páginas de terceiros."
             },
             {
               "h2": "Responsabilidade",

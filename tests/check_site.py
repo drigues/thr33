@@ -56,17 +56,18 @@ BASE = ROOT.parent
 CONTENT = {"pt": BASE / "src" / "content" / "pt.json", "en": BASE / "src" / "content" / "en.json"}
 SITE_JS = "/assets/js/site.js"
 # Hero (#27): etiqueta, gradiente-assinatura decorativo e títulos com reveal por linhas.
-# Reposicionamento (#52): o posicionamento vai na etiqueta, o h1 diz o que as pessoas fazem.
-HERO_LABEL = {"pt-PT": "(Thr33 Labs / ©2026) Estúdio de tecnologia interativa · Óbidos, PT",
-              "en": "(Thr33 Labs / ©2026) Interactive technology studio · Óbidos, PT"}
-HERO_H1 = {"pt-PT": "Tecnologia que as pessoas tocam e usam", "en": "Technology people touch and use"}
+# Reposicionamento (#52, #58): o posicionamento vai na etiqueta; o lead diz onde fica Óbidos.
+HERO_LABEL = {"pt-PT": "(Thr33 Labs / ©2026) Estúdio de tecnologia interativa",
+              "en": "(Thr33 Labs / ©2026) Interactive technology studio"}
+HERO_H1 = {"pt-PT": "Feito para ser explorado.", "en": "Made to be explored."}
 HERO_BLOBS = 3
 # Serviços e ícones (#29): sprite Lucide servido pelo site, um ícone por serviço e por passo.
 ICONS_SVG = ROOT / "assets" / "icons.svg"
 ICONS_LICENCE = ROOT / "assets" / "icons-LICENSE.txt"
 HOME_LABELS = {"pt-PT": ["Serviços", "Projetos", "Processo", "Sobre"], "en": ["Services", "Projects", "Process", "About"]}
-HOME_ICONS = {"service": 5, "step": 4}
-SERVICES_PAGE_ICONS = 5
+# #58: 3 serviços e 3 passos no processo.
+HOME_ICONS = {"service": 3, "step": 3}
+SERVICES_PAGE_ICONS = 3
 # Cores por secção (#31): Projetos veste Tinta e o CTA final veste Telha.
 SCENES = {"/": ["ink", "telha"], "/servicos/": ["telha"], "/produtos/": ["ink"], "/produtos/get-it-vac/": ["telha"]}
 # CTA final e rodapé (#32): "Vamos falar?" em tamanho de hero, email grande e rodapé em duas linhas.
@@ -459,7 +460,7 @@ def check_page_icons(check, url, p, html, is_home, is_services):
     count = lambda cls: len(re.findall(rf'<li class="card {cls}">\s*<span class="card-icon"', html))
     if is_home:
         check(count("card-service") == HOME_ICONS["service"], f"{url}: os {HOME_ICONS['service']} cartões de serviço precisam de ícone")
-        check(count("card-step") == HOME_ICONS["step"], f"{url}: os 4 passos precisam de ícone")
+        check(count("card-step") == HOME_ICONS["step"], f"{url}: os {HOME_ICONS['step']} passos precisam de ícone")
     if is_services:
         n = len(re.findall(r'<section class="service"[^>]*>\s*<div class="service-head">\s*<span class="card-icon"', html))
         check(n == SERVICES_PAGE_ICONS, f"{url}: cada serviço precisa de ícone ({n} de {SERVICES_PAGE_ICONS})")
@@ -636,7 +637,7 @@ def check_no_js_hiding(check):
 
 # Fecho do redesign (#35): reduced motion, foco, imagens e CSP.
 # Funções do site.js que mexem em movimento: todas têm de respeitar prefers-reduced-motion.
-MOTION_FUNCTIONS = ["followPointer", "marqueeScroll", "countLabels", "revealGroups", "colourScenes",
+MOTION_FUNCTIONS = ["followPointer", "driftBlobs", "marqueeScroll", "countLabels", "revealGroups", "colourScenes",
                     "magneticButtons", "ctaScale"]
 
 
@@ -830,17 +831,23 @@ def check_cookie_policy(check, pages_raw):
 # Reposicionamento (#52): estúdio de tecnologia interativa, sem tamanho da equipa, AR em vez de 3D
 # e cinco serviços. Vendemos software e serviços, nunca equipamentos.
 POSITIONING = {"pt-PT": "estúdio de tecnologia interativa", "en": "interactive technology studio"}
-SUPPORT_LINE = {"pt-PT": "Hardware, software e realidade aumentada para experiências que as pessoas tocam e usam.",
-                "en": "Hardware, software and augmented reality for experiences people touch and use."}
+# Lead do hero (#58): substitui a linha de apoio do #52 e o lead do #57.
+HERO_LEAD = {"pt-PT": "Aplicações iOS e Android, plataformas e experiências interativas, do software ao hardware. "
+                      "Com foco em UX, a partir de Óbidos.",
+             "en": "iOS and Android apps, platforms and interactive experiences, from software to hardware. "
+                   "UX-led, from Óbidos."}
+OG_ALT = {"pt-PT": "feito para ser explorado", "en": "made to be explored"}
 FOUNDER = {"pt-PT": "Fundada por Thiago Oliveira, engenheiro de software com mais de 10 anos de experiência.",
            "en": "Founded by Thiago Oliveira, Software Engineer with over 10 years of experience."}
 RETIRED_COPY = re.compile(
     r"produto digital em|estúdio de produto digital|estúdio independente de produto digital|digital product studio"
     r"|estúdio pequeno|small studio|quem fundou|sem intermediários|its founder|the founder|no middlemen"
-    r"|modelos 3D|3D models|venda de equipamentos|vendemos equipamentos|sell(?:ing)? (?:equipment|hardware|devices)",
+    r"|modelos 3D|3D models|venda de equipamentos|vendemos equipamentos|sell(?:ing)? (?:equipment|hardware|devices)"
+    # #58: sem "sites" nem "tocam e usam", em PT e EN, e nunca SaaS.
+    r"|\bsites\b|\bwebsites\b|tocam e usam|touch and use|\bSaaS\b",
     re.I)
-SERVICE_IDS = {"pt-PT": ["consultoria", "produto-digital", "hardware", "jogos", "realidade-aumentada"],
-               "en": ["consulting", "digital-product", "hardware", "games", "augmented-reality"]}
+SERVICE_IDS = {"pt-PT": ["consultoria", "produtos-digitais", "experiencias-interativas"],
+               "en": ["consulting", "digital-products", "interactive-experiences"]}
 
 
 def page_text(html):
@@ -861,6 +868,8 @@ def check_positioning(check, url, html, lang, is_home, is_about, is_services):
     alt = re.search(r'<meta property="og:image:alt" content="([^"]*)"', html)
     check(alt is not None and POSITIONING[lang] in alt.group(1).lower(),
           f"{url}: og:image:alt sem '{POSITIONING[lang]}'")
+    if "og-image.png" in html:
+        check(alt is not None and OG_ALT[lang] in alt.group(1).lower(), f"{url}: og:image:alt sem '{OG_ALT[lang]}' (#58)")
     founder_here = "Thiago Oliveira" in text
     check(founder_here == is_about, f"{url}: o fundador só aparece no Sobre (#52)")
     if is_about:
@@ -876,23 +885,54 @@ def check_positioning(check, url, html, lang, is_home, is_about, is_services):
         h1 = re.search(r"<h1[^>]*>(.*?)</h1>", html, re.S).group(1)
         check(" ".join(re.sub(r"<[^>]+>", "", h1).split()) == HERO_H1[lang], f"{url}: o h1 do hero deve ser '{HERO_H1[lang]}'")
         lead = re.search(r'<section class="hero">.*?<p class="lead">(.*?)</p>', html, re.S)
-        check(lead is not None and lead.group(1).startswith(SUPPORT_LINE[lang]),
-              f"{url}: o lead do hero começa pela linha de apoio '{SUPPORT_LINE[lang]}'")
-        check('<ul class="grid grid-5" data-reveal>' in html, f"{url}: os 5 serviços vão numa .grid-5")
+        check(lead is not None and lead.group(1) == HERO_LEAD[lang], f"{url}: o lead do hero deve ser '{HERO_LEAD[lang]}'")
+        check('<ul class="grid grid-3" data-reveal>' in html, f"{url}: os 3 serviços vão numa .grid-3")
+        check('<ol class="grid grid-3" role="list" data-reveal>' in html, f"{url}: os 3 passos vão numa .grid-3")
+        h1 = re.search(r"<h1[^>]*>(.*?)</h1>", html, re.S).group(1)
+        main = html[html.index("<main"):html.index("</main>")]
+        cards = re.findall(r'<li class="card card-service">(.*?)</li>', main, re.S)
+        check(all("<ul" not in c for c in cards), f"{url}: os cartões de serviço do Início levam só a descrição")
     if is_services:
         ids = re.findall(r'<section class="service" id="([^"]+)"', html)
         check(ids == SERVICE_IDS[lang], f"{url}: serviços {ids}, esperado {SERVICE_IDS[lang]}")
 
 
-def check_grid5_css(check):
-    """5 cartões sem buracos: 1 coluna em mobile, 2+2+1 (o último a toda a largura) e 3+2 no desktop."""
+def check_grid3_css(check):
+    """#58: serviços e processo em 3 colunas sem buracos (1 coluna em mobile, 3 no desktop); sem .grid-4 nem .grid-5."""
     css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
-    tablet = re.search(r"@media \(min-width: 40rem\) \{[^@]*?\.grid-5 > :last-child\s*\{[^}]*grid-column: 1 / -1", css)
-    check(tablet is not None, "site.css: a 40rem o último cartão da .grid-5 ocupa a linha toda")
-    desktop = re.search(r"@media \(min-width: 60rem\) \{\n(.*?)\n\}", css, re.S)
-    body = desktop.group(1) if desktop else ""
-    check("grid-template-columns: repeat(6, 1fr)" in body and "span 2" in body and "span 3" in body,
-          "site.css: a 60rem a .grid-5 usa 6 colunas, 3 cartões em cima (span 2) e 2 em baixo (span 3)")
+    check(re.search(r"@media \(min-width: 60rem\) \{[^@]*?\.grid-3 \{ grid-template-columns: repeat\(3, 1fr\)", css),
+          "site.css: a 60rem a .grid-3 tem 3 colunas")
+    check(not re.search(r"\.grid-[45]\b", css), "site.css: .grid-4 e .grid-5 já não se usam (#58)")
+
+
+def check_hero_drift(check):
+    """#58: manchas do hero em deriva aleatória (site.js), só transform e opacity, em pausa fora do ecrã
+    e com o separador escondido; sem keyframes fixas no CSS e paradas com reduced motion."""
+    css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
+    check(not re.search(r"@keyframes drift|animation: drift", css), "site.css: as manchas já não usam keyframes fixas (drift-*)")
+    js = (ROOT / SITE_JS.lstrip("/")).read_text(encoding="utf-8")
+    body = js_function(js, "driftBlobs") or ""
+    check(body, "site.js: falta driftBlobs (deriva aleatória das manchas)")
+    for needle, why in (("Math.random", "trajetos aleatórios"), (".animate(", "Web Animations"),
+                        ("IntersectionObserver", "pausa fora do ecrã"), ("visibilitychange", "pausa com o separador escondido"),
+                        (".pause()", "pausa"), ("transform:", "anima transform"), ("opacity:", "anima opacity")):
+        check(needle in body, f"site.js: driftBlobs sem {needle} ({why})")
+    props = set(re.findall(r"\{\s*(\w+):", body)) | set(re.findall(r",\s*(\w+):\s*[^,}]+\}", body))
+    keyframe_props = {p for p in props if p in ("top", "left", "right", "bottom", "width", "height", "filter", "background")}
+    check(not keyframe_props, f"site.js: driftBlobs só anima transform e opacity, anima {sorted(keyframe_props)}")
+    check(re.search(r"driftBlobs\(hero\)", js), "site.js: driftBlobs não é chamado com o hero")
+    swift = (BASE / "scripts" / "og-image.swift").read_text(encoding="utf-8")
+    check('"Made to be "' in swift and '"explored."' in swift, "og-image.swift: a imagem de partilha diz 'Made to be explored.'")
+
+
+def check_icons_used(check):
+    """#58: cada ícone de src/icons/ é usado nos conteúdos; os que sobram vão para _PODE-DELETAR/."""
+    import json
+    used = set()
+    for path in CONTENT.values():
+        used |= set(re.findall(r'"icon": "([\w-]+)"', path.read_text(encoding="utf-8")))
+    for f in sorted((BASE / "src" / "icons").glob("*.svg")):
+        check(f.stem in used, f"src/icons/{f.name} sem uso (mover para _PODE-DELETAR/)")
 
 
 # Caso de estudo Get It Vac (#53): página nova, cartões em Projetos e no Início, imagens AVIF/WebP (#34).
@@ -1031,7 +1071,9 @@ def main():
     check_hero_desktop(check)
     check_cookie_banner_css(check)
     check_consent_js(check)
-    check_grid5_css(check)
+    check_grid3_css(check)
+    check_hero_drift(check)
+    check_icons_used(check)
 
     titles, descriptions = {}, {}
     pages, pages_raw = {}, {}
