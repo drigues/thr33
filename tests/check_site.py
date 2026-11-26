@@ -830,8 +830,10 @@ def check_cookie_policy(check, pages_raw):
 # Reposicionamento (#52): estúdio de tecnologia interativa, sem tamanho da equipa, AR em vez de 3D
 # e cinco serviços. Vendemos software e serviços, nunca equipamentos.
 POSITIONING = {"pt-PT": "estúdio de tecnologia interativa", "en": "interactive technology studio"}
-SUPPORT_LINE = {"pt-PT": "Hardware, software e realidade aumentada para experiências que as pessoas tocam e usam.",
-                "en": "Hardware, software and augmented reality for experiences people touch and use."}
+# O lead não repete o fim do h1 ("tocam e usam"): fica só a linha de apoio e o percurso.
+HERO_LEAD = {"pt-PT": "Hardware, software e realidade aumentada, da primeira conversa ao lançamento, a partir de Óbidos.",
+             "en": "Hardware, software and augmented reality, from the first conversation to launch, built in Óbidos, Portugal."}
+HERO_ACCENT = {"pt-PT": "tocam e usam", "en": "touch and use"}
 FOUNDER = {"pt-PT": "Fundada por Thiago Oliveira, engenheiro de software com mais de 10 anos de experiência.",
            "en": "Founded by Thiago Oliveira, Software Engineer with over 10 years of experience."}
 RETIRED_COPY = re.compile(
@@ -876,8 +878,10 @@ def check_positioning(check, url, html, lang, is_home, is_about, is_services):
         h1 = re.search(r"<h1[^>]*>(.*?)</h1>", html, re.S).group(1)
         check(" ".join(re.sub(r"<[^>]+>", "", h1).split()) == HERO_H1[lang], f"{url}: o h1 do hero deve ser '{HERO_H1[lang]}'")
         lead = re.search(r'<section class="hero">.*?<p class="lead">(.*?)</p>', html, re.S)
-        check(lead is not None and lead.group(1).startswith(SUPPORT_LINE[lang]),
-              f"{url}: o lead do hero começa pela linha de apoio '{SUPPORT_LINE[lang]}'")
+        check(lead is not None and lead.group(1) == HERO_LEAD[lang],
+              f"{url}: o lead do hero deve ser '{HERO_LEAD[lang]}'")
+        check(lead is not None and HERO_ACCENT[lang] not in lead.group(1),
+              f"{url}: o lead do hero repete '{HERO_ACCENT[lang]}' do h1")
         check('<ul class="grid grid-5" data-reveal>' in html, f"{url}: os 5 serviços vão numa .grid-5")
     if is_services:
         ids = re.findall(r'<section class="service" id="([^"]+)"', html)
