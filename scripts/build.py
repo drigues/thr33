@@ -190,25 +190,32 @@ def ficha(section):
     return f'<dl class="ficha">\n          {rows}\n        </dl>'
 
 
+# Ilustração dos cartões de projeto (#59): SVG do site, gerado pelo scripts/art.py, sempre a 16:10.
+CARD_IMG = (320, 200)
+
+
 def project_card(item):
-    """Cartão de projeto (Vizia, Get It Vac): imagem opcional, etiqueta, nome, descrição, pontos e ações."""
-    parts = []
-    if "image" in item:
-        parts.append(picture(item["image"], cls="card-media"))
-    parts += [
-        f'<p class="examples-title">{item["eyebrow"]}</p>',
+    """Cartão de projeto (#59): o mesmo componente no Início e em Projetos, para todos os projetos.
+
+    Ilustração, nome, descrição curta e um link. O link cobre o cartão todo (.card-link::before); um link
+    externo abre noutro separador e leva a seta ↗ (CSS). data-tilt: o site.js inclina o cartão com o rato."""
+    image, link = item["image"], item["link"]
+    width, height = CARD_IMG
+    external = ' target="_blank" rel="noopener noreferrer"' if link.get("external") else ""
+    parts = [
+        f'<div class="card-media"><img src="{attr(image["src"])}" alt="{attr(image["alt"])}" width="{width}" '
+        f'height="{height}" loading="lazy" decoding="async"></div>',
         f'<h3 id="{item["id"]}" class="product-name">{item["name"]}</h3>',
         f'<p>{item["text"]}</p>',
+        f'<a class="card-link" href="{attr(link["href"])}"{external}>{link["text"]}</a>',
     ]
-    if "ticks" in item:
-        parts.append(ticks(item["ticks"]))
-    parts.append(actions(item["actions"]))
-    return '<li class="card card-project">\n            ' + "\n            ".join(parts) + "\n          </li>"
+    return '<li class="card card-project" data-tilt>\n            ' + "\n            ".join(parts) + "\n          </li>"
 
 
-def projects(section):
-    """Projetos lado a lado numa grelha de 2 (#53), com ações da secção por baixo."""
-    items = "\n          ".join(project_card(i) for i in section["items"])
+def projects(section, items):
+    """Projetos lado a lado numa grelha de 2 (#53), com ações da secção por baixo. Os cartões vêm da lista
+    "projects" de cada língua, a mesma no Início e em Projetos (#59)."""
+    items = "\n          ".join(project_card(i) for i in items)
     html = heading(section) + "\n        " + intro(section)
     html += f'\n        <ul class="grid grid-2 projects">\n          {items}\n        </ul>'
     if section.get("actions"):
@@ -239,6 +246,8 @@ def stats(section):
     html = heading(section) + "\n        " + intro(section) + f'\n        <dl class="stats">\n          {rows}\n        </dl>'
     if "note" in section:
         html += f'\n        <p class="note">{section["note"]}</p>'
+    if section.get("actions"):
+        html += "\n        " + actions(section["actions"])
     return html
 
 
@@ -298,7 +307,7 @@ def prose(section):
     return '    <div class="wrap prose">\n      ' + "\n\n      ".join(out) + "\n    </div>"
 
 
-def section_html(section, counter):
+def section_html(section, counter, project_items=()):
     kind = section["type"]
     if kind == "services":
         return services(section, counter)
@@ -317,7 +326,7 @@ def section_html(section, counter):
         "steps": lambda s: heading(s) + "\n        " + steps(s),
         "ticks": lambda s: heading(s) + "\n        " + ticks(s["items"]),
         "facts": lambda s: heading(s) + "\n        " + facts(s),
-        "projects": projects,
+        "projects": lambda s: projects(s, project_items),
         "features": features,
         "stats": stats,
         "text": lambda s: "\n        ".join(x for x in (heading(s), intro(s), actions(s["actions"])) if x),
@@ -396,12 +405,12 @@ def marquee(data):
             f'      </div>\n    </div>')
 
 
-def main_html(page):
+def main_html(page, project_items=()):
     counter = counter_from()
     blocks = [page_head(page["head"])]
     if "marquee" in page:
         blocks.append(marquee(page["marquee"]))
-    blocks += [section_html(s, counter) for s in page["sections"]]
+    blocks += [section_html(s, counter, project_items) for s in page["sections"]]
     return "\n\n".join(blocks)
 
 
@@ -542,7 +551,7 @@ def render(lang, name, layout, content):
         "head_meta": head_meta(site, other, page, url, pt_url, en_url),
         "skip": site["skip"],
         "header": site_header(site, lang, name, url_for(other_lang, name), other["html_lang"]),
-        "main": main_html(page),
+        "main": main_html(page, content[lang]["projects"]),
         "footer": site_footer(site, lang),
         "cookie_banner": cookie_banner(site, lang),
     })

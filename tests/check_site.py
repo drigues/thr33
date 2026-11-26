@@ -491,8 +491,9 @@ def check_cta(check, url, html, lang, has_cta):
         return
     cta = m.group(1)
     title = re.search(r'<h2 class="cta-title"[^>]*>(.*?)</h2>', cta, re.S)
-    check(title is not None and title.group(1).strip() == CTA_TITLE[lang],
-          f"{url}: o CTA final deve ter <h2 class=\"cta-title\">{CTA_TITLE[lang]}</h2>")
+    want = GET_IT_VAC_BUTTONS[lang][1] if url in GET_IT_VAC.values() else CTA_TITLE[lang]
+    check(title is not None and title.group(1).strip() == want,
+          f"{url}: o CTA final deve ter <h2 class=\"cta-title\">{want}</h2>")
     check(title is not None and "data-cta-scale" in title.group(0), f"{url}: o título do CTA precisa de data-cta-scale")
     check(re.search(rf'<a class="cta-email" href="mailto:{EMAIL}">{EMAIL}</a>', cta),
           f"{url}: o CTA final precisa do email {EMAIL} grande e clicável (a.cta-email)")
@@ -637,7 +638,7 @@ def check_no_js_hiding(check):
 
 # Fecho do redesign (#35): reduced motion, foco, imagens e CSP.
 # Funções do site.js que mexem em movimento: todas têm de respeitar prefers-reduced-motion.
-MOTION_FUNCTIONS = ["followPointer", "driftBlobs", "marqueeScroll", "countLabels", "revealGroups", "colourScenes",
+MOTION_FUNCTIONS = ["followPointer", "driftBlobs", "tiltCards", "marqueeScroll", "countLabels", "revealGroups", "colourScenes",
                     "magneticButtons", "ctaScale"]
 
 
@@ -943,8 +944,16 @@ CONTACT = {"pt-PT": "/contacto/", "en": "/en/contact/"}
 GET_IT_VAC_TAG = "Caso de estudo · Web Summit Lisboa 2026 (unofficial stand)"
 # Botão "Jogar": muda para /home quando a landing estiver no ar (#54), aqui e nos conteúdos.
 GET_IT_VAC_PLAY = "https://vac.navego.pt"
+# #59: debaixo dos Resultados só o botão "Jogar"; o bloco final pergunta "Quer um jogo…?" e leva ao contacto.
 GET_IT_VAC_BUTTONS = {"pt-PT": ("Jogar o Get It Vac", "Quer um jogo para o seu evento?"),
                       "en": ("Play Get It Vac", "Want a game for your event?")}
+GET_IT_VAC_RESULTS = {"pt-PT": "resultados", "en": "results"}
+# #59: sem resumo (datas, papel, estado), sem ESP32 (passa a microcontroladores), sem versão do Laravel nem alojamento.
+GET_IT_VAC_RETIRED = re.compile(r"ESP32|Laravel 12|\bForge\b|Hetzner|placeholder|O nosso papel|Our role|Feito em|Built in", re.I)
+GET_IT_VAC_MCU = {"pt-PT": "microcontroladores", "en": "microcontrollers"}
+# Cartões de projeto (#59): um só componente, igual no Início e em Projetos, com ilustração SVG do site.
+PROJECT_CARDS = [("vizia", "https://vizia.thr33.xyz", True), ("get-it-vac", None, False)]
+CARD_IMG = "/assets/img/projetos/"
 GET_IT_VAC_OG = "/assets/og-get-it-vac.png"
 GET_IT_VAC_NUMBERS = ["122", "67", "18", "13", "19", "80 s"]
 # Fica de fora: o repositório e planos futuros.
@@ -1015,23 +1024,33 @@ def check_get_it_vac(check, url, html, lang, page):
     main = html[html.index("<main"):html.index("</main>")]
     case, products = GET_IT_VAC[lang], PRODUCTS[lang]
     home = "/" if lang == "pt-PT" else "/en/"
-    if url in (case, products, home):
+    if url == case:
         # A parte noutra língua leva lang (WCAG 3.1.2): o texto visível é igual em PT e EN.
         other = '<span lang="en">unofficial stand</span>' if lang == "pt-PT" else '<span lang="pt-PT">Caso de estudo</span>'
         check(GET_IT_VAC_TAG in re.sub(r"<[^>]+>", "", main), f"{url}: falta a etiqueta '{GET_IT_VAC_TAG}'")
         check(other in main, f"{url}: a etiqueta precisa de {other}")
     if url in (products, home):
-        check(f'href="{case}"' in main, f"{url}: falta o cartão com link para {case}")
-        cards = re.findall(r'<li class="card card-project">(.*?)</li>\n', main, re.S)
-        check(len(cards) == 2 and VIZIA in cards[0] and "Get It Vac" in cards[1],
-              f"{url}: Vizia e depois Get It Vac, lado a lado em cartões .card-project")
-        check_pictures(check, url, main, False)
+        check_project_cards(check, url, main, case)
     if url != case:
         return
     play, event = GET_IT_VAC_BUTTONS[lang]
-    check(re.search(rf'<a class="btn btn-primary" href="{re.escape(GET_IT_VAC_PLAY)}" target="_blank" rel="noopener noreferrer">{play}</a>', main),
-          f"{url}: falta o botão '{play}' para {GET_IT_VAC_PLAY}")
-    check(f'href="{CONTACT[lang]}">{event}</a>' in main, f"{url}: falta o botão '{event}' para {CONTACT[lang]}")
+    results = re.search(rf'<section class="band"[^>]*aria-labelledby="{GET_IT_VAC_RESULTS[lang]}">(.*?)</section>', main, re.S)
+    body = results.group(1) if results else ""
+    check(re.search(rf'</dl>\s*(?:<p class="note">.*?</p>\s*)?<div class="actions">\s*<a class="btn btn-primary" '
+                    rf'href="{re.escape(GET_IT_VAC_PLAY)}" target="_blank" rel="noopener noreferrer">{play}</a>\s*</div>', body, re.S),
+          f"{url}: debaixo dos Resultados tem de estar o botão '{play}' para {GET_IT_VAC_PLAY}")
+    check(len(re.findall(r'class="btn ', main)) == 2, f"{url}: só o botão '{play}' e o do bloco final")
+    head = re.search(r'<section class="page-head">(.*?)</section>', main, re.S)
+    check(head is not None and 'class="actions"' not in head.group(1), f"{url}: os botões saem da cabeça da página")
+    check(re.search(r'id="(?:resumo|summary)"', main) is None, f"{url}: o bloco de resumo sai (#59)")
+    cta = re.search(r'<h2 class="cta-title"[^>]*>(.*?)</h2>', main, re.S)
+    check(cta is not None and cta.group(1) == event, f"{url}: o bloco final pergunta '{event}'")
+    check(re.search(rf'<section class="band scene-telha".*?href="{CONTACT[lang]}"', main, re.S),
+          f"{url}: o bloco final leva ao contacto ({CONTACT[lang]})")
+    plain = " ".join(re.sub(r"<[^>]+>", " ", html).split())
+    m = GET_IT_VAC_RETIRED.search(plain + " " + " ".join(re.findall(r'alt="([^"]*)"', html)))
+    check(not m, f"{url}: '{m.group(0) if m else ''}' sai da página (#59)")
+    check(GET_IT_VAC_MCU[lang] in plain.lower(), f"{url}: falta '{GET_IT_VAC_MCU[lang]}' (em vez de ESP32)")
     check(re.search(rf'<a href="{products}"[^>]*aria-current="true"', html), f"{url}: Projetos marcado como secção atual no menu")
     crumb = re.search(r'<nav class="breadcrumb" aria-label="[^"]+">(.*?)</nav>', main, re.S)
     check(crumb is not None and f'href="{products}"' in crumb.group(1) and 'aria-current="page"' in crumb.group(1),
@@ -1044,6 +1063,78 @@ def check_get_it_vac(check, url, html, lang, page):
     check(page.meta.get("og:image") == SITE + GET_IT_VAC_OG, f"{url}: og:image deve ser {GET_IT_VAC_OG}")
     check(len(re.findall(r"<picture\b", main)) == 5, f"{url}: hero, comando, multijogador, selfie e cartaz (5 imagens)")
     check_pictures(check, url, main, True)
+
+
+def card_shape(card):
+    """O esqueleto de um cartão: etiquetas e classes, sem texto nem atributos variáveis."""
+    return re.findall(r"<(\w+)(?:[^>]*?\sclass=\"([^\"]*)\")?", card)
+
+
+def check_project_cards(check, url, main, case):
+    cards = re.findall(r'<li class="card card-project" data-tilt>(.*?)</li>\n', main, re.S)
+    check(len(cards) == 2 and VIZIA in cards[0] and "Get It Vac" in cards[1],
+          f"{url}: Vizia e depois Get It Vac, lado a lado em cartões .card-project com data-tilt")
+    if len(cards) != 2:
+        return
+    check(card_shape(cards[0]) == card_shape(cards[1]), f"{url}: os dois cartões têm de ser o mesmo componente")
+    for card, (name, external, blank) in zip(cards, PROJECT_CARDS):
+        img = re.search(r'<div class="card-media"><img src="([^"]+)" alt="([^"]+)" width="(\d+)" height="(\d+)" '
+                        r'loading="lazy" decoding="async"></div>', card)
+        check(img is not None and img.group(1) == f"{CARD_IMG}{name}.svg", f"{url}: cartão {name} sem a ilustração {CARD_IMG}{name}.svg")
+        if img:
+            svg = file_for(img.group(1))
+            check(svg.exists(), f"{url}: {img.group(1)} em falta")
+            if svg.exists():
+                text = svg.read_text(encoding="utf-8")
+                refs = re.findall(r'(?:href|src)="([^"]+)"|url\((?!#)([^)]+)\)', text)
+                check(not refs, f"{img.group(1)}: sem pedidos externos nem ficheiros ligados ({refs[:2]})")
+                view = re.search(r'viewBox="0 0 ([\d.]+) ([\d.]+)"', text)
+                check(view is not None and abs(float(view.group(1)) / float(view.group(2)) - int(img.group(3)) / int(img.group(4))) < 0.01,
+                      f"{img.group(1)}: proporção diferente do width/height do <img>")
+        check(re.search(r'<h3 id="[\w-]+" class="product-name">', card), f"{url}: cartão {name} sem nome (h3.product-name)")
+        check(len(re.findall(r"<p>", card)) == 1, f"{url}: cartão {name} com uma descrição curta")
+        links = re.findall(r'<a class="card-link" href="([^"]+)"([^>]*)>', card)
+        href = external or case
+        check(len(links) == 1 and links[0][0] == href, f"{url}: cartão {name} com um só link, para {href}")
+        if links:
+            check(('target="_blank" rel="noopener noreferrer"' in links[0][1]) == blank,
+                  f"{url}: o link do cartão {name} {'abre' if blank else 'não abre'} noutro separador (↗)")
+
+
+def check_card_motion(check):
+    """#59: inclinação até 6° com parallax e brilho (hover e foco); entrada curta em ecrãs táteis; nada com reduced motion."""
+    js = (ROOT / SITE_JS.lstrip("/")).read_text(encoding="utf-8")
+    body = js_function(js, "tiltCards") or ""
+    check(re.search(r"MAX_TILT = 6\b", js), "site.js: a inclinação máxima dos cartões é 6° (MAX_TILT = 6)")
+    for needle in ("pointermove", "pointerleave", "(hover: none)", "IntersectionObserver", "MAX_TILT"):
+        check(needle in body, f"site.js: tiltCards sem {needle}")
+    css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
+    plain = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+    focus = re.search(r"\.card-project:focus-within\s*\{([^}]*)\}", plain)
+    check(focus is not None and "--rx" in focus.group(1) and "--ry" in focus.group(1),
+          "site.css: o foco do teclado (:focus-within) também inclina o cartão")
+    for deg in re.findall(r"--r[xy]:\s*(-?[\d.]+)deg", plain):
+        check(abs(float(deg)) <= 6, f"site.css: inclinação de {deg}° passa dos 6°")
+    check(re.search(r"\.card-project::after\s*\{[^}]*radial-gradient", plain), "site.css: falta o brilho (.card-project::after)")
+    check(re.search(r"\.card-project \.card-media img\s*\{[^}]*translate", plain), "site.css: falta o parallax da imagem")
+    check(re.search(r"\.card-link::before\s*\{[^}]*inset: 0", plain), "site.css: o link cobre o cartão (.card-link::before)")
+    reduced = re.search(r"@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{(.*?)\n\}", plain, re.S)
+    block = reduced.group(1) if reduced else ""
+    check(".card-project" in block and ".card-media img" in block, "site.css: reduced motion tira a inclinação e o parallax dos cartões")
+
+
+def check_art(check):
+    """#59: as imagens do Get It Vac são ilustrações feitas pelo scripts/art.py, sem o rótulo "placeholder"."""
+    import json
+    check(not (BASE / "scripts" / "placeholders.swift").exists(), "scripts/placeholders.swift sai (imagens provisórias com rótulo)")
+    images = json.loads((BASE / "src" / "images" / "images.json").read_text(encoding="utf-8"))
+    check("get-it-vac/cartao" not in images, "images.json: o cartão passa a SVG (public/assets/img/projetos/)")
+    for name in images:
+        svg = BASE / "src" / "images" / f"{name}.svg"
+        check(svg.exists() and "placeholder" not in svg.read_text(encoding="utf-8"),
+              f"src/images/{name}.svg em falta ou com 'placeholder' (gerar com scripts/art.py)")
+    for f in ("vizia/sala.svg", "vizia/icon.svg", "get-it-vac/logo.svg", "get-it-vac/sprites.json", "get-it-vac/cartaz.json"):
+        check((BASE / "src" / "art" / f).exists(), f"src/art/{f} em falta (assets dos projetos)")
 
 
 def check_privacy_links(check, pages_raw):
@@ -1074,6 +1165,8 @@ def main():
     check_grid3_css(check)
     check_hero_drift(check)
     check_icons_used(check)
+    check_card_motion(check)
+    check_art(check)
 
     titles, descriptions = {}, {}
     pages, pages_raw = {}, {}

@@ -18,9 +18,5 @@
   "get-it-vac/cartaz-ar": {
     "widths": [240, 360, 480],
     "sizes": "(min-width: 68rem) 15rem, (min-width: 52rem) calc(25vw - 2rem), calc(50vw - 1.5rem)"
-  },
-  "get-it-vac/cartao": {
-    "widths": [400, 640, 928],
-    "sizes": "(min-width: 68rem) 29rem, (min-width: 40rem) calc(50vw - 4rem), calc(100vw - 5rem)"
   }
 }
