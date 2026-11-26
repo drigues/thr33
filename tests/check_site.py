@@ -56,7 +56,10 @@ BASE = ROOT.parent
 CONTENT = {"pt": BASE / "src" / "content" / "pt.json", "en": BASE / "src" / "content" / "en.json"}
 SITE_JS = "/assets/js/site.js"
 # Hero (#27): etiqueta, gradiente-assinatura decorativo e títulos com reveal por linhas.
-HERO_LABEL = "(Thr33 Labs / ©2026) Óbidos, PT"
+# Reposicionamento (#52): o posicionamento vai na etiqueta, o h1 diz o que as pessoas fazem.
+HERO_LABEL = {"pt-PT": "(Thr33 Labs / ©2026) Estúdio de tecnologia interativa · Óbidos, PT",
+              "en": "(Thr33 Labs / ©2026) Interactive technology studio · Óbidos, PT"}
+HERO_H1 = {"pt-PT": "Tecnologia que as pessoas tocam e usam", "en": "Technology people touch and use"}
 HERO_BLOBS = 3
 # Serviços e ícones (#29): sprite Lucide servido pelo site, um ícone por serviço e por passo.
 ICONS_SVG = ROOT / "assets" / "icons.svg"
@@ -87,8 +90,8 @@ FICHA_LABEL = {"pt-PT": "(Ficha)", "en": "(Fact sheet)"}
 FICHA_EXTRA = {"pt-PT": {"Constituição": "2026", "D-U-N-S": "348597205"}, "en": {"Incorporated": "2026", "D-U-N-S": "348597205"}}
 # Marquee (#28): competências em loop na página inicial; a cópia para o loop não é lida duas vezes.
 MARQUEE = {
-    "pt-PT": ["Consultoria", "Web", "Apps", "UX/UI", "Realidade aumentada", "Laravel"],
-    "en": ["Consulting", "Web", "Apps", "UX/UI", "Augmented reality", "Laravel"],
+    "pt-PT": ["Consultoria", "Web", "Apps", "UX/UI", "Hardware", "Jogos", "Realidade aumentada", "Laravel"],
+    "en": ["Consulting", "Web", "Apps", "UX/UI", "Hardware", "Games", "Augmented reality", "Laravel"],
 }
 SITE_JS_MAX_GZIP = 8 * 1024    # o site.js comprimido
 JS_TOTAL_MAX_GZIP = 70 * 1024  # orçamento total de JS da spec (gzip)
@@ -381,12 +384,12 @@ def check_header(check, url, p):
     check(sum(1 for s in p.scripts if s.get("src", "").split("?")[0] == SITE_JS) == 1, f"{url}: sem {SITE_JS}")
 
 
-def check_hero(check, url, p, is_home):
+def check_hero(check, url, p, is_home, lang):
     check(all("data-split" in a for a in p.h1_attrs), f"{url}: o <h1> deve ter data-split (reveal por linhas)")
     if not is_home:
         check(not p.hero_gradient, f"{url}: o gradiente-assinatura é só da página inicial")
         return
-    check(p.hero_labels == [HERO_LABEL], f"{url}: etiqueta do hero deve ser '{HERO_LABEL}', é {p.hero_labels}")
+    check(p.hero_labels == [HERO_LABEL[lang]], f"{url}: etiqueta do hero deve ser '{HERO_LABEL[lang]}', é {p.hero_labels}")
     check(len(p.hero_gradient) == 1 and p.hero_gradient[0].get("aria-hidden") == "true",
           f"{url}: falta o .hero-gradient com aria-hidden=true")
     check(p.blobs == HERO_BLOBS, f"{url}: o gradiente deve ter {HERO_BLOBS} manchas, tem {p.blobs}")
@@ -871,7 +874,7 @@ def check_positioning(check, url, html, lang, is_home, is_about, is_services):
         check(POSITIONING[lang].split()[-1] in desc.lower() or POSITIONING[lang] in desc.lower(),
               f"{url}: meta description sem o posicionamento novo")
         h1 = re.search(r"<h1[^>]*>(.*?)</h1>", html, re.S).group(1)
-        check(POSITIONING[lang] in re.sub(r"<[^>]+>", "", h1).lower(), f"{url}: o h1 do hero tem de dizer '{POSITIONING[lang]}'")
+        check(" ".join(re.sub(r"<[^>]+>", "", h1).split()) == HERO_H1[lang], f"{url}: o h1 do hero deve ser '{HERO_H1[lang]}'")
         lead = re.search(r'<section class="hero">.*?<p class="lead">(.*?)</p>', html, re.S)
         check(lead is not None and lead.group(1).startswith(SUPPORT_LINE[lang]),
               f"{url}: o lead do hero começa pela linha de apoio '{SUPPORT_LINE[lang]}'")
@@ -1072,7 +1075,7 @@ def main():
                   f"{url}: sem preload de {FONT_PRELOAD}")
             check_header(check, url, p)
             check_labels(check, url, p)
-            check_hero(check, url, p, url in ("/", "/en/"))
+            check_hero(check, url, p, url in ("/", "/en/"), lang)
             check_marquee(check, url, p, lang, url in ("/", "/en/"))
             check_scenes(check, url, p)
             raw = file_for(url).read_text(encoding="utf-8")
