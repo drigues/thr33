@@ -146,6 +146,20 @@
           "h2": "Produtos e casos de estudo",
           "items": [
             {
+              "id": "vizia",
+              "eyebrow": "Produto próprio · Realidade aumentada",
+              "name": "Vizia - Arquitetura em AR",
+              "text": "Projetos de arquitetura, decoração e eventos em realidade aumentada, à escala real e no local.",
+              "actions": [
+                {
+                  "text": "Visitar vizia.thr33.xyz",
+                  "href": "https://vizia.thr33.xyz",
+                  "style": "ghost",
+                  "external": true
+                }
+              ]
+            },
+            {
               "id": "get-it-vac",
               "eyebrow": "Caso de estudo · Web Summit Lisboa 2026 (<span lang=\"en\">unofficial stand</span>)",
               "name": "Get It Vac",
@@ -159,20 +173,6 @@
                   "text": "Ler o caso de estudo",
                   "href": "/produtos/get-it-vac/",
                   "style": "primary"
-                }
-              ]
-            },
-            {
-              "id": "vizia",
-              "eyebrow": "Produto próprio · Realidade aumentada",
-              "name": "Vizia - Arquitetura em AR",
-              "text": "Projetos de arquitetura, decoração e eventos em realidade aumentada, à escala real e no local.",
-              "actions": [
-                {
-                  "text": "Visitar vizia.thr33.xyz",
-                  "href": "https://vizia.thr33.xyz",
-                  "style": "ghost",
-                  "external": true
                 }
               ]
             }

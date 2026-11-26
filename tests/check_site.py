@@ -901,7 +901,7 @@ PRODUCTS = {"pt-PT": "/produtos/", "en": "/en/products/"}
 CONTACT = {"pt-PT": "/contacto/", "en": "/en/contact/"}
 # Igual em PT e EN. "unofficial stand": nada sugere ligação oficial ao Web Summit.
 GET_IT_VAC_TAG = "Caso de estudo · Web Summit Lisboa 2026 (unofficial stand)"
-# TODO: mudar para https://vac.navego.pt/home quando a landing estiver no ar (e o href nos conteúdos).
+# Botão "Jogar": muda para /home quando a landing estiver no ar (#54), aqui e nos conteúdos.
 GET_IT_VAC_PLAY = "https://vac.navego.pt"
 GET_IT_VAC_BUTTONS = {"pt-PT": ("Jogar o Get It Vac", "Quer um jogo para o seu evento?"),
                       "en": ("Play Get It Vac", "Want a game for your event?")}
@@ -983,8 +983,8 @@ def check_get_it_vac(check, url, html, lang, page):
     if url in (products, home):
         check(f'href="{case}"' in main, f"{url}: falta o cartão com link para {case}")
         cards = re.findall(r'<li class="card card-project">(.*?)</li>\n', main, re.S)
-        check(len(cards) == 2 and any(VIZIA in c for c in cards) and any("Get It Vac" in c for c in cards),
-              f"{url}: Vizia e Get It Vac lado a lado em cartões .card-project")
+        check(len(cards) == 2 and VIZIA in cards[0] and "Get It Vac" in cards[1],
+              f"{url}: Vizia e depois Get It Vac, lado a lado em cartões .card-project")
         check_pictures(check, url, main, False)
     if url != case:
         return
