@@ -1,22 +1,28 @@
 {
   "get-it-vac/hero": {
-    "widths": [640, 1040, 2080],
+    "pixel_art": true,
+    "widths": [624, 1040, 2080],
     "sizes": "(min-width: 68rem) 65rem, (min-width: 40rem) calc(100vw - 3rem), calc(100vw - 2rem)"
   },
   "get-it-vac/comando": {
-    "widths": [480, 720, 992],
+    "pixel_art": true,
+    "widths": [496, 744, 992],
     "sizes": "(min-width: 68rem) 31rem, (min-width: 52rem) calc(50vw - 3rem), (min-width: 40rem) calc(100vw - 3rem), calc(100vw - 2rem)"
   },
   "get-it-vac/multijogador": {
-    "widths": [480, 720, 992],
+    "pixel_art": true,
+    "widths": [496, 744, 992],
     "sizes": "(min-width: 68rem) 31rem, (min-width: 52rem) calc(50vw - 3rem), (min-width: 40rem) calc(100vw - 3rem), calc(100vw - 2rem)"
   },
   "get-it-vac/selfie": {
+    "pixel_art": true,
     "widths": [240, 360, 480],
     "sizes": "(min-width: 68rem) 15rem, (min-width: 52rem) calc(25vw - 2rem), calc(50vw - 1.5rem)"
   },
   "get-it-vac/cartaz-ar": {
-    "widths": [240, 360, 480],
+    "pixel_art": true,
+    "pixel_grid": 240,
+    "widths": [240, 480],
     "sizes": "(min-width: 68rem) 15rem, (min-width: 52rem) calc(25vw - 2rem), calc(50vw - 1.5rem)"
   }
 }

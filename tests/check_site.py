@@ -3,7 +3,10 @@
 Corre com: python3 tests/check_site.py
 Sai com código 1 se alguma regra falhar.
 """
+import json
 import re
+import shutil
+import subprocess
 from datetime import date
 import sys
 from html.parser import HTMLParser
@@ -360,7 +363,6 @@ def shape(value):
 
 
 def check_content(check):
-    import json
     data = {}
     for lang, path in CONTENT.items():
         check(path.exists(), f"{path.relative_to(BASE)} em falta")
@@ -889,7 +891,6 @@ def check_positioning(check, url, html, lang, is_home, is_about, is_services):
         check(lead is not None and lead.group(1) == HERO_LEAD[lang], f"{url}: o lead do hero deve ser '{HERO_LEAD[lang]}'")
         check('<ul class="grid grid-3" data-reveal>' in html, f"{url}: os 3 serviços vão numa .grid-3")
         check('<ol class="grid grid-3" role="list" data-reveal>' in html, f"{url}: os 3 passos vão numa .grid-3")
-        h1 = re.search(r"<h1[^>]*>(.*?)</h1>", html, re.S).group(1)
         main = html[html.index("<main"):html.index("</main>")]
         cards = re.findall(r'<li class="card card-service">(.*?)</li>', main, re.S)
         check(all("<ul" not in c for c in cards), f"{url}: os cartões de serviço do Início levam só a descrição")
@@ -928,7 +929,6 @@ def check_hero_drift(check):
 
 def check_icons_used(check):
     """#58: cada ícone de src/icons/ é usado nos conteúdos; os que sobram vão para _PODE-DELETAR/."""
-    import json
     used = set()
     for path in CONTENT.values():
         used |= set(re.findall(r'"icon": "([\w-]+)"', path.read_text(encoding="utf-8")))
@@ -959,6 +959,7 @@ GET_IT_VAC_NUMBERS = ["122", "67", "18", "13", "19", "80 s"]
 # Fica de fora: o repositório e planos futuros.
 GET_IT_VAC_OUT = re.compile(r"github|repositório|repository|roadmap|planos futuros|future plans|\boficial\b|\bofficial\b", re.I)
 IMG_DIR = "/assets/img/"
+PICTURES = json.loads((BASE / "src" / "images" / "images.json").read_text(encoding="utf-8"))
 
 
 def image_size(path):
@@ -986,7 +987,12 @@ def check_pictures(check, url, html, hero_first):
     pics = re.findall(r"<picture\b[^>]*>(.*?)</picture>", html, re.S)
     for n, pic in enumerate(pics):
         sources = re.findall(r'<source type="([^"]+)" srcset="([^"]+)" sizes="([^"]+)">', pic)
-        check([t for t, _, _ in sources] == ["image/avif", "image/webp"], f"{url}: <picture> {n + 1} sem AVIF e WebP, por esta ordem")
+        # Pixel art (revisão do #61): só WebP sem perdas, que é mais leve e exato do que o AVIF.
+        first = re.search(rf'{IMG_DIR}([\w/-]+)-\d+\.\w+', sources[0][1]) if sources else None
+        pixel = bool(first and PICTURES.get(first.group(1), {}).get("pixel_art"))
+        want = ["image/webp"] if pixel else ["image/avif", "image/webp"]
+        check([t for t, _, _ in sources] == want,
+              f"{url}: <picture> {n + 1} com {[t for t, _, _ in sources]}, esperado {want}")
         img = re.search(r"<img\b([^>]*)>", pic)
         check(img is not None, f"{url}: <picture> {n + 1} sem <img>")
         if not sources or img is None:
@@ -1006,7 +1012,8 @@ def check_pictures(check, url, html, hero_first):
         for kind, srcset, sizes in sources:
             ext = {"image/avif": ".avif", "image/webp": ".webp"}.get(kind, "?")
             entries = [e.strip().rsplit(" ", 1) for e in srcset.split(",")]
-            check(len(entries) == 3, f"{url}: srcset {kind} com {len(entries)} larguras (devem ser 3)")
+            # A pixel art pode ter 2 larguras: só valem múltiplos da grelha de píxeis até ao limite (cap).
+            check(len(entries) == 3 or (pixel and len(entries) == 2), f"{url}: srcset {kind} com {len(entries)} larguras (devem ser 3)")
             cap = max((float(x) for x in re.findall(r"([\d.]+)rem\)?(?:,|$)", sizes)), default=0) * 16 * 2
             for src, desc in entries:
                 f = file_for(src)
@@ -1125,7 +1132,6 @@ def check_card_motion(check):
 
 def check_art(check):
     """#59: as imagens do Get It Vac são ilustrações feitas pelo scripts/art.py, sem o rótulo "placeholder"."""
-    import json
     check(not (BASE / "scripts" / "placeholders.swift").exists(), "scripts/placeholders.swift sai (imagens provisórias com rótulo)")
     images = json.loads((BASE / "src" / "images" / "images.json").read_text(encoding="utf-8"))
     check("get-it-vac/cartao" not in images, "images.json: o cartão passa a SVG (public/assets/img/projetos/)")
@@ -1135,6 +1141,94 @@ def check_art(check):
               f"src/images/{name}.svg em falta ou com 'placeholder' (gerar com scripts/art.py)")
     for f in ("vizia/sala.svg", "vizia/icon.svg", "get-it-vac/logo.svg", "get-it-vac/sprites.json", "get-it-vac/cartaz.json"):
         check((BASE / "src" / "art" / f).exists(), f"src/art/{f} em falta (assets dos projetos)")
+
+
+# Revisão do #60 e do #61: o site.js e o consent.js têm de ser JS válido. O check_site.py não corre o JS,
+# por isso confirma que (), [] e {} estão equilibrados (sem contar strings, comentários e regex) e, se o
+# Node existir, corre `node --check`. Um conflito mal resolvido deixou o site.js sem uma chaveta.
+JS_DIR = ROOT / "assets" / "js"
+REGEX_BEFORE = "(,=:[!&|?{};+-*%<>~^"
+
+
+def js_brackets(js):
+    """O primeiro problema de equilíbrio de (), [] e {} no JS, ou None."""
+    pairs, stack, i, prev = {")": "(", "]": "[", "}": "{"}, [], 0, ""
+    line = lambda at: js.count("\n", 0, at) + 1
+    while i < len(js):
+        c = js[i]
+        if js.startswith("//", i):
+            end = js.find("\n", i)
+            i = len(js) if end < 0 else end
+            continue
+        if js.startswith("/*", i):
+            end = js.find("*/", i + 2)
+            if end < 0:
+                return f"comentário por fechar (linha {line(i)})"
+            i = end + 2
+            continue
+        if c in "'\"`" or (c == "/" and prev in ("",) + tuple(REGEX_BEFORE)):
+            j, in_class = i + 1, False
+            while j < len(js) and (js[j] != c or in_class) and js[j] != "\n":
+                if js[j] == "\\":
+                    j += 1
+                elif c == "/" and js[j] in "[]":
+                    in_class = js[j] == "["
+                j += 1
+            if j >= len(js) or js[j] != c:
+                return f"{'regex' if c == '/' else 'string'} por fechar (linha {line(i)})"
+            i, prev = j + 1, c
+            continue
+        if c in "([{":
+            stack.append((c, i))
+        elif c in ")]}":
+            if not stack or stack[-1][0] != pairs[c]:
+                return f"'{c}' sem par (linha {line(i)})"
+            stack.pop()
+        if not c.isspace():
+            prev = c
+        i += 1
+    if stack:
+        c, at = stack[-1]
+        return f"'{c}' por fechar (linha {line(at)})"
+    return None
+
+
+def check_js_syntax(check):
+    node = shutil.which("node")
+    for f in sorted(JS_DIR.glob("*.js")):
+        problem = js_brackets(f.read_text(encoding="utf-8"))
+        check(problem is None, f"assets/js/{f.name}: {problem}")
+        if node:
+            r = subprocess.run([node, "--check", str(f)], capture_output=True, text=True)
+            err = (r.stderr.strip().splitlines() or [""])
+            check(r.returncode == 0, f"assets/js/{f.name}: node --check falhou ({err[-1] if r.returncode else ''})")
+
+
+# Pixel art (revisão do #61): as imagens do scripts/art.py só ficam nítidas em múltiplos inteiros da
+# grelha de píxeis (a largura do SVG, ou "pixel_grid" se o desenho usa meios píxeis), desenhadas do SVG
+# em cada largura (pixel_art no images.json). Reamostrar a mestre desfocava os píxeis e as versões
+# pequenas pesavam mais do que as grandes. Vão só em WebP sem perdas (VP8L): poucas cores em blocos
+# ficam com 1 a 7 KB e exatas; o AVIF sai mais pesado.
+def check_pixel_art(check):
+    for name, spec in PICTURES.items():
+        svg = BASE / "src" / "images" / f"{name}.svg"
+        if not svg.exists():
+            continue
+        check(spec.get("pixel_art") is True, f"images.json: {name} é pixel art (src/images/{name}.svg) e precisa de \"pixel_art\": true")
+        view = re.search(r'viewBox="0 0 ([\d.]+) ([\d.]+)"', svg.read_text(encoding="utf-8"))
+        base = spec.get("pixel_grid") or (float(view.group(1)) if view else 0)
+        if "0.5" in svg.read_text(encoding="utf-8") and "pixel_grid" not in spec:
+            check(False, f"images.json: {name} usa meios píxeis (0.5) e precisa de \"pixel_grid\" (o dobro da largura do SVG)")
+        for w in spec["widths"]:
+            check(base and (w / base).is_integer(),
+                  f"images.json: {name} a {w} px não é múltiplo inteiro de {base:g} px (a grelha de píxeis)")
+        stem = ROOT / "assets" / "img" / name
+        widths = sorted(spec["widths"])
+        files = [Path(f"{stem}-{w}.webp") for w in widths]
+        for f in files:
+            check(f.exists() and f.read_bytes()[12:16] == b"VP8L", f"{f.name}: a pixel art vai em WebP sem perdas (cwebp -lossless)")
+        avif = [Path(f"{stem}-{w}.avif").name for w in widths if Path(f"{stem}-{w}.avif").exists()]
+        check(not avif, f"{name}: a pixel art não leva AVIF (mover para _PODE-DELETAR/: {', '.join(avif)})")
 
 
 def check_privacy_links(check, pages_raw):
@@ -1167,6 +1261,8 @@ def main():
     check_icons_used(check)
     check_card_motion(check)
     check_art(check)
+    check_js_syntax(check)
+    check_pixel_art(check)
 
     titles, descriptions = {}, {}
     pages, pages_raw = {}, {}
