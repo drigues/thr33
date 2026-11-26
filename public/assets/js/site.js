@@ -83,6 +83,55 @@ function driftBlobs(hero) {
   document.addEventListener("visibilitychange", sync);
 }
 
+/* Cartões de projeto (#59): com rato, o cartão inclina até MAX_TILT graus para o lado do cursor, a imagem
+   faz parallax e o brilho segue o cursor (variáveis CSS). Em ecrãs táteis (sem hover) o cartão faz só uma
+   entrada curta quando aparece. O foco do teclado é só CSS (:focus-within). Nada disto com reduced motion. */
+var MAX_TILT = 6;
+function tiltCards() {
+  var cards = document.querySelectorAll("[data-tilt]");
+  if (reducedMotion || !cards.length) return;
+  if (window.matchMedia("(hover: none)").matches) {
+    if (!("IntersectionObserver" in window)) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        e.target.classList.add("is-entering");
+        e.target.addEventListener("animationend", function () { e.target.classList.remove("is-entering"); }, { once: true });
+      });
+    }, { threshold: 0.35 });
+    Array.prototype.forEach.call(cards, function (card) { io.observe(card); });
+    return;
+  }
+  var props = ["--rx", "--ry", "--px", "--py", "--gx", "--gy"];
+  Array.prototype.forEach.call(cards, function (card) {
+    var frame = 0, last = null;
+    card.addEventListener("pointermove", function (e) {
+      if (e.pointerType !== "mouse") return;
+      last = e;
+      if (frame) return;
+      frame = requestAnimationFrame(function () {
+        frame = 0;
+        var r = card.getBoundingClientRect();
+        var x = Math.max(-1, Math.min(1, (last.clientX - r.left) / r.width * 2 - 1));
+        var y = Math.max(-1, Math.min(1, (last.clientY - r.top) / r.height * 2 - 1));
+        card.classList.add("is-tilting");
+        card.style.setProperty("--rx", (-y * MAX_TILT).toFixed(2) + "deg");
+        card.style.setProperty("--ry", (x * MAX_TILT).toFixed(2) + "deg");
+        card.style.setProperty("--px", x.toFixed(3));
+        card.style.setProperty("--py", y.toFixed(3));
+        card.style.setProperty("--gx", ((x + 1) * 50).toFixed(1) + "%");
+        card.style.setProperty("--gy", ((y + 1) * 50).toFixed(1) + "%");
+      });
+    });
+    card.addEventListener("pointerleave", function () {
+      if (frame) { cancelAnimationFrame(frame); frame = 0; }
+      card.classList.remove("is-tilting");
+      props.forEach(function (p) { card.style.removeProperty(p); });
+    });
+  });
+}
+
 /* Marquee: a velocidade sobe com a velocidade do scroll e o sentido segue o do scroll;
    depois volta devagar à velocidade base. O loop em si é a animação CSS. */
 function marqueeScroll(el) {
@@ -206,6 +255,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (!reducedMotion) Array.prototype.forEach.call(document.querySelectorAll("[data-split]"), splitLines);
   revealGroups();
   colourScenes();
+  tiltCards();
   magneticButtons();
   Array.prototype.forEach.call(document.querySelectorAll("[data-cta-scale]"), ctaScale);
   Array.prototype.forEach.call(document.querySelectorAll("[data-marquee]"), marqueeScroll);

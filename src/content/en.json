@@ -31,6 +31,35 @@
       "reject": "Reject analytics cookies"
     }
   },
+  "projects": [
+    {
+      "id": "vizia",
+      "name": "Vizia - Arquitetura em AR",
+      "text": "Architecture, interior design and event projects in augmented reality, at real scale and on site.",
+      "image": {
+        "src": "/assets/img/projetos/vizia.svg",
+        "alt": "Vizia illustration: a sofa in augmented reality in an empty room, at real scale, seen through a phone."
+      },
+      "link": {
+        "text": "Visit vizia.thr33.xyz",
+        "href": "https://vizia.thr33.xyz",
+        "external": true
+      }
+    },
+    {
+      "id": "get-it-vac",
+      "name": "Get It Vac",
+      "text": "An arcade game controlled by an internet-connected mini robot vacuum, with phone multiplayer. We built it in 5 days.",
+      "image": {
+        "src": "/assets/img/projetos/get-it-vac.svg",
+        "alt": "Get It Vac poster in pixel art: the navigators on their robot vacuums, in front of Lisbon's houses."
+      },
+      "link": {
+        "text": "Read the case study",
+        "href": "/en/products/get-it-vac/"
+      }
+    }
+  ],
   "pages": {
     "inicio": {
       "title": "Thr33 Labs · Interactive technology studio in Óbidos, Portugal",
@@ -124,39 +153,6 @@
           "id": "product",
           "label": "Projects",
           "h2": "Products and case studies",
-          "items": [
-            {
-              "id": "vizia",
-              "eyebrow": "Our own product · Augmented reality",
-              "name": "Vizia - Arquitetura em AR",
-              "text": "Architecture, interior design and event projects in augmented reality, at real scale and on site.",
-              "actions": [
-                {
-                  "text": "Visit vizia.thr33.xyz",
-                  "href": "https://vizia.thr33.xyz",
-                  "style": "ghost",
-                  "external": true
-                }
-              ]
-            },
-            {
-              "id": "get-it-vac",
-              "eyebrow": "<span lang=\"pt-PT\">Caso de estudo</span> · Web Summit Lisboa 2026 (unofficial stand)",
-              "name": "Get It Vac",
-              "text": "An arcade game controlled by an internet-connected mini robot vacuum, with phone multiplayer, photos and augmented reality. We built it in 5 days.",
-              "image": {
-                "name": "get-it-vac/cartao",
-                "alt": "Get It Vac screen with the mini robot vacuum racing through Lisbon in pixel art."
-              },
-              "actions": [
-                {
-                  "text": "Read the case study",
-                  "href": "/en/products/get-it-vac/",
-                  "style": "primary"
-                }
-              ]
-            }
-          ],
           "actions": [
             {
               "text": "See products and projects",
@@ -389,45 +385,7 @@
           "type": "projects",
           "id": "projects",
           "label": "Projects",
-          "h2": "Products and case studies",
-          "items": [
-            {
-              "id": "vizia",
-              "eyebrow": "Our own product · Augmented reality",
-              "name": "Vizia - Arquitetura em AR",
-              "text": "Architecture, interior design and event projects in augmented reality, at real scale and on site. For architects, interior designers and event planners who want clients to see the result before going ahead.",
-              "ticks": [
-                "Models in augmented reality (AR), at real scale.",
-                "Works on phones and tablets.",
-                "Built for presenting on site, with the client."
-              ],
-              "actions": [
-                {
-                  "text": "Visit vizia.thr33.xyz",
-                  "href": "https://vizia.thr33.xyz",
-                  "style": "primary",
-                  "external": true
-                }
-              ]
-            },
-            {
-              "id": "get-it-vac",
-              "eyebrow": "<span lang=\"pt-PT\">Caso de estudo</span> · Web Summit Lisboa 2026 (unofficial stand)",
-              "name": "Get It Vac",
-              "text": "An arcade game controlled by an internet-connected mini robot vacuum, with phone multiplayer, photos and augmented reality. We built it in 5 days.",
-              "image": {
-                "name": "get-it-vac/cartao",
-                "alt": "Get It Vac screen with the mini robot vacuum racing through Lisbon in pixel art."
-              },
-              "actions": [
-                {
-                  "text": "Read the case study",
-                  "href": "/en/products/get-it-vac/",
-                  "style": "primary"
-                }
-              ]
-            }
-          ]
+          "h2": "Products and case studies"
         },
         {
           "type": "text",
@@ -796,45 +754,12 @@
         "h1": "Get It Vac",
         "eyebrow": "<span lang=\"pt-PT\">Caso de estudo</span> · Web Summit Lisboa 2026 (unofficial stand)",
         "lead": "An arcade game controlled by an internet-connected mini robot vacuum, with phone multiplayer, photos, augmented reality and anonymous data. We built it in 5 days.",
-        "actions": [
-          {
-            "text": "Play Get It Vac",
-            "href": "https://vac.navego.pt",
-            "style": "primary",
-            "external": true
-          },
-          {
-            "text": "Want a game for your event?",
-            "href": "/en/contact/",
-            "style": "ghost"
-          }
-        ],
         "image": {
           "name": "get-it-vac/hero",
-          "alt": "Get It Vac screen: the mini robot vacuum on a pixel art race through Lisbon's neighbourhoods."
+          "alt": "Illustration of the Get It Vac screen: the mini robot vacuum on a pixel art race through Lisbon's neighbourhoods."
         }
       },
       "sections": [
-        {
-          "type": "facts",
-          "id": "summary",
-          "label": "Summary",
-          "h2": "Summary",
-          "items": [
-            {
-              "term": "Built in",
-              "value": "5 days, 5 to 10 November 2026"
-            },
-            {
-              "term": "Our role",
-              "value": "Design, code and hardware"
-            },
-            {
-              "term": "Status",
-              "value": "Live"
-            }
-          ]
-        },
         {
           "type": "ticks",
           "id": "challenge",
@@ -858,11 +783,11 @@
             },
             {
               "title": "The controller",
-              "text": "An ESP32 with a joystick inside the robot vacuum, connected over Wi-Fi to a WebSocket relay that passes each move to the game.",
+              "text": "Microcontrollers and a joystick inside the robot vacuum, connected over Wi-Fi to a WebSocket relay that passes each move to the game.",
               "images": [
                 {
                   "name": "get-it-vac/comando",
-                  "alt": "Mini robot vacuum opened up, showing the ESP32 and the joystick that control the game."
+                  "alt": "Illustration of the controller: the mini robot vacuum opened up, with the microcontrollers and the joystick that control the game."
                 }
               ]
             },
@@ -872,7 +797,7 @@
               "images": [
                 {
                   "name": "get-it-vac/multijogador",
-                  "alt": "Phones playing Get It Vac in multiplayer, next to the QR code to join."
+                  "alt": "Illustration of multiplayer: three phones playing Get It Vac, next to the QR code to join."
                 }
               ]
             },
@@ -882,11 +807,11 @@
               "images": [
                 {
                   "name": "get-it-vac/selfie",
-                  "alt": "Selfie with a blue and white tile frame, taken in the Get It Vac phone version."
+                  "alt": "Illustration of the selfie: a navigator with the blue and white tile frame from the phone version."
                 },
                 {
                   "name": "get-it-vac/cartaz-ar",
-                  "alt": "Phone pointed at the Get It Vac poster, with the robot in augmented reality on top."
+                  "alt": "Illustration of the AR poster: a phone pointed at the Get It Vac poster, with the robot in augmented reality on top."
                 }
               ]
             },
@@ -904,7 +829,7 @@
           "items": [
             {
               "term": "Hardware",
-              "value": "ESP32 (C++)"
+              "value": "Microcontrollers (C++)"
             },
             {
               "term": "Real time",
@@ -912,7 +837,7 @@
             },
             {
               "term": "Server and data",
-              "value": "Laravel 12 and Postgres"
+              "value": "Laravel and Postgres"
             },
             {
               "term": "Game",
@@ -921,10 +846,6 @@
             {
               "term": "Augmented reality",
               "value": "MindAR"
-            },
-            {
-              "term": "Hosting",
-              "value": "Forge and Hetzner"
             }
           ]
         },
@@ -956,7 +877,15 @@
               "term": "median session"
             }
           ],
-          "note": "Multiplayer kept people playing. We measured everything with no cookies and no personal data."
+          "note": "Multiplayer kept people playing. We measured everything with no cookies and no personal data.",
+          "actions": [
+            {
+              "text": "Play Get It Vac",
+              "href": "https://vac.navego.pt",
+              "style": "primary",
+              "external": true
+            }
+          ]
         },
         {
           "type": "ticks",
@@ -973,11 +902,11 @@
         {
           "type": "cta",
           "id": "talk",
-          "h2": "Shall we talk?",
+          "h2": "Want a game for your event?",
           "text": "We build custom games for events, activations and campaigns. Tell us the idea and the timeline, and we will reply with next steps.",
           "actions": [
             {
-              "text": "Want a game for your event?",
+              "text": "Contact Thr33 Labs",
               "href": "/en/contact/",
               "style": "primary"
             }

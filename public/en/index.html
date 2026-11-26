@@ -9,9 +9,9 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="/assets/fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/css/tokens.css?v=926a9147">
-  <link rel="stylesheet" href="/assets/site.css?v=32d96b8b">
+  <link rel="stylesheet" href="/assets/site.css?v=142b7719">
   <!-- Sem defer: põe a classe .js no html antes de pintar; o resto corre no DOMContentLoaded. -->
-  <script src="/assets/js/site.js?v=c30f7546"></script>
+  <script src="/assets/js/site.js?v=3ffa37fd"></script>
   <!-- Consentimento de cookies e Google Analytics: o gtag.js só se pede depois de aceitar. -->
   <script src="/assets/js/consent.js?v=83086bf5" defer></script>
   <meta name="description" content="An interactive technology studio in Óbidos, Portugal: iOS and Android apps, platforms and interactive experiences, from software to hardware, UX-led.">
@@ -124,22 +124,17 @@
         <h2 id="product">Products and case studies</h2>
         
         <ul class="grid grid-2 projects">
-          <li class="card card-project">
-            <p class="examples-title">Our own product · Augmented reality</p>
+          <li class="card card-project" data-tilt>
+            <div class="card-media"><img src="/assets/img/projetos/vizia.svg" alt="Vizia illustration: a sofa in augmented reality in an empty room, at real scale, seen through a phone." width="320" height="200" loading="lazy" decoding="async"></div>
             <h3 id="vizia" class="product-name">Vizia - Arquitetura em AR</h3>
             <p>Architecture, interior design and event projects in augmented reality, at real scale and on site.</p>
-            <div class="actions">
-          <a class="btn btn-ghost" href="https://vizia.thr33.xyz" target="_blank" rel="noopener noreferrer">Visit vizia.thr33.xyz</a>
-        </div>
+            <a class="card-link" href="https://vizia.thr33.xyz" target="_blank" rel="noopener noreferrer">Visit vizia.thr33.xyz</a>
           </li>
-          <li class="card card-project">
-            <picture class="card-media"><source type="image/avif" srcset="/assets/img/get-it-vac/cartao-400.avif 400w, /assets/img/get-it-vac/cartao-640.avif 640w, /assets/img/get-it-vac/cartao-928.avif 928w" sizes="(min-width: 68rem) 29rem, (min-width: 40rem) calc(50vw - 4rem), calc(100vw - 5rem)"><source type="image/webp" srcset="/assets/img/get-it-vac/cartao-400.webp 400w, /assets/img/get-it-vac/cartao-640.webp 640w, /assets/img/get-it-vac/cartao-928.webp 928w" sizes="(min-width: 68rem) 29rem, (min-width: 40rem) calc(50vw - 4rem), calc(100vw - 5rem)"><img src="/assets/img/get-it-vac/cartao-640.webp" alt="Get It Vac screen with the mini robot vacuum racing through Lisbon in pixel art." width="928" height="580" loading="lazy" decoding="async"></picture>
-            <p class="examples-title"><span lang="pt-PT">Caso de estudo</span> · Web Summit Lisboa 2026 (unofficial stand)</p>
+          <li class="card card-project" data-tilt>
+            <div class="card-media"><img src="/assets/img/projetos/get-it-vac.svg" alt="Get It Vac poster in pixel art: the navigators on their robot vacuums, in front of Lisbon&#x27;s houses." width="320" height="200" loading="lazy" decoding="async"></div>
             <h3 id="get-it-vac" class="product-name">Get It Vac</h3>
-            <p>An arcade game controlled by an internet-connected mini robot vacuum, with phone multiplayer, photos and augmented reality. We built it in 5 days.</p>
-            <div class="actions">
-          <a class="btn btn-primary" href="/en/products/get-it-vac/">Read the case study</a>
-        </div>
+            <p>An arcade game controlled by an internet-connected mini robot vacuum, with phone multiplayer. We built it in 5 days.</p>
+            <a class="card-link" href="/en/products/get-it-vac/">Read the case study</a>
           </li>
         </ul>
         <div class="actions">
