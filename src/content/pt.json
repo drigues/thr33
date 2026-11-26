@@ -2,7 +2,7 @@
   "site": {
     "html_lang": "pt-PT",
     "og_locale": "pt_PT",
-    "og_image_alt": "Thr33 Labs, estúdio de produto digital",
+    "og_image_alt": "Thr33 Labs, estúdio de tecnologia interativa",
     "other_label": "EN",
     "other_name": "English",
     "nav_label": "Navegação principal",
@@ -33,14 +33,14 @@
   },
   "pages": {
     "inicio": {
-      "title": "Thr33 Labs · Estúdio de produto digital em Óbidos",
-      "description": "A Thr33 Labs desenha e desenvolve sites, aplicações e experiências em realidade aumentada para empresas, a partir de Óbidos, Portugal.",
+      "title": "Thr33 Labs · Estúdio de tecnologia interativa em Óbidos",
+      "description": "Estúdio de tecnologia interativa em Óbidos: hardware, software e realidade aumentada para experiências que as pessoas tocam e usam.",
       "head": {
         "kind": "hero",
         "label": "Thr33 Labs / ©2026",
         "label_after": "Óbidos, PT",
-        "h1": "Produtos digitais que as pessoas <span class=\"accent\">usam</span>",
-        "lead": "A Thr33 Labs é um estúdio de produto digital em Óbidos. Desenhamos e desenvolvemos sites, aplicações e experiências em realidade aumentada para empresas, da primeira conversa ao lançamento.",
+        "h1": "Estúdio de tecnologia <span class=\"accent\">interativa</span>",
+        "lead": "Hardware, software e realidade aumentada para experiências que as pessoas tocam e usam. Da primeira conversa ao lançamento, a partir de Óbidos.",
         "actions": [
           {
             "text": "Pedir uma proposta",
@@ -63,8 +63,7 @@
           "Apps",
           "UX/UI",
           "Realidade aumentada",
-          "Laravel",
-          "3D"
+          "Laravel"
         ]
       },
       "sections": [
@@ -72,7 +71,7 @@
           "type": "cards",
           "id": "o-que-fazemos",
           "h2": "O que fazemos",
-          "columns": 4,
+          "columns": 5,
           "items": [
             {
               "title": "Consultoria em informática",
@@ -85,28 +84,38 @@
               "icon": "compass"
             },
             {
-              "title": "Web e aplicações",
-              "text": "Sites, plataformas e aplicações iOS e Android, do protótipo à publicação.",
+              "title": "Produto digital",
+              "text": "Sites, plataformas e aplicações iOS e Android, com UX/UI testada com quem os vai usar.",
               "link": {
                 "text": "Ver mais",
-                "sr": "sobre web e aplicações",
-                "href": "/servicos/#desenvolvimento"
+                "sr": "sobre produto digital",
+                "href": "/servicos/#produto-digital"
               },
               "icon": "code"
             },
             {
-              "title": "UX e UI",
-              "text": "Interfaces claras e acessíveis, testadas com quem as vai usar.",
+              "title": "Hardware e experiências interativas",
+              "text": "Dispositivos ligados à internet, sensores e protótipos, com o software que os põe a funcionar.",
               "link": {
                 "text": "Ver mais",
-                "sr": "sobre UX e UI",
-                "href": "/servicos/#design"
+                "sr": "sobre hardware e experiências interativas",
+                "href": "/servicos/#hardware"
               },
-              "icon": "pen-tool"
+              "icon": "cpu"
+            },
+            {
+              "title": "Jogos para marcas",
+              "text": "Jogos à medida para eventos, ativações, publicidade e interação com clientes.",
+              "link": {
+                "text": "Ver mais",
+                "sr": "sobre jogos para marcas",
+                "href": "/servicos/#jogos"
+              },
+              "icon": "gamepad-2"
             },
             {
               "title": "Realidade aumentada",
-              "text": "Modelos 3D no espaço real, à escala, a partir do telemóvel ou do tablet.",
+              "text": "Modelos em realidade aumentada (AR), à escala, a partir do telemóvel ou do tablet.",
               "link": {
                 "text": "Ver mais",
                 "sr": "sobre realidade aumentada",
@@ -124,6 +133,7 @@
           "items": [
             "PME e startups que querem lançar ou renovar um produto digital.",
             "Equipas que precisam de reforço técnico ou de uma segunda opinião sobre um projeto.",
+            "Marcas e organizadores de eventos que querem ativações e jogos.",
             "Arquitetos, decoradores e organizadores de eventos que querem mostrar projetos em realidade aumentada."
           ]
         },
@@ -175,7 +185,7 @@
           "id": "sobre-nos",
           "label": "Sobre",
           "h2": "Quem somos",
-          "text": "Um estúdio independente de produto digital em Óbidos. Quem fundou a empresa acompanha cada projeto do início ao fim, sem intermediários.",
+          "text": "Um estúdio independente de tecnologia interativa em Óbidos. Juntamos hardware, software e realidade aumentada, e acompanhamos cada projeto da primeira conversa ao lançamento.",
           "actions": [
             {
               "text": "Conhecer a Thr33 Labs",
@@ -200,12 +210,12 @@
       ]
     },
     "sobre": {
-      "title": "Sobre a Thr33 Labs · Estúdio de produto digital",
-      "description": "Quem somos: a Thr33 Labs é um estúdio independente de produto digital, constituído em 2026, com sede em Óbidos, Portugal.",
+      "title": "Sobre a Thr33 Labs · Estúdio de tecnologia interativa",
+      "description": "Quem somos: a Thr33 Labs é um estúdio independente de tecnologia interativa, constituído em 2026, com sede em Óbidos, Portugal.",
       "head": {
         "kind": "page",
         "label": "Sobre",
-        "h1": "Um estúdio pequeno, perto de quem usa",
+        "h1": "Um estúdio de tecnologia interativa em Óbidos",
         "lead": "A Thr33 Labs é a marca da THR33XYZ LABS - TECNOLOGIA E CONSULTORIA, UNIPESSOAL LDA, uma empresa constituída em 2026 com sede em Óbidos, Portugal."
       },
       "sections": [
@@ -214,9 +224,10 @@
           "id": "quem-somos",
           "h2": "Quem somos",
           "paragraphs": [
-            "Somos um estúdio independente de produto digital. A empresa é gerida por quem a fundou, que acompanha cada projeto do início ao fim, sem intermediários.",
-            "Quando um projeto o pede, juntamos parceiros de confiança em design, desenvolvimento e 3D, sempre com um único ponto de contacto do lado da Thr33 Labs.",
-            "Para além do trabalho para clientes, desenvolvemos produtos próprios, como o <a href=\"/produtos/\">Vizia</a>, de realidade aumentada."
+            "Somos um estúdio independente de tecnologia interativa. Juntamos hardware, software e realidade aumentada para criar experiências que as pessoas tocam e usam, de sites e aplicações a jogos para eventos.",
+            "Quando um projeto o pede, juntamos parceiros de confiança em design, desenvolvimento e realidade aumentada, sempre com um único ponto de contacto do lado da Thr33 Labs.",
+            "Para além do trabalho para clientes, desenvolvemos produtos próprios, como o <a href=\"/produtos/\">Vizia</a>, de realidade aumentada.",
+            "Fundada por Thiago Oliveira, engenheiro de software com mais de 10 anos de experiência."
           ],
           "label": "Estúdio"
         },
@@ -284,13 +295,13 @@
       ]
     },
     "servicos": {
-      "title": "Serviços · Consultoria, web, aplicações, UX e realidade aumentada",
-      "description": "Consultoria em informática, desenvolvimento web e de aplicações, design UX/UI e realidade aumentada. Serviços da Thr33 Labs, com exemplos.",
+      "title": "Serviços · Consultoria, produto digital, hardware, jogos e AR",
+      "description": "Consultoria em informática, produto digital, hardware e experiências interativas, jogos para marcas e realidade aumentada. Serviços da Thr33 Labs, com exemplos.",
       "head": {
         "kind": "page",
         "label": "Serviços",
         "h1": "Da ideia ao produto publicado",
-        "lead": "Quatro áreas que se combinam conforme o projeto. Pode contratar só uma, ou o percurso completo."
+        "lead": "Cinco áreas que se combinam conforme o projeto. Pode contratar só uma, ou o percurso completo."
       },
       "sections": [
         {
@@ -311,43 +322,59 @@
               "icon": "compass"
             },
             {
-              "id": "desenvolvimento",
-              "heading_id": "desenvolvimento-titulo",
-              "h2": "Desenvolvimento web e de aplicações",
-              "text": "Construímos sites, plataformas e aplicações móveis, do primeiro protótipo à publicação na App Store e no Google Play.",
+              "id": "produto-digital",
+              "heading_id": "produto-digital-titulo",
+              "h2": "Produto digital: web e aplicações",
+              "text": "Desenhamos e construímos sites, plataformas e aplicações móveis, do primeiro protótipo à publicação na App Store e no Google Play.",
               "examples_title": "Exemplos",
               "examples": [
                 "Sites institucionais e páginas de produto.",
                 "Plataformas web com área de cliente e painel de gestão.",
                 "Aplicações iOS e Android.",
-                "Integrações com pagamentos, email e APIs de terceiros."
+                "UX/UI: entrevistas com utilizadores, protótipos navegáveis e sistemas de design.",
+                "Revisão de acessibilidade segundo as WCAG 2.1 AA."
               ],
               "icon": "code"
             },
             {
-              "id": "design",
-              "heading_id": "design-titulo",
-              "h2": "Design de produto, UX e UI",
-              "text": "Desenhamos interfaces claras, acessíveis e coerentes com a marca, e testamo-las com quem as vai usar.",
+              "id": "hardware",
+              "heading_id": "hardware-titulo",
+              "h2": "Hardware e experiências interativas",
+              "text": "Ligamos objetos físicos ao digital: dispositivos ligados à internet, sensores e protótipos, e o software que os põe a funcionar.",
               "examples_title": "Exemplos",
               "examples": [
-                "Entrevistas com utilizadores e mapas de fluxos.",
-                "Wireframes e protótipos navegáveis.",
-                "Sistemas de design e bibliotecas de componentes.",
-                "Revisão de acessibilidade segundo as WCAG 2.1 AA."
+                "Firmware para dispositivos ligados por Wi-Fi.",
+                "Sensores que alimentam aplicações e painéis de dados.",
+                "Protótipos funcionais para testar uma ideia com pessoas reais.",
+                "O comando-robô do Get It Vac: um mini robô aspirador que comanda um jogo."
               ],
-              "icon": "pen-tool"
+              "icon": "cpu"
+            },
+            {
+              "id": "jogos",
+              "heading_id": "jogos-titulo",
+              "h2": "Jogos à medida para marcas",
+              "text": "Criamos jogos para eventos, ativações de marca, publicidade e interação com clientes, no ecrã, no telemóvel ou com comandos físicos.",
+              "examples_title": "Exemplos",
+              "examples": [
+                "Jogos para stands e ativações em eventos.",
+                "Multijogador no telemóvel, com entrada por QR code.",
+                "Campanhas com jogo, fotografia e partilha.",
+                "O Get It Vac: um jogo arcade comandado por um mini robô aspirador."
+              ],
+              "icon": "gamepad-2"
             },
             {
               "id": "realidade-aumentada",
               "heading_id": "ra-titulo",
               "h2": "Realidade aumentada",
-              "text": "Pomos modelos 3D no espaço real, à escala, a partir do telemóvel ou do tablet, para decidir antes de construir ou montar.",
+              "text": "Mostramos projetos em realidade aumentada (AR), à escala e no local, a partir do telemóvel ou do tablet, para decidir antes de construir ou montar.",
               "examples_title": "Exemplos",
               "examples": [
                 "Projetos de arquitetura vistos no terreno.",
                 "Decoração e mobiliário à escala real.",
                 "Montagens de eventos antes do dia.",
+                "Cartazes e materiais impressos que ganham vida em AR.",
                 "<a href=\"/produtos/\">Vizia</a>, o nosso produto de realidade aumentada."
               ],
               "icon": "box"
@@ -371,7 +398,7 @@
     },
     "produtos": {
       "title": "Produtos e projetos · Thr33 Labs",
-      "description": "O Vizia - Arquitetura em AR, produto de realidade aumentada da Thr33 Labs para arquitetura, decoração e eventos, e os projetos que desenvolvemos para clientes.",
+      "description": "O Vizia - Arquitetura em AR, produto de realidade aumentada da Thr33 Labs, estúdio de tecnologia interativa, e os projetos que desenvolvemos para clientes.",
       "head": {
         "kind": "page",
         "label": "Produtos e projetos",
@@ -394,7 +421,7 @@
             }
           ],
           "ticks": [
-            "Modelos 3D colocados no espaço real, à escala.",
+            "Modelos em realidade aumentada (AR), à escala.",
             "Funciona no telemóvel e no tablet.",
             "Pensado para apresentar no local, com o cliente."
           ],
@@ -418,7 +445,7 @@
     },
     "contacto": {
       "title": "Contacto · Thr33 Labs",
-      "description": "Contacte a Thr33 Labs por email ou telefone. Sede em Óbidos, Portugal. Email hello@thr33.xyz, telefone +351 936 466 845.",
+      "description": "Contacte a Thr33 Labs, estúdio de tecnologia interativa em Óbidos, por email ou telefone. Email hello@thr33.xyz, telefone +351 936 466 845.",
       "head": {
         "kind": "page",
         "label": "Contacto",

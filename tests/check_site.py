@@ -61,8 +61,8 @@ HERO_BLOBS = 3
 ICONS_SVG = ROOT / "assets" / "icons.svg"
 ICONS_LICENCE = ROOT / "assets" / "icons-LICENSE.txt"
 HOME_LABELS = {"pt-PT": ["Serviços", "Projetos", "Processo", "Sobre"], "en": ["Services", "Projects", "Process", "About"]}
-HOME_ICONS = {"service": 4, "step": 4}
-SERVICES_PAGE_ICONS = 4
+HOME_ICONS = {"service": 5, "step": 4}
+SERVICES_PAGE_ICONS = 5
 # Cores por secção (#31): Projetos veste Tinta e o CTA final veste Telha.
 SCENES = {"/": ["ink", "telha"], "/servicos/": ["telha"], "/produtos/": ["ink"]}
 # CTA final e rodapé (#32): "Vamos falar?" em tamanho de hero, email grande e rodapé em duas linhas.
@@ -86,8 +86,8 @@ FICHA_LABEL = {"pt-PT": "(Ficha)", "en": "(Fact sheet)"}
 FICHA_EXTRA = {"pt-PT": {"Constituição": "2026", "D-U-N-S": "348597205"}, "en": {"Incorporated": "2026", "D-U-N-S": "348597205"}}
 # Marquee (#28): competências em loop na página inicial; a cópia para o loop não é lida duas vezes.
 MARQUEE = {
-    "pt-PT": ["Consultoria", "Web", "Apps", "UX/UI", "Realidade aumentada", "Laravel", "3D"],
-    "en": ["Consulting", "Web", "Apps", "UX/UI", "Augmented reality", "Laravel", "3D"],
+    "pt-PT": ["Consultoria", "Web", "Apps", "UX/UI", "Realidade aumentada", "Laravel"],
+    "en": ["Consulting", "Web", "Apps", "UX/UI", "Augmented reality", "Laravel"],
 }
 SITE_JS_MAX_GZIP = 8 * 1024    # o site.js comprimido
 JS_TOTAL_MAX_GZIP = 70 * 1024  # orçamento total de JS da spec (gzip)
@@ -454,7 +454,7 @@ def check_page_icons(check, url, p, html, is_home, is_services):
         check(hidden == "true" and focusable == "false", f"{url}: ícone {href} sem aria-hidden=true e focusable=false")
     count = lambda cls: len(re.findall(rf'<li class="card {cls}">\s*<span class="card-icon"', html))
     if is_home:
-        check(count("card-service") == HOME_ICONS["service"], f"{url}: os 4 cartões de serviço precisam de ícone")
+        check(count("card-service") == HOME_ICONS["service"], f"{url}: os {HOME_ICONS['service']} cartões de serviço precisam de ícone")
         check(count("card-step") == HOME_ICONS["step"], f"{url}: os 4 passos precisam de ícone")
     if is_services:
         n = len(re.findall(r'<section class="service"[^>]*>\s*<div class="service-head">\s*<span class="card-icon"', html))
@@ -822,6 +822,74 @@ def check_cookie_policy(check, pages_raw):
           "docs/deploy.md: CSP tem de permitir o GA em connect-src")
 
 
+# Reposicionamento (#52): estúdio de tecnologia interativa, sem tamanho da equipa, AR em vez de 3D
+# e cinco serviços. Vendemos software e serviços, nunca equipamentos.
+POSITIONING = {"pt-PT": "estúdio de tecnologia interativa", "en": "interactive technology studio"}
+SUPPORT_LINE = {"pt-PT": "Hardware, software e realidade aumentada para experiências que as pessoas tocam e usam.",
+                "en": "Hardware, software and augmented reality for experiences people touch and use."}
+FOUNDER = {"pt-PT": "Fundada por Thiago Oliveira, engenheiro de software com mais de 10 anos de experiência.",
+           "en": "Founded by Thiago Oliveira, Software Engineer with over 10 years of experience."}
+RETIRED_COPY = re.compile(
+    r"produto digital em|estúdio de produto digital|estúdio independente de produto digital|digital product studio"
+    r"|estúdio pequeno|small studio|quem fundou|sem intermediários|its founder|the founder|no middlemen"
+    r"|modelos 3D|3D models|venda de equipamentos|vendemos equipamentos|sell(?:ing)? (?:equipment|hardware|devices)",
+    re.I)
+SERVICE_IDS = {"pt-PT": ["consultoria", "produto-digital", "hardware", "jogos", "realidade-aumentada"],
+               "en": ["consulting", "digital-product", "hardware", "games", "augmented-reality"]}
+
+
+def page_text(html):
+    """Texto visível do <main> e da <head> (title e meta), sem etiquetas."""
+    head = html[:html.index("<body")] if "<body" in html else ""
+    main = html[html.index("<main"):html.index("</main>")] if "<main" in html else ""
+    metas = " ".join(re.findall(r'<meta [^>]*content="([^"]*)"', head))
+    title = re.search(r"<title>(.*?)</title>", head, re.S)
+    text = re.sub(r"<[^>]+>", " ", main)
+    return " ".join(f"{title.group(1) if title else ''} {metas} {text}".split())
+
+
+def check_positioning(check, url, html, lang, is_home, is_about, is_services):
+    text = page_text(html)
+    m = RETIRED_COPY.search(text)
+    check(not m, f"{url}: copy antiga '{m.group(0) if m else ''}' (#52)")
+    check("linkedin" not in html.lower(), f"{url}: sem LinkedIn (#52)")
+    alt = re.search(r'<meta property="og:image:alt" content="([^"]*)"', html)
+    check(alt is not None and POSITIONING[lang] in alt.group(1).lower(),
+          f"{url}: og:image:alt sem '{POSITIONING[lang]}'")
+    founder_here = "Thiago Oliveira" in text
+    check(founder_here == is_about, f"{url}: o fundador só aparece no Sobre (#52)")
+    if is_about:
+        main = html[html.index("<main"):html.index("</main>")]
+        check(f"<p>{FOUNDER[lang]}</p>" in main, f"{url}: falta a menção curta ao fundador '{FOUNDER[lang]}'")
+        check(not re.search(r"<img|<picture", main), f"{url}: o fundador não leva foto")
+    if is_home:
+        title = re.search(r"<title>(.*?)</title>", html, re.S).group(1)
+        desc = re.search(r'<meta name="description" content="([^"]*)"', html).group(1)
+        check(POSITIONING[lang] in title.lower(), f"{url}: <title> sem '{POSITIONING[lang]}'")
+        check(POSITIONING[lang].split()[-1] in desc.lower() or POSITIONING[lang] in desc.lower(),
+              f"{url}: meta description sem o posicionamento novo")
+        h1 = re.search(r"<h1[^>]*>(.*?)</h1>", html, re.S).group(1)
+        check(POSITIONING[lang] in re.sub(r"<[^>]+>", "", h1).lower(), f"{url}: o h1 do hero tem de dizer '{POSITIONING[lang]}'")
+        lead = re.search(r'<section class="hero">.*?<p class="lead">(.*?)</p>', html, re.S)
+        check(lead is not None and lead.group(1).startswith(SUPPORT_LINE[lang]),
+              f"{url}: o lead do hero começa pela linha de apoio '{SUPPORT_LINE[lang]}'")
+        check('<ul class="grid grid-5" data-reveal>' in html, f"{url}: os 5 serviços vão numa .grid-5")
+    if is_services:
+        ids = re.findall(r'<section class="service" id="([^"]+)"', html)
+        check(ids == SERVICE_IDS[lang], f"{url}: serviços {ids}, esperado {SERVICE_IDS[lang]}")
+
+
+def check_grid5_css(check):
+    """5 cartões sem buracos: 1 coluna em mobile, 2+2+1 (o último a toda a largura) e 3+2 no desktop."""
+    css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
+    tablet = re.search(r"@media \(min-width: 40rem\) \{[^@]*?\.grid-5 > :last-child\s*\{[^}]*grid-column: 1 / -1", css)
+    check(tablet is not None, "site.css: a 40rem o último cartão da .grid-5 ocupa a linha toda")
+    desktop = re.search(r"@media \(min-width: 60rem\) \{\n(.*?)\n\}", css, re.S)
+    body = desktop.group(1) if desktop else ""
+    check("grid-template-columns: repeat(6, 1fr)" in body and "span 2" in body and "span 3" in body,
+          "site.css: a 60rem a .grid-5 usa 6 colunas, 3 cartões em cima (span 2) e 2 em baixo (span 3)")
+
+
 def main():
     errors = []
 
@@ -839,6 +907,7 @@ def main():
     check_hero_desktop(check)
     check_cookie_banner_css(check)
     check_consent_js(check)
+    check_grid5_css(check)
 
     titles, descriptions = {}, {}
     pages, pages_raw = {}, {}
@@ -894,6 +963,8 @@ def main():
                 check_more_links(check, url, raw, lang)
             check_vizia(check, url, raw)
             check_consent_html(check, url, raw, lang)
+            check_positioning(check, url, raw, lang, url in ("/", "/en/"), url in ("/sobre/", "/en/about/"),
+                              url in ("/servicos/", "/en/services/"))
             pages_raw[url] = raw
             check_page_icons(check, url, p, raw, url in ("/", "/en/"), url in ("/servicos/", "/en/services/"))
             if url in ("/", "/en/"):
