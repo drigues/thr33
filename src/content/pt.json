@@ -140,19 +140,50 @@
           ]
         },
         {
-          "type": "project",
+          "type": "projects",
           "id": "produto",
-          "eyebrow": "Produto próprio",
-          "h2": "Vizia - Arquitetura em AR",
-          "text": "Projetos de arquitetura, decoração e eventos em realidade aumentada, à escala real e no local.",
+          "label": "Projetos",
+          "h2": "Produtos e casos de estudo",
+          "items": [
+            {
+              "id": "vizia",
+              "eyebrow": "Produto próprio · Realidade aumentada",
+              "name": "Vizia - Arquitetura em AR",
+              "text": "Projetos de arquitetura, decoração e eventos em realidade aumentada, à escala real e no local.",
+              "actions": [
+                {
+                  "text": "Visitar vizia.thr33.xyz",
+                  "href": "https://vizia.thr33.xyz",
+                  "style": "ghost",
+                  "external": true
+                }
+              ]
+            },
+            {
+              "id": "get-it-vac",
+              "eyebrow": "Caso de estudo · Web Summit Lisboa 2026 (<span lang=\"en\">unofficial stand</span>)",
+              "name": "Get It Vac",
+              "text": "Um jogo arcade comandado por um mini robô aspirador ligado à internet, com multijogador no telemóvel, fotografias e realidade aumentada. Fizemo-lo em 5 dias.",
+              "image": {
+                "name": "get-it-vac/cartao",
+                "alt": "Ecrã do Get It Vac com o mini robô aspirador numa corrida em pixel art por Lisboa."
+              },
+              "actions": [
+                {
+                  "text": "Ler o caso de estudo",
+                  "href": "/produtos/get-it-vac/",
+                  "style": "primary"
+                }
+              ]
+            }
+          ],
           "actions": [
             {
               "text": "Ver produtos e projetos",
               "href": "/produtos/",
               "style": "ghost"
             }
-          ],
-          "label": "Projetos"
+          ]
         },
         {
           "type": "steps",
@@ -348,7 +379,7 @@
                 "Firmware para dispositivos ligados por Wi-Fi.",
                 "Sensores que alimentam aplicações e painéis de dados.",
                 "Protótipos funcionais para testar uma ideia com pessoas reais.",
-                "O comando-robô do Get It Vac: um mini robô aspirador que comanda um jogo."
+                "O comando-robô do <a href=\"/produtos/get-it-vac/\">Get It Vac</a>: um mini robô aspirador que comanda um jogo."
               ],
               "icon": "cpu"
             },
@@ -362,7 +393,7 @@
                 "Jogos para stands e ativações em eventos.",
                 "Multijogador no telemóvel, com entrada por QR code.",
                 "Campanhas com jogo, fotografia e partilha.",
-                "O Get It Vac: um jogo arcade comandado por um mini robô aspirador."
+                "O <a href=\"/produtos/get-it-vac/\">Get It Vac</a>: um jogo arcade comandado por um mini robô aspirador."
               ],
               "icon": "gamepad-2"
             },
@@ -409,25 +440,48 @@
       },
       "sections": [
         {
-          "type": "project",
-          "id": "vizia",
-          "eyebrow": "Produto próprio · Realidade aumentada",
-          "h2": "Vizia - Arquitetura em AR",
-          "text": "Projetos de arquitetura, decoração e eventos em realidade aumentada, à escala real e no local. Para arquitetos, decoradores e organizadores de eventos que querem que o cliente veja o resultado antes de avançar.",
-          "actions": [
+          "type": "projects",
+          "id": "projetos",
+          "label": "Projetos",
+          "h2": "Produtos e casos de estudo",
+          "items": [
             {
-              "text": "Visitar vizia.thr33.xyz",
-              "href": "https://vizia.thr33.xyz",
-              "style": "primary",
-              "external": true
+              "id": "vizia",
+              "eyebrow": "Produto próprio · Realidade aumentada",
+              "name": "Vizia - Arquitetura em AR",
+              "text": "Projetos de arquitetura, decoração e eventos em realidade aumentada, à escala real e no local. Para arquitetos, decoradores e organizadores de eventos que querem que o cliente veja o resultado antes de avançar.",
+              "ticks": [
+                "Modelos em realidade aumentada (AR), à escala.",
+                "Funciona no telemóvel e no tablet.",
+                "Pensado para apresentar no local, com o cliente."
+              ],
+              "actions": [
+                {
+                  "text": "Visitar vizia.thr33.xyz",
+                  "href": "https://vizia.thr33.xyz",
+                  "style": "primary",
+                  "external": true
+                }
+              ]
+            },
+            {
+              "id": "get-it-vac",
+              "eyebrow": "Caso de estudo · Web Summit Lisboa 2026 (<span lang=\"en\">unofficial stand</span>)",
+              "name": "Get It Vac",
+              "text": "Um jogo arcade comandado por um mini robô aspirador ligado à internet, com multijogador no telemóvel, fotografias e realidade aumentada. Fizemo-lo em 5 dias.",
+              "image": {
+                "name": "get-it-vac/cartao",
+                "alt": "Ecrã do Get It Vac com o mini robô aspirador numa corrida em pixel art por Lisboa."
+              },
+              "actions": [
+                {
+                  "text": "Ler o caso de estudo",
+                  "href": "/produtos/get-it-vac/",
+                  "style": "primary"
+                }
+              ]
             }
-          ],
-          "ticks": [
-            "Modelos em realidade aumentada (AR), à escala.",
-            "Funciona no telemóvel e no tablet.",
-            "Pensado para apresentar no local, com o cliente."
-          ],
-          "label": "Produto"
+          ]
         },
         {
           "type": "text",
@@ -521,7 +575,7 @@
           "type": "prose",
           "blocks": [
             {
-              "updated": "Última atualização: 14 de novembro de 2026"
+              "updated": "Última atualização: 26 de novembro de 2026"
             },
             {
               "h2": "Responsável pelo tratamento",
@@ -611,7 +665,7 @@
               "id": "outros-sites"
             },
             {
-              "p": "O site tem ligações para outros sites, como o <a href=\"https://vizia.thr33.xyz\" target=\"_blank\" rel=\"noopener noreferrer\">Vizia</a>, que têm a sua própria política de privacidade."
+              "p": "O site tem ligações para outros sites, como o <a href=\"https://vizia.thr33.xyz\" target=\"_blank\" rel=\"noopener noreferrer\">Vizia</a> e o <a href=\"https://vac.navego.pt\" target=\"_blank\" rel=\"noopener noreferrer\">Get It Vac</a>, que têm a sua própria política de privacidade."
             },
             {
               "h2": "Alterações",
@@ -771,6 +825,215 @@
             },
             {
               "p": "Para saber como tratamos dados pessoais, veja a <a href=\"/privacidade/\">política de privacidade</a>. Questões: <a href=\"mailto:hello@thr33.xyz\">hello@thr33.xyz</a>."
+            }
+          ]
+        }
+      ]
+    },
+    "get-it-vac": {
+      "title": "Get It Vac · Caso de estudo · Thr33 Labs",
+      "description": "Caso de estudo da Thr33 Labs: um jogo arcade comandado por um mini robô aspirador ligado à internet, com multijogador, AR e dados anónimos, feito em 5 dias.",
+      "og_image": "/assets/og-get-it-vac.png",
+      "og_image_alt": "Get It Vac, caso de estudo da Thr33 Labs, estúdio de tecnologia interativa",
+      "head": {
+        "kind": "page",
+        "breadcrumb": {
+          "label": "Caminho",
+          "items": [
+            {
+              "text": "Projetos",
+              "href": "/produtos/"
+            }
+          ],
+          "current": "Get It Vac"
+        },
+        "h1": "Get It Vac",
+        "eyebrow": "Caso de estudo · Web Summit Lisboa 2026 (<span lang=\"en\">unofficial stand</span>)",
+        "lead": "Um jogo arcade comandado por um mini robô aspirador ligado à internet, com multijogador no telemóvel, fotografias, realidade aumentada e dados anónimos. Fizemo-lo em 5 dias.",
+        "actions": [
+          {
+            "text": "Jogar o Get It Vac",
+            "href": "https://vac.navego.pt",
+            "style": "primary",
+            "external": true
+          },
+          {
+            "text": "Quer um jogo para o seu evento?",
+            "href": "/contacto/",
+            "style": "ghost"
+          }
+        ],
+        "image": {
+          "name": "get-it-vac/hero",
+          "alt": "Ecrã do Get It Vac: o mini robô aspirador numa corrida em pixel art pelos bairros de Lisboa."
+        }
+      },
+      "sections": [
+        {
+          "type": "facts",
+          "id": "resumo",
+          "label": "Resumo",
+          "h2": "Resumo",
+          "items": [
+            {
+              "term": "Feito em",
+              "value": "5 dias, de 5 a 10 de novembro de 2026"
+            },
+            {
+              "term": "O nosso papel",
+              "value": "Design, código e hardware"
+            },
+            {
+              "term": "Estado",
+              "value": "No ar"
+            }
+          ]
+        },
+        {
+          "type": "ticks",
+          "id": "desafio",
+          "label": "Desafio",
+          "h2": "O desafio",
+          "items": [
+            "Juntar hardware, web e realidade aumentada num só fluxo, com latência baixa entre o robô e o ecrã.",
+            "Medir a utilização sem dados pessoais: sem cookies, sem email, sem contas e sem endereços IP.",
+            "Fazer tudo em 5 dias, do primeiro esboço ao jogo no ar."
+          ]
+        },
+        {
+          "type": "features",
+          "id": "construimos",
+          "label": "Construção",
+          "h2": "O que construímos",
+          "items": [
+            {
+              "title": "O jogo",
+              "text": "Uma corrida de 400 m pelos bairros de Lisboa, em pixel art desenhada em canvas."
+            },
+            {
+              "title": "O comando",
+              "text": "Um ESP32 com joystick dentro do robô aspirador, ligado por Wi-Fi a um relay WebSocket que passa cada movimento ao jogo.",
+              "images": [
+                {
+                  "name": "get-it-vac/comando",
+                  "alt": "Mini robô aspirador aberto, com o ESP32 e o joystick que comandam o jogo."
+                }
+              ]
+            },
+            {
+              "title": "Multijogador",
+              "text": "Até 5 telemóveis jogam ao mesmo tempo. Cada pessoa entra com um QR code, sem aplicação nem conta.",
+              "images": [
+                {
+                  "name": "get-it-vac/multijogador",
+                  "alt": "Telemóveis a jogar o Get It Vac em multijogador, ao lado do QR code de entrada."
+                }
+              ]
+            },
+            {
+              "title": "Versão para telemóvel",
+              "text": "Uma selfie com moldura de azulejo para partilhar, e realidade aumentada no cartaz do jogo.",
+              "images": [
+                {
+                  "name": "get-it-vac/selfie",
+                  "alt": "Selfie com moldura de azulejo azul e branco, feita na versão para telemóvel do Get It Vac."
+                },
+                {
+                  "name": "get-it-vac/cartaz-ar",
+                  "alt": "Telemóvel apontado ao cartaz do Get It Vac, com o robô em realidade aumentada por cima."
+                }
+              ]
+            },
+            {
+              "title": "Painel de dados anónimo",
+              "text": "Um painel com sessões, corridas e rondas multijogador, sem cookies nem dados pessoais."
+            }
+          ]
+        },
+        {
+          "type": "facts",
+          "id": "tecnologia",
+          "label": "Stack",
+          "h2": "Tecnologia",
+          "items": [
+            {
+              "term": "Hardware",
+              "value": "ESP32 (C++)"
+            },
+            {
+              "term": "Tempo real",
+              "value": "Relay WebSocket em Node"
+            },
+            {
+              "term": "Servidor e dados",
+              "value": "Laravel 12 e Postgres"
+            },
+            {
+              "term": "Jogo",
+              "value": "JavaScript com canvas"
+            },
+            {
+              "term": "Realidade aumentada",
+              "value": "MindAR"
+            },
+            {
+              "term": "Alojamento",
+              "value": "Forge e Hetzner"
+            }
+          ]
+        },
+        {
+          "type": "stats",
+          "id": "resultados",
+          "label": "Resultados",
+          "h2": "Resultados",
+          "text": "De 9 a 16 de novembro de 2026.",
+          "items": [
+            {
+              "value": "122",
+              "term": "sessões"
+            },
+            {
+              "value": "67",
+              "term": "corridas"
+            },
+            {
+              "value": "18",
+              "term": "rondas multijogador"
+            },
+            {
+              "value": "13 de 19",
+              "term": "corridas em grupo no dia do evento"
+            },
+            {
+              "value": "80 s",
+              "term": "de sessão mediana"
+            }
+          ],
+          "note": "O multijogador manteve as pessoas a jogar. Medimos tudo sem cookies nem dados pessoais."
+        },
+        {
+          "type": "ticks",
+          "id": "aprendemos",
+          "label": "Aprendizagens",
+          "h2": "O que aprendemos",
+          "items": [
+            "O multijogador é o que prende as pessoas.",
+            "O início do jogo precisa de ser mais fácil.",
+            "Hardware em redes de eventos precisa de rede própria e de um plano B.",
+            "Pensar a privacidade desde o início não nos impediu de ter dados úteis."
+          ]
+        },
+        {
+          "type": "cta",
+          "id": "falar",
+          "h2": "Vamos falar?",
+          "text": "Fazemos jogos à medida para eventos, ativações e campanhas. Conte-nos a ideia e o prazo, e respondemos com os próximos passos.",
+          "actions": [
+            {
+              "text": "Quer um jogo para o seu evento?",
+              "href": "/contacto/",
+              "style": "primary"
             }
           ]
         }

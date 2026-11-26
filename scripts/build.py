@@ -7,12 +7,16 @@ Corre com: python3 scripts/build.py
 - src/layout.html: esqueleto da página; o resto sai dos componentes abaixo.
 
 Cada página é uma cabeça (hero ou page) seguida de secções. Cada secção tem um "type"
-(cards, ticks, project, steps, services, split, facts, ficha, prose, text, cta) e, se tiver
-"label", leva uma etiqueta numerada (01), (02)… pela ordem em que aparece.
+(cards, ticks, projects, steps, services, split, facts, ficha, features, stats, prose, text, cta) e,
+se tiver "label", leva uma etiqueta numerada (01), (02)… pela ordem em que aparece.
+
+As imagens são <picture> com AVIF e WebP (#34): larguras e sizes em src/images/images.json, proporção
+da imagem-mestre em src/images/, ficheiros gerados por scripts/images.py. O alt vem dos conteúdos.
 """
 import hashlib
 import json
 import re
+import struct
 from datetime import date
 from html import escape
 from pathlib import Path
@@ -32,9 +36,12 @@ ROUTES = {
     "privacidade": ("/privacidade/", "/en/privacy/"),
     "termos": ("/termos/", "/en/terms/"),
     "cookies": ("/cookies/", "/en/cookies/"),
+    "get-it-vac": ("/produtos/get-it-vac/", "/en/products/get-it-vac/"),
 }
 
 NAV = ["servicos", "produtos", "sobre", "contacto"]
+# Subpáginas: o item do menu da secção-mãe fica marcado com aria-current="true".
+PARENT = {"get-it-vac": "produtos"}
 COMPLAINTS_URL = "https://www.livroreclamacoes.pt/Inicio/"
 EMAIL = "hello@thr33.xyz"
 
@@ -77,6 +84,38 @@ def url_for(lang, name):
 
 def attr(value):
     return escape(value, quote=True)
+
+
+# ---------------------------------------------------------------- imagens
+
+IMAGES = json.loads((SRC / "images" / "images.json").read_text(encoding="utf-8"))
+IMG_URL = "/assets/img/"
+
+
+def master_size(name):
+    """Largura e altura da imagem-mestre (PNG: cabeçalho IHDR), para o width/height do <img>."""
+    data = (SRC / "images" / f"{name}.png").read_bytes()
+    return struct.unpack(">II", data[16:24])
+
+
+def picture(image, eager=False, cls=None):
+    """<picture> com AVIF e WebP em 3 larguras. Só a imagem do hero carrega logo (#34)."""
+    name = image["name"]
+    spec = IMAGES[name]
+    width, height = master_size(name)
+    if width != max(spec["widths"]):
+        raise SystemExit(f"src/images/{name}.png tem de ter {max(spec['widths'])} px de largura")
+    sizes = attr(spec["sizes"])
+
+    def srcset(ext):
+        return ", ".join(f"{IMG_URL}{name}-{w}.{ext} {w}w" for w in spec["widths"])
+
+    fallback = f"{IMG_URL}{name}-{spec['widths'][1]}.webp"
+    load = 'fetchpriority="high"' if eager else 'loading="lazy" decoding="async"'
+    css = f' class="{cls}"' if cls else ""
+    return (f'<picture{css}><source type="image/avif" srcset="{srcset("avif")}" sizes="{sizes}">'
+            f'<source type="image/webp" srcset="{srcset("webp")}" sizes="{sizes}">'
+            f'<img src="{fallback}" alt="{attr(image["alt"])}" width="{width}" height="{height}" {load}></picture>')
 
 
 # ---------------------------------------------------------------- componentes
@@ -151,27 +190,63 @@ def ficha(section):
     return f'<dl class="ficha">\n          {rows}\n        </dl>'
 
 
-def project(section):
-    """Linha de projeto: nome grande, descrição, ações e (opcional) lista de pontos."""
-    left = [
-        f'<p class="examples-title">{section["eyebrow"]}</p>',
-        f'<h2 id="{section["id"]}" class="product-name">{section["h2"]}</h2>',
-        f'<p class="dim">{section["text"]}</p>',
+def project_card(item):
+    """Cartão de projeto (Vizia, Get It Vac): imagem opcional, etiqueta, nome, descrição, pontos e ações."""
+    parts = []
+    if "image" in item:
+        parts.append(picture(item["image"], cls="card-media"))
+    parts += [
+        f'<p class="examples-title">{item["eyebrow"]}</p>',
+        f'<h3 id="{item["id"]}" class="product-name">{item["name"]}</h3>',
+        f'<p>{item["text"]}</p>',
     ]
-    if "ticks" in section:
-        left.append(actions(section["actions"]))
-        right = ticks(section["ticks"])
-    else:
-        right = actions(section["actions"])
-    return ('<div class="product">\n        <div>\n          ' + "\n          ".join(left)
-            + "\n        </div>\n        " + right + "\n      </div>")
+    if "ticks" in item:
+        parts.append(ticks(item["ticks"]))
+    parts.append(actions(item["actions"]))
+    return '<li class="card card-project">\n            ' + "\n            ".join(parts) + "\n          </li>"
+
+
+def projects(section):
+    """Projetos lado a lado numa grelha de 2 (#53), com ações da secção por baixo."""
+    items = "\n          ".join(project_card(i) for i in section["items"])
+    html = heading(section) + "\n        " + intro(section)
+    html += f'\n        <ul class="grid grid-2 projects">\n          {items}\n        </ul>'
+    if section.get("actions"):
+        html += "\n        " + actions(section["actions"])
+    return html
+
+
+def features(section):
+    """O que construímos: uma linha por peça, com texto à esquerda e imagens (0 a 2) à direita."""
+    rows = []
+    for n, item in enumerate(section["items"], 1):
+        text = (f'<div>\n              <span class="num">{n:02d}</span>\n'
+                f'              <h3>{item["title"]}</h3>\n              <p>{item["text"]}</p>\n            </div>')
+        images = item.get("images", [])
+        media = ""
+        if images:
+            pics = "".join(picture(i) for i in images)
+            media = f'\n            <div class="case-media case-media-{len(images)}">{pics}</div>'
+        cls = "case-feature" if images else "case-feature case-feature-text"
+        rows.append(f'<li class="{cls}">\n            {text}{media}\n          </li>')
+    return (heading(section) + "\n        " + intro(section)
+            + '\n        <ol class="case-features" role="list">\n          ' + "\n          ".join(rows) + "\n        </ol>")
+
+
+def stats(section):
+    """Resultados em números grandes: valor (dd) por cima da descrição (dt)."""
+    rows = "\n          ".join(f'<div><dt>{i["term"]}</dt><dd>{i["value"]}</dd></div>' for i in section["items"])
+    html = heading(section) + "\n        " + intro(section) + f'\n        <dl class="stats">\n          {rows}\n        </dl>'
+    if "note" in section:
+        html += f'\n        <p class="note">{section["note"]}</p>'
+    return html
 
 
 def heading(section):
     return f'<h2 id="{section["id"]}">{section["h2"]}</h2>'
 
 
-SCENES = {"project": "ink", "cta": "telha"}
+SCENES = {"projects": "ink", "cta": "telha"}
 
 
 def band(section, num, body, lab=None):
@@ -232,8 +307,6 @@ def section_html(section, counter):
     if kind == "ficha":
         return band(section, None, heading(section) + "\n        " + ficha(section), label(section["label"], page=True))
     num = next(counter) if section.get("label") else None
-    if kind == "project":
-        return band(section, num, project(section))
     if kind == "split":
         paras = "\n            ".join(f"<p>{p}</p>" for p in section["paragraphs"])
         body = (f'<div class="service-grid">\n          {heading(section)}\n'
@@ -244,6 +317,9 @@ def section_html(section, counter):
         "steps": lambda s: heading(s) + "\n        " + steps(s),
         "ticks": lambda s: heading(s) + "\n        " + ticks(s["items"]),
         "facts": lambda s: heading(s) + "\n        " + facts(s),
+        "projects": projects,
+        "features": features,
+        "stats": stats,
         "text": lambda s: "\n        ".join(x for x in (heading(s), intro(s), actions(s["actions"])) if x),
         "cta": cta,
     }[kind](section)
@@ -261,6 +337,15 @@ def intro(section):
     return f'<p class="band-intro">{section["text"]}</p>' if section.get("text") else ""
 
 
+def breadcrumb(crumb):
+    """Caminho até à página (Projetos / Get It Vac): a última é a atual, sem link."""
+    items = [f'<li><a href="{attr(c["href"])}">{c["text"]}</a><span class="breadcrumb-sep" aria-hidden="true">/</span></li>'
+             for c in crumb["items"]]
+    items.append(f'<li aria-current="page">{crumb["current"]}</li>')
+    return (f'<nav class="breadcrumb" aria-label="{attr(crumb["label"])}"><ol>'
+            + "".join(items) + "</ol></nav>")
+
+
 HERO_GRADIENT = ('<div class="hero-gradient" aria-hidden="true">'
                  '<span class="blob blob-telha"></span><span class="blob blob-lagoa"></span>'
                  '<span class="blob blob-atlantico"></span></div>')
@@ -272,12 +357,20 @@ def page_head(head):
     O <h1> leva data-split: o site.js parte-o em linhas para o reveal; sem JS fica como está.
     """
     is_hero = head["kind"] == "hero"
-    lab = label(head["label"], page=True)
+    if "breadcrumb" in head:
+        lab = breadcrumb(head["breadcrumb"])
+    else:
+        lab = label(head["label"], page=True)
     if head.get("label_after"):
         lab = lab.replace("</p>", f' {head["label_after"]}</p>')
-    parts = [lab, f'<h1 data-split>{head["h1"]}</h1>', f'<p class="lead">{head["lead"]}</p>']
+    parts = [lab, f'<h1 data-split>{head["h1"]}</h1>']
+    if head.get("eyebrow"):
+        parts.append(f'<p class="examples-title">{head["eyebrow"]}</p>')
+    parts.append(f'<p class="lead">{head["lead"]}</p>')
     if head.get("actions"):
         parts.append(actions(head["actions"]))
+    if head.get("image"):
+        parts.append(f'<figure class="case-hero">{picture(head["image"], eager=True)}</figure>')
     if head.get("scroll_hint"):
         parts.append(f'<p class="hero-scroll" aria-hidden="true">{head["scroll_hint"]}</p>')
     cls = "hero" if is_hero else "page-head"
@@ -317,6 +410,8 @@ def site_header(site, lang, current, other_url, other_lang):
     items = []
     for n, name in enumerate(NAV, 1):
         aria = ' aria-current="page"' if name == current else ""
+        if PARENT.get(current) == name:
+            aria = ' aria-current="true"'
         items.append(f'<li><a href="{url_for(lang, name)}"{aria}><span class="nav-num" aria-hidden="true">{n:02d}</span>'
                      f'{site["nav"][name]}</a></li>')
     # WCAG 2.5.3: o nome acessível começa pelo texto visível (EN/PT); o nome completo vai em .sr-only.
@@ -398,10 +493,10 @@ def head_meta(site, other_site, page, url, pt_url, en_url):
   <meta property="og:url" content="{SITE + url}">
   <meta property="og:locale" content="{site["og_locale"]}">
   <meta property="og:locale:alternate" content="{other_site["og_locale"]}">
-  <meta property="og:image" content="{SITE}/assets/og-image.png">
+  <meta property="og:image" content="{SITE}{page.get("og_image", "/assets/og-image.png")}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="{attr(site["og_image_alt"])}">
+  <meta property="og:image:alt" content="{attr(page.get("og_image_alt", site["og_image_alt"]))}">
   <meta name="twitter:card" content="summary_large_image">'''
 
 

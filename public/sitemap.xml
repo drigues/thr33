@@ -96,4 +96,16 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://thr33.xyz/en/cookies/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://thr33.xyz/cookies/"/>
   </url>
+  <url>
+    <loc>https://thr33.xyz/produtos/get-it-vac/</loc>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://thr33.xyz/produtos/get-it-vac/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://thr33.xyz/en/products/get-it-vac/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://thr33.xyz/produtos/get-it-vac/"/>
+  </url>
+  <url>
+    <loc>https://thr33.xyz/en/products/get-it-vac/</loc>
+    <xhtml:link rel="alternate" hreflang="pt-PT" href="https://thr33.xyz/produtos/get-it-vac/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://thr33.xyz/en/products/get-it-vac/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://thr33.xyz/produtos/get-it-vac/"/>
+  </url>
 </urlset>

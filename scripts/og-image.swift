@@ -1,11 +1,11 @@
-// Gera a imagem de partilha (Open Graph) em public/assets/og-image.png, 1200x630.
+// Gera as imagens de partilha (Open Graph), 1200x630: public/assets/og-image.png (site) e
+// public/assets/og-get-it-vac.png (caso de estudo, #53).
 // Corre com: swift scripts/og-image.swift
 import AppKit
 import CoreText
 
 let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
 let fontURL = root.appendingPathComponent("scripts/fonts/space-grotesk.ttf")
-let outURL = root.appendingPathComponent("public/assets/og-image.png")
 
 CTFontManagerRegisterFontsForURL(fontURL as CFURL, .process, nil)
 
@@ -21,6 +21,7 @@ func font(_ size: CGFloat, weight: CGFloat) -> NSFont {
     return NSFont(descriptor: base.addingAttributes([variation: [wght: weight]]), size: size)!
 }
 
+func render(badgeText: String, title: String, line lineText: String, accentText: String, to file: String) {
 let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: width, pixelsHigh: height, bitsPerSample: 8,
                            samplesPerPixel: 4, hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB,
                            bytesPerRow: 0, bitsPerPixel: 0)!
@@ -48,15 +49,9 @@ for x in stride(from: 13, to: width, by: 26) {
     }
 }
 
-func draw(_ string: String, at point: CGPoint, font: NSFont, color: NSColor, kern: CGFloat = 0) {
-    NSAttributedString(string: string, attributes: [.font: font, .foregroundColor: color, .kern: kern]).draw(at: point)
-}
-
 let left: CGFloat = 96
 
-// Selo "Interactive Technology Studio" (#52)
 let badgeFont = NSFont.monospacedSystemFont(ofSize: 20, weight: .medium)
-let badgeText = "INTERACTIVE TECHNOLOGY STUDIO"
 let badgeSize = NSAttributedString(string: badgeText, attributes: [.font: badgeFont, .kern: 4]).size()
 let badge = CGRect(x: left, y: 420, width: badgeSize.width + 72, height: 52)
 ctx.setStrokeColor(CGColor(gray: 1, alpha: 0.14))
@@ -68,13 +63,26 @@ ctx.fillEllipse(in: CGRect(x: left + 26, y: badge.midY - 5, width: 10, height: 1
 draw(badgeText, at: CGPoint(x: left + 50, y: badge.midY - badgeSize.height / 2), font: badgeFont, color: dim, kern: 4)
 
 // Marca e frase
-draw("Thr33 Labs", at: CGPoint(x: left - 6, y: 250), font: font(132, weight: 700), color: text, kern: -4)
-let line = NSMutableAttributedString(string: "Experiences people touch and ", attributes: [.font: font(44, weight: 500), .foregroundColor: dim])
-line.append(NSAttributedString(string: "use.", attributes: [.font: font(44, weight: 500), .foregroundColor: accent]))
+draw(title, at: CGPoint(x: left - 6, y: 250), font: font(132, weight: 700), color: text, kern: -4)
+let line = NSMutableAttributedString(string: lineText, attributes: [.font: font(44, weight: 500), .foregroundColor: dim])
+line.append(NSAttributedString(string: accentText, attributes: [.font: font(44, weight: 500), .foregroundColor: accent]))
 line.draw(at: CGPoint(x: left, y: 170))
 
 draw("thr33.xyz", at: CGPoint(x: left, y: 72), font: NSFont.monospacedSystemFont(ofSize: 24, weight: .regular), color: dim, kern: 2)
 
 NSGraphicsContext.restoreGraphicsState()
+let outURL = root.appendingPathComponent("public/assets/\(file)")
 try! rep.representation(using: .png, properties: [:])!.write(to: outURL)
 print("Gerado \(outURL.path)")
+}
+
+func draw(_ string: String, at point: CGPoint, font: NSFont, color: NSColor, kern: CGFloat = 0) {
+    NSAttributedString(string: string, attributes: [.font: font, .foregroundColor: color, .kern: kern]).draw(at: point)
+}
+
+// Selo "Interactive Technology Studio" (#52)
+render(badgeText: "INTERACTIVE TECHNOLOGY STUDIO", title: "Thr33 Labs",
+       line: "Experiences people touch and ", accentText: "use.", to: "og-image.png")
+// Caso de estudo (#53). O #54 pode trocar por uma imagem com o ecrã do jogo.
+render(badgeText: "CASE STUDY · THR33 LABS", title: "Get It Vac",
+       line: "A robot vacuum that controls a ", accentText: "game.", to: "og-get-it-vac.png")

@@ -23,6 +23,7 @@ PAGES = [
     ("/privacidade/", "/en/privacy/"),
     ("/termos/", "/en/terms/"),
     ("/cookies/", "/en/cookies/"),
+    ("/produtos/get-it-vac/", "/en/products/get-it-vac/"),
 ]
 
 LEGAL_FOOTER = {
@@ -67,7 +68,7 @@ HOME_LABELS = {"pt-PT": ["Serviços", "Projetos", "Processo", "Sobre"], "en": ["
 HOME_ICONS = {"service": 5, "step": 4}
 SERVICES_PAGE_ICONS = 5
 # Cores por secção (#31): Projetos veste Tinta e o CTA final veste Telha.
-SCENES = {"/": ["ink", "telha"], "/servicos/": ["telha"], "/produtos/": ["ink"]}
+SCENES = {"/": ["ink", "telha"], "/servicos/": ["telha"], "/produtos/": ["ink"], "/produtos/get-it-vac/": ["telha"]}
 # CTA final e rodapé (#32): "Vamos falar?" em tamanho de hero, email grande e rodapé em duas linhas.
 CTA_TITLE = {"pt-PT": "Vamos falar?", "en": "Shall we talk?"}
 EMAIL = "hello@thr33.xyz"
@@ -471,7 +472,8 @@ def section_labels(html):
 def check_scenes(check, url, p):
     base = url.replace("/en", "", 1) if url.startswith("/en/") else url
     base = {"/about/": "/sobre/", "/services/": "/servicos/", "/products/": "/produtos/", "/contact/": "/contacto/",
-            "/privacy/": "/privacidade/", "/terms/": "/termos/"}.get(base, base)
+            "/privacy/": "/privacidade/", "/terms/": "/termos/",
+            "/products/get-it-vac/": "/produtos/get-it-vac/"}.get(base, base)
     expected = SCENES.get(base, [])
     check([sc for sc, _ in p.scenes] == expected, f"{url}: cenas {[sc for sc, _ in p.scenes]}, esperado {expected}")
     for scene, classes in p.scenes:
@@ -754,7 +756,7 @@ def check_vizia(check, url, html):
     text = re.sub(r"vizia\.thr33\.xyz", "", text)
     check(not re.search(r"\bvizia\b", text), f"{url}: 'vizia' em minúsculas; o nome é '{VIZIA}'")
     if url in ("/produtos/", "/en/products/", "/", "/en/"):
-        check(f'class="product-name">{VIZIA}</h2>' in main, f"{url}: o produto chama-se '{VIZIA}'")
+        check(re.search(rf'class="product-name">{re.escape(VIZIA)}</h[23]>', main), f"{url}: o produto chama-se '{VIZIA}'")
 
 
 def check_consent_html(check, url, html, lang):
@@ -893,6 +895,125 @@ def check_grid5_css(check):
           "site.css: a 60rem a .grid-5 usa 6 colunas, 3 cartões em cima (span 2) e 2 em baixo (span 3)")
 
 
+# Caso de estudo Get It Vac (#53): página nova, cartões em Projetos e no Início, imagens AVIF/WebP (#34).
+GET_IT_VAC = {"pt-PT": "/produtos/get-it-vac/", "en": "/en/products/get-it-vac/"}
+PRODUCTS = {"pt-PT": "/produtos/", "en": "/en/products/"}
+CONTACT = {"pt-PT": "/contacto/", "en": "/en/contact/"}
+# Igual em PT e EN. "unofficial stand": nada sugere ligação oficial ao Web Summit.
+GET_IT_VAC_TAG = "Caso de estudo · Web Summit Lisboa 2026 (unofficial stand)"
+# Botão "Jogar": muda para /home quando a landing estiver no ar (#54), aqui e nos conteúdos.
+GET_IT_VAC_PLAY = "https://vac.navego.pt"
+GET_IT_VAC_BUTTONS = {"pt-PT": ("Jogar o Get It Vac", "Quer um jogo para o seu evento?"),
+                      "en": ("Play Get It Vac", "Want a game for your event?")}
+GET_IT_VAC_OG = "/assets/og-get-it-vac.png"
+GET_IT_VAC_NUMBERS = ["122", "67", "18", "13", "19", "80 s"]
+# Fica de fora: o repositório e planos futuros.
+GET_IT_VAC_OUT = re.compile(r"github|repositório|repository|roadmap|planos futuros|future plans|\boficial\b|\bofficial\b", re.I)
+IMG_DIR = "/assets/img/"
+
+
+def image_size(path):
+    """Largura e altura de um WebP (VP8, VP8L, VP8X) ou AVIF (caixa ispe), sem bibliotecas."""
+    data = path.read_bytes()
+    if data[:4] == b"RIFF" and data[8:12] == b"WEBP":
+        chunk = data[12:16]
+        if chunk == b"VP8X":
+            return 1 + int.from_bytes(data[24:27], "little"), 1 + int.from_bytes(data[27:30], "little")
+        if chunk == b"VP8 ":
+            return int.from_bytes(data[26:28], "little") & 0x3FFF, int.from_bytes(data[28:30], "little") & 0x3FFF
+        if chunk == b"VP8L":
+            b = int.from_bytes(data[21:25], "little")
+            return 1 + (b & 0x3FFF), 1 + ((b >> 14) & 0x3FFF)
+    i = data.find(b"ispe")
+    if i != -1:
+        return int.from_bytes(data[i + 8:i + 12], "big"), int.from_bytes(data[i + 12:i + 16], "big")
+    return None
+
+
+def check_pictures(check, url, html, hero_first):
+    """Cada <picture>: AVIF e WebP com 3 larguras que existem, img com alt, width, height e lazy (menos o hero).
+
+    Nenhuma largura passa o dobro do maior tamanho em rem do sizes (ecrãs 2x)."""
+    pics = re.findall(r"<picture\b[^>]*>(.*?)</picture>", html, re.S)
+    for n, pic in enumerate(pics):
+        sources = re.findall(r'<source type="([^"]+)" srcset="([^"]+)" sizes="([^"]+)">', pic)
+        check([t for t, _, _ in sources] == ["image/avif", "image/webp"], f"{url}: <picture> {n + 1} sem AVIF e WebP, por esta ordem")
+        img = re.search(r"<img\b([^>]*)>", pic)
+        check(img is not None, f"{url}: <picture> {n + 1} sem <img>")
+        if not sources or img is None:
+            continue
+        attrs = dict(re.findall(r'([\w-]+)="([^"]*)"', img.group(1)))
+        check(attrs.get("alt", "").strip(), f"{url}: <img> {n + 1} sem alt")
+        w, h = int(attrs.get("width", 0)), int(attrs.get("height", 0))
+        check(w and h, f"{url}: <img> {n + 1} sem width e height")
+        check(attrs.get("src", "").startswith(IMG_DIR) and attrs["src"].endswith(".webp"),
+              f"{url}: <img> {n + 1} com src fora de {IMG_DIR} ou sem WebP")
+        if n == 0 and hero_first:
+            check("loading" not in attrs and attrs.get("fetchpriority") == "high",
+                  f"{url}: a imagem do hero carrega logo (sem lazy, fetchpriority=high)")
+        else:
+            check(attrs.get("loading") == "lazy" and attrs.get("decoding") == "async",
+                  f"{url}: <img> {n + 1} precisa de loading=lazy e decoding=async")
+        for kind, srcset, sizes in sources:
+            ext = {"image/avif": ".avif", "image/webp": ".webp"}.get(kind, "?")
+            entries = [e.strip().rsplit(" ", 1) for e in srcset.split(",")]
+            check(len(entries) == 3, f"{url}: srcset {kind} com {len(entries)} larguras (devem ser 3)")
+            cap = max((float(x) for x in re.findall(r"([\d.]+)rem\)?(?:,|$)", sizes)), default=0) * 16 * 2
+            for src, desc in entries:
+                f = file_for(src)
+                check(src.startswith(IMG_DIR) and src.endswith(ext) and f.exists(), f"{url}: imagem em falta {src}")
+                if not f.exists() or not desc.endswith("w"):
+                    continue
+                size = image_size(f)
+                check(size is not None and size[0] == int(desc[:-1]), f"{url}: {src} não tem {desc} de largura ({size})")
+                if size and w and h:
+                    check(abs(size[1] - round(size[0] * h / w)) <= 1, f"{url}: {src} com proporção diferente de {w}x{h}")
+                check(cap and int(desc[:-1]) <= cap, f"{url}: {src} maior do que o dobro do tamanho mostrado ({sizes})")
+
+
+def check_get_it_vac(check, url, html, lang, page):
+    main = html[html.index("<main"):html.index("</main>")]
+    case, products = GET_IT_VAC[lang], PRODUCTS[lang]
+    home = "/" if lang == "pt-PT" else "/en/"
+    if url in (case, products, home):
+        # A parte noutra língua leva lang (WCAG 3.1.2): o texto visível é igual em PT e EN.
+        other = '<span lang="en">unofficial stand</span>' if lang == "pt-PT" else '<span lang="pt-PT">Caso de estudo</span>'
+        check(GET_IT_VAC_TAG in re.sub(r"<[^>]+>", "", main), f"{url}: falta a etiqueta '{GET_IT_VAC_TAG}'")
+        check(other in main, f"{url}: a etiqueta precisa de {other}")
+    if url in (products, home):
+        check(f'href="{case}"' in main, f"{url}: falta o cartão com link para {case}")
+        cards = re.findall(r'<li class="card card-project">(.*?)</li>\n', main, re.S)
+        check(len(cards) == 2 and VIZIA in cards[0] and "Get It Vac" in cards[1],
+              f"{url}: Vizia e depois Get It Vac, lado a lado em cartões .card-project")
+        check_pictures(check, url, main, False)
+    if url != case:
+        return
+    play, event = GET_IT_VAC_BUTTONS[lang]
+    check(re.search(rf'<a class="btn btn-primary" href="{re.escape(GET_IT_VAC_PLAY)}" target="_blank" rel="noopener noreferrer">{play}</a>', main),
+          f"{url}: falta o botão '{play}' para {GET_IT_VAC_PLAY}")
+    check(f'href="{CONTACT[lang]}">{event}</a>' in main, f"{url}: falta o botão '{event}' para {CONTACT[lang]}")
+    check(re.search(rf'<a href="{products}"[^>]*aria-current="true"', html), f"{url}: Projetos marcado como secção atual no menu")
+    crumb = re.search(r'<nav class="breadcrumb" aria-label="[^"]+">(.*?)</nav>', main, re.S)
+    check(crumb is not None and f'href="{products}"' in crumb.group(1) and 'aria-current="page"' in crumb.group(1),
+          f"{url}: falta o breadcrumb com link para {products} e a página atual")
+    text = " ".join(re.sub(r"<[^>]+>", " ", main.replace("(unofficial stand)", "")).split())
+    m = GET_IT_VAC_OUT.search(text)
+    check(not m, f"{url}: '{m.group(0) if m else ''}' fica de fora da página")
+    for number in GET_IT_VAC_NUMBERS:
+        check(number in text, f"{url}: falta o resultado '{number}'")
+    check(page.meta.get("og:image") == SITE + GET_IT_VAC_OG, f"{url}: og:image deve ser {GET_IT_VAC_OG}")
+    check(len(re.findall(r"<picture\b", main)) == 5, f"{url}: hero, comando, multijogador, selfie e cartaz (5 imagens)")
+    check_pictures(check, url, main, True)
+
+
+def check_privacy_links(check, pages_raw):
+    for privacy in ("/privacidade/", "/en/privacy/"):
+        raw = pages_raw.get(privacy, "")
+        others = re.search(r'id="(?:outros-sites|other-sites)">.*?</h2>\s*<p>(.*?)</p>', raw, re.S)
+        check(others is not None and f'href="{GET_IT_VAC_PLAY}"' in others.group(1) and "Get It Vac" in others.group(1),
+              f"{privacy}: o Get It Vac tem de estar em 'Outros sites'")
+
+
 def main():
     errors = []
 
@@ -968,6 +1089,7 @@ def main():
             check_consent_html(check, url, raw, lang)
             check_positioning(check, url, raw, lang, url in ("/", "/en/"), url in ("/sobre/", "/en/about/"),
                               url in ("/servicos/", "/en/services/"))
+            check_get_it_vac(check, url, raw, lang, p)
             pages_raw[url] = raw
             check_page_icons(check, url, p, raw, url in ("/", "/en/"), url in ("/servicos/", "/en/services/"))
             if url in ("/", "/en/"):
@@ -1001,6 +1123,7 @@ def main():
         check(len(urls) == 1, f"meta description repetida em {urls}")
 
     check_cookie_policy(check, pages_raw)
+    check_privacy_links(check, pages_raw)
 
     # 404
     f404 = ROOT / "404.html"
