@@ -54,9 +54,9 @@ func draw(_ string: String, at point: CGPoint, font: NSFont, color: NSColor, ker
 
 let left: CGFloat = 96
 
-// Selo "Digital Product Studio"
+// Selo "Interactive Technology Studio" (#52)
 let badgeFont = NSFont.monospacedSystemFont(ofSize: 20, weight: .medium)
-let badgeText = "DIGITAL PRODUCT STUDIO"
+let badgeText = "INTERACTIVE TECHNOLOGY STUDIO"
 let badgeSize = NSAttributedString(string: badgeText, attributes: [.font: badgeFont, .kern: 4]).size()
 let badge = CGRect(x: left, y: 420, width: badgeSize.width + 72, height: 52)
 ctx.setStrokeColor(CGColor(gray: 1, alpha: 0.14))
@@ -69,7 +69,7 @@ draw(badgeText, at: CGPoint(x: left + 50, y: badge.midY - badgeSize.height / 2),
 
 // Marca e frase
 draw("Thr33 Labs", at: CGPoint(x: left - 6, y: 250), font: font(132, weight: 700), color: text, kern: -4)
-let line = NSMutableAttributedString(string: "Digital products that people ", attributes: [.font: font(44, weight: 500), .foregroundColor: dim])
+let line = NSMutableAttributedString(string: "Experiences people touch and ", attributes: [.font: font(44, weight: 500), .foregroundColor: dim])
 line.append(NSAttributedString(string: "use.", attributes: [.font: font(44, weight: 500), .foregroundColor: accent]))
 line.draw(at: CGPoint(x: left, y: 170))
 
