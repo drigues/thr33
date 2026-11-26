@@ -9,7 +9,7 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="/assets/fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/assets/css/tokens.css?v=926a9147">
-  <link rel="stylesheet" href="/assets/site.css?v=a599699d">
+  <link rel="stylesheet" href="/assets/site.css?v=962c9345">
   <!-- Sem defer: põe a classe .js no html antes de pintar; o resto corre no DOMContentLoaded. -->
   <script src="/assets/js/site.js?v=41a42991"></script>
   <!-- Consentimento de cookies e Google Analytics: o gtag.js só se pede depois de aceitar. -->
@@ -63,24 +63,35 @@
       </div>
     </section>
 
-    <section class="band scene-ink" data-scene="ink" aria-labelledby="vizia">
+    <section class="band scene-ink" data-scene="ink" aria-labelledby="projects">
       <div class="wrap">
-        <p class="label"><span class="label-num">(01)</span> Product</p>
-        <div class="product">
-        <div>
-          <p class="examples-title">Our own product · Augmented reality</p>
-          <h2 id="vizia" class="product-name">Vizia - Arquitetura em AR</h2>
-          <p class="dim">Architecture, interior design and event projects in augmented reality, at real scale and on site. For architects, interior designers and event planners who want clients to see the result before going ahead.</p>
-          <div class="actions">
-          <a class="btn btn-primary" href="https://vizia.thr33.xyz" target="_blank" rel="noopener noreferrer">Visit vizia.thr33.xyz</a>
-        </div>
-        </div>
-        <ul class="ticks">
+        <p class="label"><span class="label-num">(01)</span> Projects</p>
+        <h2 id="projects">Products and case studies</h2>
+        
+        <ul class="grid grid-2 projects">
+          <li class="card card-project">
+            <p class="examples-title">Our own product · Augmented reality</p>
+            <h3 id="vizia" class="product-name">Vizia - Arquitetura em AR</h3>
+            <p>Architecture, interior design and event projects in augmented reality, at real scale and on site. For architects, interior designers and event planners who want clients to see the result before going ahead.</p>
+            <ul class="ticks">
           <li>Models in augmented reality (AR), at real scale.</li>
           <li>Works on phones and tablets.</li>
           <li>Built for presenting on site, with the client.</li>
         </ul>
-      </div>
+            <div class="actions">
+          <a class="btn btn-primary" href="https://vizia.thr33.xyz" target="_blank" rel="noopener noreferrer">Visit vizia.thr33.xyz</a>
+        </div>
+          </li>
+          <li class="card card-project">
+            <picture class="card-media"><source type="image/avif" srcset="/assets/img/get-it-vac/cartao-400.avif 400w, /assets/img/get-it-vac/cartao-640.avif 640w, /assets/img/get-it-vac/cartao-928.avif 928w" sizes="(min-width: 68rem) 29rem, (min-width: 40rem) calc(50vw - 4rem), calc(100vw - 5rem)"><source type="image/webp" srcset="/assets/img/get-it-vac/cartao-400.webp 400w, /assets/img/get-it-vac/cartao-640.webp 640w, /assets/img/get-it-vac/cartao-928.webp 928w" sizes="(min-width: 68rem) 29rem, (min-width: 40rem) calc(50vw - 4rem), calc(100vw - 5rem)"><img src="/assets/img/get-it-vac/cartao-640.webp" alt="Get It Vac screen with the mini robot vacuum racing through Lisbon in pixel art." width="928" height="580" loading="lazy" decoding="async"></picture>
+            <p class="examples-title"><span lang="pt-PT">Caso de estudo</span> · Web Summit Lisboa 2026 (unofficial stand)</p>
+            <h3 id="get-it-vac" class="product-name">Get It Vac</h3>
+            <p>An arcade game controlled by an internet-connected mini robot vacuum, with phone multiplayer, photos and augmented reality. We built it in 5 days.</p>
+            <div class="actions">
+          <a class="btn btn-primary" href="/en/products/get-it-vac/">Read the case study</a>
+        </div>
+          </li>
+        </ul>
       </div>
     </section>
 
