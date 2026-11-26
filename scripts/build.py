@@ -173,7 +173,7 @@ def steps(section):
         f'<h3>{i["title"]}</h3><p>{i["text"]}</p>\n          </li>'
         for n, i in enumerate(section["items"], 1)
     )
-    return f'<ol class="grid grid-4" role="list" data-reveal>\n          {items}\n        </ol>'
+    return f'<ol class="grid grid-{len(section["items"])}" role="list" data-reveal>\n          {items}\n        </ol>'
 
 
 def facts(section):
@@ -352,7 +352,7 @@ HERO_GRADIENT = ('<div class="hero-gradient" aria-hidden="true">'
 
 
 def page_head(head):
-    """Cabeça da página. O hero (página inicial) leva o gradiente-assinatura e a indicação de scroll.
+    """Cabeça da página. O hero (página inicial) leva o gradiente-assinatura (manchas em deriva, #58) e a indicação de scroll.
 
     O <h1> leva data-split: o site.js parte-o em linhas para o reveal; sem JS fica como está.
     """
