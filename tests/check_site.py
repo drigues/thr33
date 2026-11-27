@@ -9,6 +9,7 @@ import shutil
 import subprocess
 from datetime import date
 import sys
+from html import escape as html_escape
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse
@@ -62,8 +63,13 @@ SITE_JS = "/assets/js/site.js"
 # Reposicionamento (#52, #58): o posicionamento vai na etiqueta; o lead diz onde fica Óbidos.
 HERO_LABEL = {"pt-PT": "(Thr33 Labs / ©2026) Estúdio de tecnologia interativa",
               "en": "(Thr33 Labs / ©2026) Interactive technology studio"}
-HERO_H1 = {"pt-PT": "Feito para ser explorado.", "en": "Made to be explored."}
-HERO_BLOBS = 3
+# #63: "explorado" lia-se também no sentido negativo. Título com o destaque na última palavra e subtítulo novo.
+HERO_H1 = {"pt-PT": "Imagine. Nós construímos.", "en": "You imagine. We build."}
+HERO_ACCENT = {"pt-PT": "construímos.", "en": "build."}
+HERO_SUBTITLE = {"pt-PT": "Experiências que ficam na memória.", "en": "Experiences people remember."}
+RETIRED_HERO = re.compile(r"explorad|explored", re.I)
+# Espectro (#63): 5 manchas e uma camada cónica que roda.
+HERO_BLOBS = 5
 # Serviços e ícones (#29): sprite Lucide servido pelo site, um ícone por serviço e por passo.
 ICONS_SVG = ROOT / "assets" / "icons.svg"
 ICONS_LICENCE = ROOT / "assets" / "icons-LICENSE.txt"
@@ -136,6 +142,7 @@ class Page(HTMLParser):
         self.h1_attrs = []
         self.hero_gradient = []  # atributos de .hero-gradient
         self.blobs = 0
+        self.spectrum = 0        # camada cónica do espectro (#63)
         self.hero_labels = []    # texto de .label dentro de .hero
         self.scroll_hints = []   # atributos de .hero-scroll
         self._in_hero = 0
@@ -197,6 +204,8 @@ class Page(HTMLParser):
             self.hero_gradient.append(a)
         if "blob" in classes:
             self.blobs += 1
+        if "spectrum" in classes:
+            self.spectrum += 1
         if tag == "svg" and "icon" in classes:
             self._svg = a
         if tag == "use" and self._svg is not None:
@@ -396,6 +405,7 @@ def check_hero(check, url, p, is_home, lang):
     check(len(p.hero_gradient) == 1 and p.hero_gradient[0].get("aria-hidden") == "true",
           f"{url}: falta o .hero-gradient com aria-hidden=true")
     check(p.blobs == HERO_BLOBS, f"{url}: o gradiente deve ter {HERO_BLOBS} manchas, tem {p.blobs}")
+    check(p.spectrum == 1, f"{url}: o gradiente deve ter uma camada cónica (.spectrum), tem {p.spectrum}")
     check(len(p.scroll_hints) == 1, f"{url}: falta a indicação ↓ scroll (.hero-scroll)")
 
 
@@ -640,7 +650,7 @@ def check_no_js_hiding(check):
 
 # Fecho do redesign (#35): reduced motion, foco, imagens e CSP.
 # Funções do site.js que mexem em movimento: todas têm de respeitar prefers-reduced-motion.
-MOTION_FUNCTIONS = ["followPointer", "driftBlobs", "tiltCards", "marqueeScroll", "countLabels", "revealGroups", "colourScenes",
+MOTION_FUNCTIONS = ["followPointer", "driftBlobs", "playCards", "marqueeScroll", "countLabels", "revealGroups", "colourScenes",
                     "magneticButtons", "ctaScale"]
 
 
@@ -839,7 +849,7 @@ HERO_LEAD = {"pt-PT": "Aplicações iOS e Android, plataformas e experiências i
                       "Com foco em UX, a partir de Óbidos.",
              "en": "iOS and Android apps, platforms and interactive experiences, from software to hardware. "
                    "UX-led, from Óbidos."}
-OG_ALT = {"pt-PT": "feito para ser explorado", "en": "made to be explored"}
+OG_ALT = {"pt-PT": "imagine, nós construímos", "en": "you imagine, we build"}
 FOUNDER = {"pt-PT": "Fundada por Thiago Oliveira, engenheiro de software com mais de 10 anos de experiência.",
            "en": "Founded by Thiago Oliveira, Software Engineer with over 10 years of experience."}
 RETIRED_COPY = re.compile(
@@ -887,6 +897,11 @@ def check_positioning(check, url, html, lang, is_home, is_about, is_services):
               f"{url}: meta description sem o posicionamento novo")
         h1 = re.search(r"<h1[^>]*>(.*?)</h1>", html, re.S).group(1)
         check(" ".join(re.sub(r"<[^>]+>", "", h1).split()) == HERO_H1[lang], f"{url}: o h1 do hero deve ser '{HERO_H1[lang]}'")
+        check(h1.endswith(f'<span class="accent">{HERO_ACCENT[lang]}</span>'),
+              f"{url}: o sublinhado em Telha (.accent) fica só na última palavra, '{HERO_ACCENT[lang]}'")
+        sub = re.search(r'</h1>\s*<p class="hero-subtitle">(.*?)</p>\s*<p class="lead">', html, re.S)
+        check(sub is not None and sub.group(1) == HERO_SUBTITLE[lang],
+              f"{url}: subtítulo '{HERO_SUBTITLE[lang]}' (.hero-subtitle) entre o h1 e o lead")
         lead = re.search(r'<section class="hero">.*?<p class="lead">(.*?)</p>', html, re.S)
         check(lead is not None and lead.group(1) == HERO_LEAD[lang], f"{url}: o lead do hero deve ser '{HERO_LEAD[lang]}'")
         check('<ul class="grid grid-3" data-reveal>' in html, f"{url}: os 3 serviços vão numa .grid-3")
@@ -923,8 +938,38 @@ def check_hero_drift(check):
     keyframe_props = {p for p in props if p in ("top", "left", "right", "bottom", "width", "height", "filter", "background")}
     check(not keyframe_props, f"site.js: driftBlobs só anima transform e opacity, anima {sorted(keyframe_props)}")
     check(re.search(r"driftBlobs\(hero\)", js), "site.js: driftBlobs não é chamado com o hero")
+    # #63: espectro que se nota. Trajetos curvos de 25 a 40 s por perna, amplitude de 35% do hero, e a camada
+    # cónica a rodar em 90 s. O desfoque é estático: nada anima filter.
+    for needle, why in (("0.35", "amplitude de ~35% do hero"), ("25000", "pernas de 25 s no mínimo"),
+                        ("40000", "pernas de 40 s no máximo"), ("90000", "a camada cónica dá uma volta em 90 s"),
+                        ("rotate(", "a camada cónica roda"), (".spectrum", "a camada cónica entra na pausa")):
+        check(needle in body, f"site.js: driftBlobs sem {needle} ({why})")
+    check("filter" not in body, "site.js: driftBlobs não anima filter")
+    plain = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+    check(not re.search(r"@keyframes[^{]*\{[^@]*?filter", plain) and not re.search(r"transition:[^;]*filter", plain),
+          "site.css: o desfoque do espectro é estático (sem animar nem transitar filter)")
+    blob = re.search(r"\n\.blob\s*\{([^}]*)\}", plain)
+    opacity = re.search(r"opacity:\s*([\d.]+)", blob.group(1)) if blob else None
+    check(opacity is not None and 0.5 <= float(opacity.group(1)) <= 0.6, "site.css: .blob com opacidade entre 0.5 e 0.6")
+    check(blob is not None and "mix-blend-mode: multiply" in blob.group(1), "site.css: manchas em multiply sobre o Cal")
+    dark = re.search(r"@media \(prefers-color-scheme: dark\) \{([^@]*?)\n\}", plain)
+    check(dark is not None and "mix-blend-mode: screen" in dark.group(1), "site.css: no modo escuro as manchas passam a screen")
+    spectrum = re.search(r"\n\.spectrum\s*\{([^}]*)\}", plain)
+    check(spectrum is not None and "conic-gradient" in spectrum.group(1), "site.css: falta a camada cónica (.spectrum)")
     swift = (BASE / "scripts" / "og-image.swift").read_text(encoding="utf-8")
-    check('"Made to be "' in swift and '"explored."' in swift, "og-image.swift: a imagem de partilha diz 'Made to be explored.'")
+    check('"You imagine. We "' in swift and '"build."' in swift, "og-image.swift: a imagem de partilha diz 'You imagine. We build.'")
+
+
+def check_retired_hero(check):
+    """#63: nenhum "explorado/explored" no site nem nos conteúdos (lia-se também no sentido negativo)."""
+    for folder in (BASE / "src", ROOT):
+        for f in sorted(folder.rglob("*")):
+            if f.suffix not in (".html", ".json", ".css", ".js", ".svg", ".xml", ".txt", ".md"):
+                continue
+            m = RETIRED_HERO.search(f.read_text(encoding="utf-8", errors="ignore"))
+            check(not m, f"{f.relative_to(BASE)}: '{m.group(0) if m else ''}' (#63)")
+    swift = (BASE / "scripts" / "og-image.swift").read_text(encoding="utf-8")
+    check(not RETIRED_HERO.search(swift), "scripts/og-image.swift: ainda diz 'explored'")
 
 
 def check_icons_used(check):
@@ -953,7 +998,13 @@ GET_IT_VAC_RETIRED = re.compile(r"ESP32|Laravel 12|\bForge\b|Hetzner|placeholder
 GET_IT_VAC_MCU = {"pt-PT": "microcontroladores", "en": "microcontrollers"}
 # Cartões de projeto (#59): um só componente, igual no Início e em Projetos, com ilustração SVG do site.
 PROJECT_CARDS = [("vizia", "https://vizia.thr33.xyz", True), ("get-it-vac", None, False)]
-CARD_IMG = "/assets/img/projetos/"
+# #63: a ilustração vai inline no cartão (SVG com role="img"), com as peças em grupos para animar.
+CARD_ART = BASE / "src" / "art" / "cartoes"
+CARD_PIECES = {
+    "vizia": ["art-sala", "art-sombra", "art-sofa", "art-candeeiro", "art-planta", "art-cantos"],
+    "get-it-vac": ["art-casario", "art-estrelas", "art-estrela", "art-vac", "art-personagem"],
+}
+CARD_ANIM_MAX = 1.2  # segundos: animações curtas, uma vez
 GET_IT_VAC_OG = "/assets/og-get-it-vac.png"
 GET_IT_VAC_NUMBERS = ["122", "67", "18", "13", "19", "80 s"]
 # Fica de fora: o repositório e planos futuros.
@@ -1078,26 +1129,37 @@ def card_shape(card):
 
 
 def check_project_cards(check, url, main, case):
-    cards = re.findall(r'<li class="card card-project" data-tilt>(.*?)</li>\n', main, re.S)
+    cards = re.findall(r'<li class="card card-project">(.*?)</li>\n', main, re.S)
     check(len(cards) == 2 and VIZIA in cards[0] and "Get It Vac" in cards[1],
-          f"{url}: Vizia e depois Get It Vac, lado a lado em cartões .card-project com data-tilt")
+          f"{url}: Vizia e depois Get It Vac, lado a lado em cartões .card-project (sem data-tilt, #63)")
     if len(cards) != 2:
         return
-    check(card_shape(cards[0]) == card_shape(cards[1]), f"{url}: os dois cartões têm de ser o mesmo componente")
+    shapes = [card_shape(re.sub(r"<svg\b.*?</svg>", "<svg></svg>", c, flags=re.S)) for c in cards]
+    check(shapes[0] == shapes[1], f"{url}: os dois cartões têm de ser o mesmo componente")
+    lang = "pt" if not url.startswith("/en/") else "en"
+    items = {i["id"]: i for i in json.loads(CONTENT[lang].read_text(encoding="utf-8"))["projects"]}
+    ids = re.findall(r'\sid="([^"]+)"', main)
+    check(len(ids) == len(set(ids)), f"{url}: ids repetidos no <main> ({sorted(i for i in ids if ids.count(i) > 1)[:3]})")
     for card, (name, external, blank) in zip(cards, PROJECT_CARDS):
-        img = re.search(r'<div class="card-media"><img src="([^"]+)" alt="([^"]+)" width="(\d+)" height="(\d+)" '
-                        r'loading="lazy" decoding="async"></div>', card)
-        check(img is not None and img.group(1) == f"{CARD_IMG}{name}.svg", f"{url}: cartão {name} sem a ilustração {CARD_IMG}{name}.svg")
-        if img:
-            svg = file_for(img.group(1))
-            check(svg.exists(), f"{url}: {img.group(1)} em falta")
-            if svg.exists():
-                text = svg.read_text(encoding="utf-8")
-                refs = re.findall(r'(?:href|src)="([^"]+)"|url\((?!#)([^)]+)\)', text)
-                check(not refs, f"{img.group(1)}: sem pedidos externos nem ficheiros ligados ({refs[:2]})")
-                view = re.search(r'viewBox="0 0 ([\d.]+) ([\d.]+)"', text)
-                check(view is not None and abs(float(view.group(1)) / float(view.group(2)) - int(img.group(3)) / int(img.group(4))) < 0.01,
-                      f"{img.group(1)}: proporção diferente do width/height do <img>")
+        check("<img" not in card, f"{url}: o cartão {name} já não usa <img> (SVG inline, #63)")
+        art = re.search(r'<div class="card-media" data-art><svg class="art art-([\w-]+)"([^>]*)>(.*?)</svg></div>', card, re.S)
+        check(art is not None and art.group(1) == name, f"{url}: cartão {name} sem a ilustração inline (svg.art.art-{name})")
+        if art:
+            attrs, body = art.group(2), art.group(3)
+            alt = items[name]["image"]["alt"]
+            check('role="img"' in attrs and f'aria-label="{html_escape(alt)}"' in attrs,
+                  f"{url}: a ilustração do cartão {name} leva role=img e aria-label com o alt")
+            view = re.search(r'viewBox="0 0 ([\d.]+) ([\d.]+)"', attrs)
+            check(view is not None and abs(float(view.group(1)) / float(view.group(2)) - 1.6) < 0.01,
+                  f"{url}: a ilustração do cartão {name} é 16:10")
+            refs = re.findall(r'(?:href|src)="([^"]+)"|url\((?!#)([^)]+)\)', body)
+            check(not refs, f"{url}: a ilustração {name} não faz pedidos ({refs[:2]})")
+            groups = set(re.findall(r'<g class="([\w-]+)', body))
+            missing = [g for g in CARD_PIECES[name] if g not in groups]
+            check(not missing, f"{url}: a ilustração {name} sem as peças {missing}")
+            if name == "get-it-vac":
+                check(2 <= body.count('class="art-estrela"') <= 3, f"{url}: 2 a 3 estrelas a piscar no Get It Vac")
+                check(body.count('class="art-vac"') >= 2, f"{url}: pelo menos 2 robôs no Get It Vac")
         check(re.search(r'<h3 id="[\w-]+" class="product-name">', card), f"{url}: cartão {name} sem nome (h3.product-name)")
         check(len(re.findall(r"<p>", card)) == 1, f"{url}: cartão {name} com uma descrição curta")
         links = re.findall(r'<a class="card-link" href="([^"]+)"([^>]*)>', card)
@@ -1108,33 +1170,50 @@ def check_project_cards(check, url, main, case):
                   f"{url}: o link do cartão {name} {'abre' if blank else 'não abre'} noutro separador (↗)")
 
 
+def seconds(value):
+    return float(value[:-2]) / 1000 if value.endswith("ms") else float(value[:-1])
+
+
 def check_card_motion(check):
-    """#59: inclinação até 6° com parallax e brilho (hover e foco); entrada curta em ecrãs táteis; nada com reduced motion."""
+    """#63: o cartão já não inclina; anima só a ilustração (hover, foco, entrada no ecrã tátil e toque),
+    em animações curtas que correm uma vez. Nada com reduced motion; sem JS fica estática e completa."""
     js = (ROOT / SITE_JS.lstrip("/")).read_text(encoding="utf-8")
-    body = js_function(js, "tiltCards") or ""
-    check(re.search(r"MAX_TILT = 6\b", js), "site.js: a inclinação máxima dos cartões é 6° (MAX_TILT = 6)")
-    for needle in ("pointermove", "pointerleave", "(hover: none)", "IntersectionObserver", "MAX_TILT"):
-        check(needle in body, f"site.js: tiltCards sem {needle}")
     css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
     plain = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
-    focus = re.search(r"\.card-project:focus-within\s*\{([^}]*)\}", plain)
-    check(focus is not None and "--rx" in focus.group(1) and "--ry" in focus.group(1),
-          "site.css: o foco do teclado (:focus-within) também inclina o cartão")
-    for deg in re.findall(r"--r[xy]:\s*(-?[\d.]+)deg", plain):
-        check(abs(float(deg)) <= 6, f"site.css: inclinação de {deg}° passa dos 6°")
-    check(re.search(r"\.card-project::after\s*\{[^}]*radial-gradient", plain), "site.css: falta o brilho (.card-project::after)")
-    check(re.search(r"\.card-project \.card-media img\s*\{[^}]*translate", plain), "site.css: falta o parallax da imagem")
+    for needle in ("tiltCards", "MAX_TILT", "data-tilt", "--rx", "--ry", "card-glare", "card-in", "is-tilting", "is-entering"):
+        check(needle not in js and needle not in plain, f"site.js/site.css: o {needle} do #59 sai (#63)")
+    body = js_function(js, "playCards") or ""
+    check(body, "site.js: falta playCards (anima a ilustração dos cartões)")
+    for needle, why in (("pointerenter", "hover do rato"), ("focusin", "foco do teclado"), ("(hover: none)", "ecrã tátil"),
+                        ("IntersectionObserver", "corre ao entrar no ecrã"), ("0.5", "com 50% do cartão visível"),
+                        ("preventDefault", "tocar na ilustração não segue o link"), ("is-playing", "classe que corre a animação")):
+        check(needle in body, f"site.js: playCards sem {needle} ({why})")
+    check(re.search(r"playCards\(\)", js), "site.js: playCards não é chamado")
+    rules = re.findall(r"([^{}]*\.is-playing[^{}]*)\{([^{}]*)\}", plain)
+    check(len(rules) >= 6, "site.css: faltam as animações das peças (.card-project.is-playing .art-…)")
+    for selectors, decl in rules:
+        if "animation" not in decl:
+            continue
+        check("infinite" not in decl, f"site.css: '{selectors.strip()}' anima em loop")
+        for t in re.findall(r"(?<![\w-])(\d*\.?\d+m?s)\b", decl):
+            check(seconds(t) <= CARD_ANIM_MAX, f"site.css: '{selectors.strip()}' com {t} (máx. {CARD_ANIM_MAX} s)")
+    check(re.search(r"\.art-vac[^{]*\{[^}]*steps\(", plain), "site.css: os robôs andam aos solavancos (steps())")
+    check(re.search(r"\.art\s*\{[^}]*display: block", plain), "site.css: a ilustração inline (.art) ocupa a caixa toda")
     check(re.search(r"\.card-link::before\s*\{[^}]*inset: 0", plain), "site.css: o link cobre o cartão (.card-link::before)")
+    check(not re.search(r"\.art[\w-]*[^{]*\{[^}]*(opacity:\s*0\b|visibility)", re.sub(r"@keyframes[^{]*\{(?:[^{}]*\{[^{}]*\})*[^{}]*\}", "", plain)),
+          "site.css: sem JS a ilustração fica completa (nenhuma peça começa escondida fora das keyframes)")
     reduced = re.search(r"@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{(.*?)\n\}", plain, re.S)
-    block = reduced.group(1) if reduced else ""
-    check(".card-project" in block and ".card-media img" in block, "site.css: reduced motion tira a inclinação e o parallax dos cartões")
+    check(reduced is not None and ".art" in reduced.group(1), "site.css: reduced motion trata a ilustração dos cartões")
 
 
 def check_art(check):
     """#59: as imagens do Get It Vac são ilustrações feitas pelo scripts/art.py, sem o rótulo "placeholder"."""
     check(not (BASE / "scripts" / "placeholders.swift").exists(), "scripts/placeholders.swift sai (imagens provisórias com rótulo)")
     images = json.loads((BASE / "src" / "images" / "images.json").read_text(encoding="utf-8"))
-    check("get-it-vac/cartao" not in images, "images.json: o cartão passa a SVG (public/assets/img/projetos/)")
+    check("get-it-vac/cartao" not in images, "images.json: o cartão passa a SVG (src/art/cartoes/)")
+    check(not (ROOT / "assets" / "img" / "projetos").exists(), "public/assets/img/projetos/ sai: a ilustração vai inline (#63)")
+    for name in CARD_PIECES:
+        check((CARD_ART / f"{name}.svg").exists(), f"src/art/cartoes/{name}.svg em falta (gerar com scripts/art.py)")
     for name in images:
         svg = BASE / "src" / "images" / f"{name}.svg"
         check(svg.exists() and "placeholder" not in svg.read_text(encoding="utf-8"),
@@ -1258,6 +1337,7 @@ def main():
     check_consent_js(check)
     check_grid3_css(check)
     check_hero_drift(check)
+    check_retired_hero(check)
     check_icons_used(check)
     check_card_motion(check)
     check_art(check)
