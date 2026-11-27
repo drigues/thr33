@@ -68,9 +68,9 @@
         "kind": "hero",
         "label": "Thr33 Labs / ©2026",
         "label_after": "Estúdio de tecnologia interativa",
-        "h1": "Imagine. Nós <span class=\"accent\">construímos.</span>",
+        "h1": "<span class=\"hero-line\">Imagine.</span> <span class=\"hero-line\">Nós <span class=\"accent\">construímos.</span></span>",
         "subtitle": "Experiências que ficam na memória.",
-        "lead": "Aplicações iOS e Android, plataformas e experiências interativas, do software ao hardware. Com foco em UX, a partir de Óbidos.",
+        "lead": "Aplicações iOS e Android, plataformas e experiências interativas, do software ao hardware.",
         "actions": [
           {
             "text": "Pedir uma proposta",

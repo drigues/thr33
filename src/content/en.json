@@ -68,9 +68,9 @@
         "kind": "hero",
         "label": "Thr33 Labs / ©2026",
         "label_after": "Interactive technology studio",
-        "h1": "You imagine. We <span class=\"accent\">build.</span>",
+        "h1": "<span class=\"hero-line\">You imagine.</span> <span class=\"hero-line\">We <span class=\"accent\">build.</span></span>",
         "subtitle": "Experiences people remember.",
-        "lead": "iOS and Android apps, platforms and interactive experiences, from software to hardware. UX-led, from Óbidos.",
+        "lead": "iOS and Android apps, platforms and interactive experiences, from software to hardware.",
         "actions": [
           {
             "text": "Request a proposal",
