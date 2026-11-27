@@ -12,6 +12,7 @@ se tiver "label", leva uma etiqueta numerada (01), (02)… pela ordem em que apa
 
 As imagens são <picture> com AVIF e WebP (#34): larguras e sizes em src/images/images.json, proporção
 da imagem-mestre em src/images/, ficheiros gerados por scripts/images.py. O alt vem dos conteúdos.
+A pixel art ("pixel_art" no images.json) vai só em WebP sem perdas.
 """
 import hashlib
 import json
@@ -99,7 +100,9 @@ def master_size(name):
 
 
 def picture(image, eager=False, cls=None):
-    """<picture> com AVIF e WebP em 3 larguras. Só a imagem do hero carrega logo (#34)."""
+    """<picture> com AVIF e WebP em 3 larguras. Só a imagem do hero carrega logo (#34).
+
+    A pixel art ("pixel_art" no images.json) vai só em WebP sem perdas, mais leve e exato do que o AVIF."""
     name = image["name"]
     spec = IMAGES[name]
     width, height = master_size(name)
@@ -113,7 +116,8 @@ def picture(image, eager=False, cls=None):
     fallback = f"{IMG_URL}{name}-{spec['widths'][1]}.webp"
     load = 'fetchpriority="high"' if eager else 'loading="lazy" decoding="async"'
     css = f' class="{cls}"' if cls else ""
-    return (f'<picture{css}><source type="image/avif" srcset="{srcset("avif")}" sizes="{sizes}">'
+    avif = "" if spec.get("pixel_art") else f'<source type="image/avif" srcset="{srcset("avif")}" sizes="{sizes}">'
+    return (f'<picture{css}>{avif}'
             f'<source type="image/webp" srcset="{srcset("webp")}" sizes="{sizes}">'
             f'<img src="{fallback}" alt="{attr(image["alt"])}" width="{width}" height="{height}" {load}></picture>')
 
