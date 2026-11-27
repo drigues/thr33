@@ -67,6 +67,8 @@ HERO_LABEL = {"pt-PT": "(Thr33 Labs / ©2026) Estúdio de tecnologia interativa"
 HERO_H1 = {"pt-PT": "Imagine. Nós construímos.", "en": "You imagine. We build."}
 HERO_ACCENT = {"pt-PT": "construímos.", "en": "build."}
 HERO_SUBTITLE = {"pt-PT": "Experiências que ficam na memória.", "en": "Experiences people remember."}
+# 2026-11-27: título em 2 linhas fixas; a segunda nunca quebra.
+HERO_LINES = {"pt-PT": ["Imagine.", "Nós construímos."], "en": ["You imagine.", "We build."]}
 RETIRED_HERO = re.compile(r"explorad|explored", re.I)
 # Espectro (#63): 5 manchas e uma camada cónica que roda.
 HERO_BLOBS = 5
@@ -750,6 +752,21 @@ def check_cookie_banner_css(check):
           "site.css: o botão secundário do banner (<button>.btn-ghost) precisa de background: transparent")
 
 
+def check_hero_lines_css(check):
+    """2026-11-27: cada .hero-line numa linha própria, sem quebra; subtítulo numa só linha, também a 320 px."""
+    css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
+    line = re.search(r"\.hero-line\s*\{([^}]*)\}", css)
+    check(line is not None and "display: block" in line.group(1) and "white-space: nowrap" in line.group(1),
+          "site.css: .hero-line com display: block e white-space: nowrap")
+    h1 = re.search(r"\n\.hero h1\s*\{([^}]*)\}", css)
+    check(h1 is not None and re.search(r"font-size:\s*clamp\([^)]*vw", h1.group(1)),
+          "site.css: .hero h1 com font-size em clamp() com vw, para 'Nós construímos.' caber a 320 px")
+    sub = re.search(r"\.hero-subtitle\s*\{([^}]*)\}", css)
+    body = sub.group(1) if sub else ""
+    check("white-space: nowrap" in body and "max-width" not in body and re.search(r"font-size:\s*clamp\(1rem,[^)]*vw", body),
+          "site.css: .hero-subtitle numa linha (nowrap, sem max-width, clamp(1rem, …vw, …))")
+
+
 def check_hero_desktop(check):
     css = (ROOT / "assets" / "site.css").read_text(encoding="utf-8")
     m = re.search(r"@media \(min-width: 64rem\) \{[^@]*?\.hero h1\s*\{([^}]*)\}", css)
@@ -845,10 +862,9 @@ def check_cookie_policy(check, pages_raw):
 # e cinco serviços. Vendemos software e serviços, nunca equipamentos.
 POSITIONING = {"pt-PT": "estúdio de tecnologia interativa", "en": "interactive technology studio"}
 # Lead do hero (#58): substitui a linha de apoio do #52 e o lead do #57.
-HERO_LEAD = {"pt-PT": "Aplicações iOS e Android, plataformas e experiências interativas, do software ao hardware. "
-                      "Com foco em UX, a partir de Óbidos.",
-             "en": "iOS and Android apps, platforms and interactive experiences, from software to hardware. "
-                   "UX-led, from Óbidos."}
+# Hero em 2 linhas (2026-11-27): o lead perde "a partir de Óbidos" (fica nas meta descriptions).
+HERO_LEAD = {"pt-PT": "Aplicações iOS e Android, plataformas e experiências interativas, do software ao hardware.",
+             "en": "iOS and Android apps, platforms and interactive experiences, from software to hardware."}
 OG_ALT = {"pt-PT": "imagine, nós construímos", "en": "you imagine, we build"}
 FOUNDER = {"pt-PT": "Fundada por Thiago Oliveira, engenheiro de software com mais de 10 anos de experiência.",
            "en": "Founded by Thiago Oliveira, Software Engineer with over 10 years of experience."}
@@ -897,8 +913,11 @@ def check_positioning(check, url, html, lang, is_home, is_about, is_services):
               f"{url}: meta description sem o posicionamento novo")
         h1 = re.search(r"<h1[^>]*>(.*?)</h1>", html, re.S).group(1)
         check(" ".join(re.sub(r"<[^>]+>", "", h1).split()) == HERO_H1[lang], f"{url}: o h1 do hero deve ser '{HERO_H1[lang]}'")
-        check(h1.endswith(f'<span class="accent">{HERO_ACCENT[lang]}</span>'),
+        check(h1.endswith(f'<span class="accent">{HERO_ACCENT[lang]}</span></span>'),
               f"{url}: o sublinhado em Telha (.accent) fica só na última palavra, '{HERO_ACCENT[lang]}'")
+        lines = re.findall(r'<span class="hero-line">((?:[^<]|<span class="accent">[^<]*</span>)*)</span>', h1)
+        check([" ".join(re.sub(r"<[^>]+>", "", l).split()) for l in lines] == HERO_LINES[lang],
+              f"{url}: o h1 vai em 2 .hero-line, {HERO_LINES[lang]}")
         sub = re.search(r'</h1>\s*<p class="hero-subtitle">(.*?)</p>\s*<p class="lead">', html, re.S)
         check(sub is not None and sub.group(1) == HERO_SUBTITLE[lang],
               f"{url}: subtítulo '{HERO_SUBTITLE[lang]}' (.hero-subtitle) entre o h1 e o lead")
@@ -1333,6 +1352,7 @@ def main():
     check_footer_css(check)
     check_finish(check)
     check_hero_desktop(check)
+    check_hero_lines_css(check)
     check_cookie_banner_css(check)
     check_consent_js(check)
     check_grid3_css(check)

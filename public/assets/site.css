@@ -136,20 +136,23 @@ html.menu-open { overflow: hidden; }
   position: relative; isolation: isolate; overflow: hidden;
   padding-block: clamp(3rem, 10vw, 7rem) clamp(2.5rem, 6vw, 4rem);
 }
+/* "Nós construímos." mede ~7.75em: a 10.5vw ocupa 260 px a 320 px, e cabe mesmo com barra de scroll clássica. */
 .hero h1 {
-  font-size: var(--text-hero); font-weight: 500; letter-spacing: var(--tracking-hero);
+  font-size: clamp(2rem, 10.5vw, 11rem); font-weight: 500; letter-spacing: var(--tracking-hero);
   line-height: 0.95; max-width: none;
 }
-/* Desktop: um pouco menor, para o título do hero caber em 3 linhas no máximo. */
+/* Título em 2 linhas fixas: cada .hero-line é um bloco e nunca quebra (com ou sem o split do site.js). */
+.hero-line { display: block; white-space: nowrap; }
+/* Desktop: o tamanho de sempre (12vw até 8rem); a 1024 px a linha 2 ocupa 952 de 976 px. */
 @media (min-width: 64rem) {
   .hero h1 { font-size: min(var(--text-hero), 8rem); }
 }
 .hero .label, .hero .lead { color: var(--ink); }
 .hero .lead { margin-top: 1.5rem; }
-/* Subtítulo (#63): entre o lead e o h1 em tamanho, em Space Grotesk 500. */
+/* Subtítulo (#63): entre o lead e o h1 em tamanho, em Space Grotesk 500. Numa só linha: mede ~16.6em, a 320 px ocupa 266 px (1rem). */
 .hero-subtitle {
-  margin-top: clamp(1.25rem, 3vw, 2rem); max-width: 24ch; color: var(--ink);
-  font-size: clamp(1.5rem, 3.5vw, 2.5rem); font-weight: 500; letter-spacing: -0.02em; line-height: 1.1;
+  margin-top: clamp(1.25rem, 3vw, 2rem); color: var(--ink); white-space: nowrap;
+  font-size: clamp(1rem, 3.5vw + 0.3rem, 2.5rem); font-weight: 500; letter-spacing: -0.02em; line-height: 1.1;
 }
 /* Telha sobre o gradiente não garante 3:1: a palavra em destaque leva um traço em Telha (forma, não texto). */
 .hero .accent {
