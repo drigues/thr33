@@ -50,86 +50,86 @@ function followPointer(hero) {
   });
 }
 
-/* Manchas do hero em deriva (#58): cada mancha vai de um ponto aleatório a outro, devagar, como um
-   espectro em deriva. Só transform e opacity (Web Animations); pára quando o hero sai do ecrã ou o
-   separador fica escondido, e não corre com reduced motion (as manchas ficam paradas). */
+/* Espectro do hero (#63): cada mancha vai de um ponto aleatório a outro por uma curva (Bézier quadrática com
+   um ponto de controlo também aleatório), cada perna em 25 a 40 s, até ~35% do hero para cada lado; e a camada
+   cónica roda uma volta em 90 s. Só transform e opacity (Web Animations). A opacidade nunca passa a do CSS, por
+   causa do contraste do texto. Pára quando o hero sai do ecrã ou o separador fica escondido, e não corre com
+   reduced motion (fica tudo parado). */
 function driftBlobs(hero) {
-  var blobs = hero.querySelectorAll(".blob");
+  var blobs = hero.querySelectorAll(".blob"), spectrum = hero.querySelector(".spectrum");
   if (reducedMotion || !blobs.length || !blobs[0].animate || !("IntersectionObserver" in window)) return;
   var onScreen = true, running = [];
   function rand(min, max) { return min + Math.random() * (max - min); }
-  function pose(base) {
-    var r = hero.getBoundingClientRect(), reach = Math.max(r.width, r.height) * 0.22;
-    return {
-      transform: "translate3d(" + rand(-reach, reach).toFixed(0) + "px, " + rand(-reach, reach).toFixed(0) + "px, 0) scale(" + rand(0.85, 1.2).toFixed(2) + ")",
-      opacity: (base * rand(0.7, 1.25)).toFixed(3)
-    };
+  function point() {
+    var r = hero.getBoundingClientRect();
+    return { x: rand(-0.35, 0.35) * r.width, y: rand(-0.35, 0.35) * r.height, s: rand(0.85, 1.25), o: rand(0.75, 1) };
+  }
+  function curve(a, b, base) {
+    var c = point(), frames = [];
+    for (var k = 0; k <= 8; k++) {
+      var t = k / 8, u = 1 - t;
+      var x = u * u * a.x + 2 * u * t * c.x + t * t * b.x, y = u * u * a.y + 2 * u * t * c.y + t * t * b.y;
+      frames.push({
+        transform: "translate3d(" + x.toFixed(1) + "px, " + y.toFixed(1) + "px, 0) scale(" + (a.s + (b.s - a.s) * t).toFixed(3) + ")",
+        opacity: (base * (a.o + (b.o - a.o) * t)).toFixed(3)
+      });
+    }
+    return frames;
   }
   function live() { return onScreen && !document.hidden; }
   Array.prototype.forEach.call(blobs, function (blob, i) {
-    var base = parseFloat(getComputedStyle(blob).opacity) || 0.35;
-    var from = { transform: "translate3d(0px, 0px, 0) scale(1)", opacity: String(base) };
+    var base = parseFloat(getComputedStyle(blob).opacity) || 0.5;
+    var from = { x: 0, y: 0, s: 1, o: 1 };
     (function leg() {
-      var to = pose(base);
-      var anim = blob.animate([from, to], { duration: rand(14000, 24000), easing: "ease-in-out", fill: "forwards" });
+      var to = point();
+      var anim = blob.animate(curve(from, to, base), { duration: rand(25000, 40000), easing: "ease-in-out", fill: "forwards" });
       if (running[i]) running[i].cancel();
       running[i] = anim;
       if (!live()) anim.pause();
       anim.onfinish = function () { from = to; leg(); };
     })();
   });
+  if (spectrum) {
+    running.push(spectrum.animate([{ transform: "rotate(0deg)" }, { transform: "rotate(360deg)" }], { duration: 90000, iterations: Infinity }));
+  }
   function sync() { running.forEach(function (a) { if (live()) a.play(); else a.pause(); }); }
   new IntersectionObserver(function (entries) { onScreen = entries[0].isIntersecting; sync(); }).observe(hero);
   document.addEventListener("visibilitychange", sync);
 }
 
-/* Cartões de projeto (#59): com rato, o cartão inclina até MAX_TILT graus para o lado do cursor, a imagem
-   faz parallax e o brilho segue o cursor (variáveis CSS). Em ecrãs táteis (sem hover) o cartão faz só uma
-   entrada curta quando aparece. O foco do teclado é só CSS (:focus-within). Nada disto com reduced motion. */
-var MAX_TILT = 6;
-function tiltCards() {
-  var cards = document.querySelectorAll("[data-tilt]");
+/* Cartões de projeto (#63): o cartão não mexe, só a ilustração. Com .is-playing no cartão, o site.css anima as
+   peças do SVG uma vez (até 1,2 s). Corre no hover do rato e no foco do teclado; em ecrã tátil corre uma vez
+   quando o cartão entra no ecrã (50% visível), e tocar na ilustração repete sem seguir o link. Nada disto com
+   reduced motion: a ilustração fica parada e completa, como sem JS. */
+var CARD_PLAY_MS = 1300;
+function playCards() {
+  var cards = document.querySelectorAll(".card-project");
   if (reducedMotion || !cards.length) return;
-  if (window.matchMedia("(hover: none)").matches) {
-    if (!("IntersectionObserver" in window)) return;
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        io.unobserve(e.target);
-        e.target.classList.add("is-entering");
-        e.target.addEventListener("animationend", function () { e.target.classList.remove("is-entering"); }, { once: true });
-      });
-    }, { threshold: 0.35 });
-    Array.prototype.forEach.call(cards, function (card) { io.observe(card); });
-    return;
+  function play(card) {
+    clearTimeout(card._playTimer);
+    card.classList.remove("is-playing");
+    void card.offsetWidth; /* recomeça as animações do início */
+    card.classList.add("is-playing");
+    card._playTimer = setTimeout(function () { card.classList.remove("is-playing"); }, CARD_PLAY_MS);
   }
-  var props = ["--rx", "--ry", "--px", "--py", "--gx", "--gy"];
+  var touch = window.matchMedia("(hover: none)").matches;
   Array.prototype.forEach.call(cards, function (card) {
-    var frame = 0, last = null;
-    card.addEventListener("pointermove", function (e) {
-      if (e.pointerType !== "mouse") return;
-      last = e;
-      if (frame) return;
-      frame = requestAnimationFrame(function () {
-        frame = 0;
-        var r = card.getBoundingClientRect();
-        var x = Math.max(-1, Math.min(1, (last.clientX - r.left) / r.width * 2 - 1));
-        var y = Math.max(-1, Math.min(1, (last.clientY - r.top) / r.height * 2 - 1));
-        card.classList.add("is-tilting");
-        card.style.setProperty("--rx", (-y * MAX_TILT).toFixed(2) + "deg");
-        card.style.setProperty("--ry", (x * MAX_TILT).toFixed(2) + "deg");
-        card.style.setProperty("--px", x.toFixed(3));
-        card.style.setProperty("--py", y.toFixed(3));
-        card.style.setProperty("--gx", ((x + 1) * 50).toFixed(1) + "%");
-        card.style.setProperty("--gy", ((y + 1) * 50).toFixed(1) + "%");
-      });
-    });
-    card.addEventListener("pointerleave", function () {
-      if (frame) { cancelAnimationFrame(frame); frame = 0; }
-      card.classList.remove("is-tilting");
-      props.forEach(function (p) { card.style.removeProperty(p); });
-    });
+    card.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") play(card); });
+    card.addEventListener("focusin", function () { play(card); });
+    var media = card.querySelector("[data-art]");
+    if (touch && media) {
+      media.addEventListener("click", function (e) { e.preventDefault(); play(card); });
+    }
   });
+  if (!touch || !("IntersectionObserver" in window)) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      io.unobserve(e.target);
+      play(e.target);
+    });
+  }, { threshold: 0.5 });
+  Array.prototype.forEach.call(cards, function (card) { io.observe(card); });
 }
 
 /* Marquee: a velocidade sobe com a velocidade do scroll e o sentido segue o do scroll;
@@ -255,7 +255,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (!reducedMotion) Array.prototype.forEach.call(document.querySelectorAll("[data-split]"), splitLines);
   revealGroups();
   colourScenes();
-  tiltCards();
+  playCards();
   magneticButtons();
   Array.prototype.forEach.call(document.querySelectorAll("[data-cta-scale]"), ctaScale);
   Array.prototype.forEach.call(document.querySelectorAll("[data-marquee]"), marqueeScroll);

@@ -9,7 +9,9 @@ Fontes em src/art/ (descarregadas e otimizadas uma vez, servidas pelo site, sem 
 - get-it-vac/cartaz.json: o cartaz do jogo, célula a célula (160 × 144), nas 10 cores da paleta.
 
 Gera:
-- public/assets/img/projetos/<projeto>.svg: a imagem dos cartões de projeto (Início e Projetos), em SVG.
+- src/art/cartoes/<projeto>.svg: a ilustração dos cartões de projeto (Início e Projetos), que o build.py põe inline
+  no cartão. As peças vão em grupos (<g class="art-...">) para o site.css as animar (#63): recortadas das fontes,
+  sem arte nova.
 - src/images/get-it-vac/<nome>.svg e .png: as imagens da página Get It Vac. O PNG é a imagem-mestre que o
   images.py converte em AVIF e WebP; a proporção é a do #53, para o #54 trocar pelas fotografias finais.
 """
@@ -21,7 +23,7 @@ from pathlib import Path
 
 BASE = Path(__file__).resolve().parent.parent
 ART = BASE / "src" / "art"
-CARDS = BASE / "public" / "assets" / "img" / "projetos"
+CARDS = ART / "cartoes"
 IMAGES = BASE / "src" / "images" / "get-it-vac"
 
 SPRITES = json.loads((ART / "get-it-vac" / "sprites.json").read_text(encoding="utf-8"))
@@ -73,12 +75,35 @@ class Pixels:
                     self.rect(x + i * scale, y + j * scale, (end - i) * scale, scale, KEY[row[i]])
                 i = end
 
-    def svg(self):
+    def defs(self):
         defs = "".join(f'<pattern id="{pid}" width="2" height="2" patternUnits="userSpaceOnUse">'
                        f'<rect width="2" height="2" fill="{a}"/><path fill="{b}" d="M1 0h1v1h-1zM0 1h1v1h-1z"/></pattern>'
                        for pid, (a, b) in self.patterns.items())
-        body = "".join(f'<path fill="{c}" d="{"".join(d)}"/>' for layer in self.layers for c, d in layer.items())
-        return (f"<defs>{defs}</defs>" if defs else "") + body
+        return f"<defs>{defs}</defs>" if defs else ""
+
+    def body(self):
+        return "".join(f'<path fill="{c}" d="{"".join(d)}"/>' for layer in self.layers for c, d in layer.items())
+
+    def svg(self):
+        return self.defs() + self.body()
+
+
+class Sprites:
+    """Uma ilustração feita de peças (#63): cada peça é um <g class="art-..."> com os seus píxeis, para o
+    site.css a animar sozinha. Os padrões de dithering são partilhados por todas as peças."""
+
+    def __init__(self):
+        self.patterns = {}
+        self.parts = []
+
+    def piece(self, cls):
+        px = Pixels()
+        px.patterns = self.patterns
+        self.parts.append((cls, px))
+        return px
+
+    def svg(self):
+        return Pixels.defs(self) + "".join(f'<g class="{cls}">{px.body()}</g>' for cls, px in self.parts)
 
 
 def svg(width, height, body, crisp=True):
@@ -131,27 +156,71 @@ NAV = SPRITES["navigators"]
 
 # ---------------------------------------------------------------- cartões de projeto (16:10)
 
-def card_vizia():
-    """A sala do Vizia com o sofá em AR, enquadrada a 16:10, com o ícone e cantos de visor em azul Vizia."""
-    w, h = 320, 200
+def sala_pieces():
+    """A sala do Vizia (src/art/vizia/sala.svg) recortada nas peças que a compõem, pela ordem do ficheiro:
+    sala (paredes, chão, janela e luz), e dentro do grupo com traço: sofá (6 caixas), candeeiro (pé e
+    abajur) e planta (vaso e folhas)."""
     (vx, vy, vw, vh), body = inner("vizia/sala.svg")
-    room = f'<g transform="translate(-14 -146)">{body}</g>'
+    stroke = re.search(r"<g ([^>]*)>(.*)</g>", body, re.S)
+    room, objects = body[:stroke.start()], re.findall(r"<polygon [^>]*/>", stroke.group(2))
+    if len(objects) != 30:
+        raise SystemExit(f"src/art/vizia/sala.svg mudou: esperava 30 polígonos no grupo dos objetos, tem {len(objects)}")
+    attrs = stroke.group(1)
+    return room, attrs, {"sofa": objects[:18], "candeeiro": objects[18:24], "planta": objects[24:30]}
+
+
+def sofa_shadow(sofa):
+    """A sombra do sofá no chão: a pegada da base (os vértices de baixo das caixas), um pouco maior."""
+    pts = [tuple(map(float, xy.split(","))) for poly in sofa for xy in re.search(r'points="([^"]+)"', poly).group(1).split()]
+    left = min(pts, key=lambda p: p[0])
+    right = max(pts, key=lambda p: p[0])
+    bottom = max(pts, key=lambda p: p[1])
+    back = (left[0] + right[0] - bottom[0], left[1] + right[1] - bottom[1])  # 4.º canto do paralelogramo
+    cx, cy = (left[0] + right[0]) / 2, (left[1] + right[1]) / 2
+    grow = [(cx + (x - cx) * 1.08, cy + (y - cy) * 1.08 + 2) for x, y in (left, bottom, right, back)]
+    points = " ".join(f"{num(x)},{num(y)}" for x, y in grow)
+    return f'<polygon points="{points}" fill="#785834" fill-opacity="0.28"/>'
+
+
+def card_vizia():
+    """A sala do Vizia com o sofá em AR, enquadrada a 16:10, com o ícone e cantos de visor em azul Vizia.
+    Peças: sala, sombra, sofá, candeeiro, planta, cantos (um <g> cada) e ícone."""
+    w, h = 320, 200
+    room, attrs, objects = sala_pieces()
+    move = 'transform="translate(-14 -146)"'
+    parts = [("art-sala", f"<g {move}>{room}</g>"),
+             ("art-sombra", f"<g {move}>{sofa_shadow(objects['sofa'])}</g>")]
+    for name in ("planta", "candeeiro", "sofa"):
+        parts.append((f"art-{name}", f'<g {move} {attrs}>{"".join(objects[name])}</g>'))
     corner = 18
     marks = "".join(
         f'<path d="M{x} {y + dy * corner}V{y}H{x + dx * corner}"/>'
         for x, y, dx, dy in ((14, 14, 1, 1), (w - 14, 14, -1, 1), (14, h - 14, 1, -1), (w - 14, h - 14, -1, -1)))
-    viewfinder = f'<g fill="none" stroke="#2563EB" stroke-width="3" stroke-linecap="round">{marks}</g>'
-    icon = place("vizia/icon.svg", 26, h - 54, 28)
-    return svg(w, h, room + viewfinder + icon, crisp=False)
+    parts.append(("art-cantos", f'<g fill="none" stroke="#2563EB" stroke-width="3" stroke-linecap="round">{marks}</g>'))
+    parts.append(("art-icone", place("vizia/icon.svg", 26, h - 54, 28)))
+    return svg(w, h, "".join(f'<g class="{cls}">{body}</g>' for cls, body in parts), crisp=False)
 
 
 def card_get_it_vac():
-    """O cartaz do jogo, do céu ao chão (linhas 44 a 143), com o logótipo de vac.navego.pt por cima."""
-    px = Pixels()
-    px.rect(0, 0, 160, 100, P["night"])
-    px.grid(CARTAZ["rows"][44:144], 0, 0)
+    """O Get It Vac em sprites do jogo (16:10, 160 × 100): a noite, o casario de Alfama e o chão do cartaz, o
+    logótipo de vac.navego.pt, o Zé e a Inês nos robôs, o Bit e a Madame, e 3 estrelas em cruz que piscam."""
+    w, h, floor = 160, 100, 80
+    art = Sprites()
+    sky = art.piece("art-casario")
+    sky.rect(0, 0, w, h, P["night"])
+    city_tile(sky, 0, floor, "alfama")
+    ground(sky, floor, w)
+    stars(art.piece("art-estrelas"), w, 44, 30, seed=7)
+    for x, y, color in ((9, 27, P["sand"]), (148, 30, P["yellow"]), (100, 24, P["cyan"])):
+        twinkle = art.piece("art-estrela")
+        twinkle.rect(x - 1, y, 3, 1, color)
+        twinkle.rect(x, y - 1, 1, 3, color)
+    art.piece("art-personagem").sprite(SPRITES["bit"][1], 8, floor - 12)
+    art.piece("art-vac").sprite(NAV["ze"][1], 28, floor - 33)
+    art.piece("art-vac").sprite(NAV["ines"][0], 66, floor - 33)
+    art.piece("art-madame").sprite(SPRITES["madame"][0], 122, floor - 36)
     logo = place("get-it-vac/logo.svg", 16, 7, 128)
-    return svg(160, 100, px.svg() + logo)
+    return svg(w, h, art.svg() + f'<g class="art-logo">{logo}</g>')
 
 
 # ---------------------------------------------------------------- imagens da página Get It Vac
@@ -304,7 +373,7 @@ PAGE = {"hero": (hero, 10), "comando": (comando, 8), "multijogador": (multijogad
 
 def main():
     CARDS.mkdir(parents=True, exist_ok=True)
-    (CARDS / "vizia.svg").write_text(card_vizia(), encoding="utf-8")
+    (CARDS / "vizia.svg").write_text(card_vizia(), encoding="utf-8")  # o build.py põe-nos inline nos cartões
     (CARDS / "get-it-vac.svg").write_text(card_get_it_vac(), encoding="utf-8")
     jobs = []
     for name, (draw, scale) in PAGE.items():

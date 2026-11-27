@@ -2,7 +2,7 @@
   "site": {
     "html_lang": "pt-PT",
     "og_locale": "pt_PT",
-    "og_image_alt": "Thr33 Labs, estúdio de tecnologia interativa: feito para ser explorado",
+    "og_image_alt": "Thr33 Labs, estúdio de tecnologia interativa: imagine, nós construímos",
     "other_label": "EN",
     "other_name": "English",
     "nav_label": "Navegação principal",
@@ -37,7 +37,7 @@
       "name": "Vizia - Arquitetura em AR",
       "text": "Projetos de arquitetura, decoração e eventos em realidade aumentada, à escala real e no local.",
       "image": {
-        "src": "/assets/img/projetos/vizia.svg",
+        "art": "vizia",
         "alt": "Ilustração do Vizia: um sofá em realidade aumentada numa sala vazia, à escala real, visto pelo telemóvel."
       },
       "link": {
@@ -51,7 +51,7 @@
       "name": "Get It Vac",
       "text": "Um jogo arcade comandado por um mini robô aspirador ligado à internet, com multijogador no telemóvel. Fizemo-lo em 5 dias.",
       "image": {
-        "src": "/assets/img/projetos/get-it-vac.svg",
+        "art": "get-it-vac",
         "alt": "Cartaz do Get It Vac em pixel art: os navegadores nos robôs aspiradores, à frente do casario de Lisboa."
       },
       "link": {
@@ -68,7 +68,8 @@
         "kind": "hero",
         "label": "Thr33 Labs / ©2026",
         "label_after": "Estúdio de tecnologia interativa",
-        "h1": "Feito para ser <span class=\"accent\">explorado.</span>",
+        "h1": "Imagine. Nós <span class=\"accent\">construímos.</span>",
+        "subtitle": "Experiências que ficam na memória.",
         "lead": "Aplicações iOS e Android, plataformas e experiências interativas, do software ao hardware. Com foco em UX, a partir de Óbidos.",
         "actions": [
           {

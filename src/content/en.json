@@ -2,7 +2,7 @@
   "site": {
     "html_lang": "en",
     "og_locale": "en_GB",
-    "og_image_alt": "Thr33 Labs, interactive technology studio: made to be explored",
+    "og_image_alt": "Thr33 Labs, interactive technology studio: you imagine, we build",
     "other_label": "PT",
     "other_name": "Português",
     "nav_label": "Main navigation",
@@ -37,7 +37,7 @@
       "name": "Vizia - Arquitetura em AR",
       "text": "Architecture, interior design and event projects in augmented reality, at real scale and on site.",
       "image": {
-        "src": "/assets/img/projetos/vizia.svg",
+        "art": "vizia",
         "alt": "Vizia illustration: a sofa in augmented reality in an empty room, at real scale, seen through a phone."
       },
       "link": {
@@ -51,7 +51,7 @@
       "name": "Get It Vac",
       "text": "An arcade game controlled by an internet-connected mini robot vacuum, with phone multiplayer. We built it in 5 days.",
       "image": {
-        "src": "/assets/img/projetos/get-it-vac.svg",
+        "art": "get-it-vac",
         "alt": "Get It Vac poster in pixel art: the navigators on their robot vacuums, in front of Lisbon's houses."
       },
       "link": {
@@ -68,7 +68,8 @@
         "kind": "hero",
         "label": "Thr33 Labs / ©2026",
         "label_after": "Interactive technology studio",
-        "h1": "Made to be <span class=\"accent\">explored.</span>",
+        "h1": "You imagine. We <span class=\"accent\">build.</span>",
+        "subtitle": "Experiences people remember.",
         "lead": "iOS and Android apps, platforms and interactive experiences, from software to hardware. UX-led, from Óbidos.",
         "actions": [
           {

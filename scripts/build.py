@@ -194,26 +194,36 @@ def ficha(section):
     return f'<dl class="ficha">\n          {rows}\n        </dl>'
 
 
-# Ilustração dos cartões de projeto (#59): SVG do site, gerado pelo scripts/art.py, sempre a 16:10.
-CARD_IMG = (320, 200)
+# Ilustração dos cartões de projeto (#63): o SVG que o scripts/art.py gera em src/art/cartoes/, posto inline no
+# cartão para o site.css animar as peças (<g class="art-...">). Sempre a 16:10.
+CARD_ART = SRC / "art" / "cartoes"
+
+
+def card_art(image):
+    """O SVG da ilustração, inline, com role="img" e o alt no aria-label (o texto é o mesmo em PT e EN)."""
+    name = image["art"]
+    svg = (CARD_ART / f"{name}.svg").read_text(encoding="utf-8").strip()
+    opening = re.match(r"<svg ([^>]*)>", svg)
+    attrs = re.sub(r'\s*(?:xmlns|width|height)="[^"]*"', "", opening.group(1)).strip()
+    return (f'<svg class="art art-{name}" {attrs} role="img" aria-label="{attr(image["alt"])}">'
+            + svg[opening.end():])
 
 
 def project_card(item):
-    """Cartão de projeto (#59): o mesmo componente no Início e em Projetos, para todos os projetos.
+    """Cartão de projeto (#59, #63): o mesmo componente no Início e em Projetos, para todos os projetos.
 
     Ilustração, nome, descrição curta e um link. O link cobre o cartão todo (.card-link::before); um link
-    externo abre noutro separador e leva a seta ↗ (CSS). data-tilt: o site.js inclina o cartão com o rato."""
-    image, link = item["image"], item["link"]
-    width, height = CARD_IMG
+    externo abre noutro separador e leva a seta ↗ (CSS). data-art: o site.js anima a ilustração (hover, foco,
+    entrada no ecrã tátil e toque)."""
+    link = item["link"]
     external = ' target="_blank" rel="noopener noreferrer"' if link.get("external") else ""
     parts = [
-        f'<div class="card-media"><img src="{attr(image["src"])}" alt="{attr(image["alt"])}" width="{width}" '
-        f'height="{height}" loading="lazy" decoding="async"></div>',
+        f'<div class="card-media" data-art>{card_art(item["image"])}</div>',
         f'<h3 id="{item["id"]}" class="product-name">{item["name"]}</h3>',
         f'<p>{item["text"]}</p>',
         f'<a class="card-link" href="{attr(link["href"])}"{external}>{link["text"]}</a>',
     ]
-    return '<li class="card card-project" data-tilt>\n            ' + "\n            ".join(parts) + "\n          </li>"
+    return '<li class="card card-project">\n            ' + "\n            ".join(parts) + "\n          </li>"
 
 
 def projects(section, items):
@@ -359,9 +369,10 @@ def breadcrumb(crumb):
             + "".join(items) + "</ol></nav>")
 
 
-HERO_GRADIENT = ('<div class="hero-gradient" aria-hidden="true">'
-                 '<span class="blob blob-telha"></span><span class="blob blob-lagoa"></span>'
-                 '<span class="blob blob-atlantico"></span></div>')
+# Espectro do hero (#63): a camada cónica e 5 manchas (Telha, Lagoa, Atlântico e dois tons entre eles).
+HERO_GRADIENT = ('<div class="hero-gradient" aria-hidden="true"><span class="spectrum"></span>'
+                 + "".join(f'<span class="blob blob-{c}"></span>' for c in ("ameixa", "telha", "mar", "atlantico", "lagoa"))
+                 + "</div>")
 
 
 def page_head(head):
@@ -377,6 +388,8 @@ def page_head(head):
     if head.get("label_after"):
         lab = lab.replace("</p>", f' {head["label_after"]}</p>')
     parts = [lab, f'<h1 data-split>{head["h1"]}</h1>']
+    if head.get("subtitle"):
+        parts.append(f'<p class="hero-subtitle">{head["subtitle"]}</p>')
     if head.get("eyebrow"):
         parts.append(f'<p class="examples-title">{head["eyebrow"]}</p>')
     parts.append(f'<p class="lead">{head["lead"]}</p>')
